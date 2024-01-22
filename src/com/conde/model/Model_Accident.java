@@ -12,11 +12,11 @@ public class Model_Accident {
         this.icon = icon;
     }
 
-    public String getNum_Accidente() {
+    public int getNum_Accidente() {
         return Num_Accidente;
     }
 
-    public void setNum_Accidente(String Num_Accidente) {
+    public void setNum_Accidente(int Num_Accidente) {
         this.Num_Accidente = Num_Accidente;
     }
 
@@ -84,23 +84,39 @@ public class Model_Accident {
         this.Descripcion = Descripcion;
     }
 
-    public String getTipo_Siniestro() {
+    public int getTipo_Siniestro() {
         return Tipo_Siniestro;
     }
 
-    public void setTipo_Siniestro(String Tipo_Siniestro) {
+    public void setTipo_Siniestro(int Tipo_Siniestro) {
         this.Tipo_Siniestro = Tipo_Siniestro;
     }
 
     public StatusType getStattus() {
+        
+       switch (Zona_Atestados) {
+            case "Pamplona":
+                stattus = StatusType.PAMPLONA;
+                break;
+            case "Tudela":
+                stattus = StatusType.TUDELA;
+                break;
+            default:
+                stattus=StatusType.OTRO;
+                break;
+        }
+            
         return stattus;
     }
 
     public void setStattus(StatusType stattus) {
+        
+        
+        
         this.stattus = stattus;
     }
 
-    public Model_Accident(Icon icon, String Num_Accidente, String Fecha, String Hora, String Carretera, String Kilometro, String Num_Diligencias, String Patrulla, String Zona_Atestados, String Descripcion, String Tipo_Siniestro, StatusType status) {
+    public Model_Accident(Icon icon, int Num_Accidente, String Fecha, String Hora, String Carretera, String Kilometro, String Num_Diligencias, String Patrulla, String Zona_Atestados, String Descripcion, int Tipo_Siniestro, StatusType status) {
         this.icon = icon;
         this.Num_Accidente = Num_Accidente;
         this.Fecha = Fecha;
@@ -116,7 +132,7 @@ public class Model_Accident {
 
     }
 
-    public Model_Accident(Icon icon, String Num_Accidente, String Zona_Atestados, String Descripcion, String Tipo_Siniestro) {
+    public Model_Accident(Icon icon, int Num_Accidente, String Zona_Atestados, String Descripcion, int Tipo_Siniestro) {
         this.icon = icon;
         this.Num_Accidente = Num_Accidente;
         this.Zona_Atestados = Zona_Atestados;
@@ -127,17 +143,17 @@ public class Model_Accident {
     public Model_Accident() {
     }
 
-    Icon icon;
-    String Num_Accidente;
-    String Fecha;
-    String Hora;
-    String Carretera;
-    String Kilometro;
-    String Num_Diligencias;
-    String Patrulla;
-    String Zona_Atestados;
-    String Descripcion;
-    String Tipo_Siniestro;
-    StatusType stattus;
+    private Icon icon;
+    private int Num_Accidente;
+    private String Fecha;
+    private String Hora;
+    private String Carretera;
+    private String Kilometro;
+    private String Num_Diligencias;
+    private String Patrulla;
+    private String Zona_Atestados;
+    private String Descripcion;
+    private int Tipo_Siniestro;
+    private StatusType stattus;
 
 }

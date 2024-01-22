@@ -4,6 +4,10 @@ import com.conde.model.StatusType;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -57,6 +61,43 @@ public class Table extends JTable {
                     return cell;
                 }
 
+            }
+        });
+        
+        
+        
+        addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int filaSeleccionada = rowAtPoint(e.getPoint());
+                System.out.println(getValueAt(filaSeleccionada,0));
+            }
+            
+        });
+        
+        addKeyListener(new KeyListener(){
+            @Override
+            public void keyTyped(KeyEvent e) {
+            
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+              
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+              if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    // Obtener la fila seleccionada al desplazarse con las flechas arriba/abajo
+                    int filaSeleccionada = getSelectedRow();
+
+                    
+                    // Realizar acciones con la fila seleccionada
+                    System.out.println(getValueAt(filaSeleccionada,0));
+                    
+                    
+                }
             }
         });
     }

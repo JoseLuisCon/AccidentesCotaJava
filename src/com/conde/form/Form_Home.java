@@ -1,5 +1,6 @@
 package com.conde.form;
 
+import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.StatusType;
 import java.awt.Color;
@@ -19,17 +20,6 @@ public class Form_Home extends javax.swing.JPanel {
     public Form_Home() {
         this.accident = new Model_Accident();
         initComponents();
-        Model_Accident accidente1 = new Model_Accident();
-        accidente1.setIcon(new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/coche.png")));
-        accidente1.setNum_Accidente("AF-1");
-        accidente1.setDescripcion("Atropello a Jabalí y posterior salida de vía margen derecho, ocasionando daños múltiples el vehículo con paragolpes destrozado");
-        accidente1.setTipo_Siniestro("Atropello a animal");
-        accidente1.setZona_Atestados("Pamplona");
-
-        card1.setData(accidente1);
-
-        fill_data_listAccidents();
-        
         
         spTable.setVerticalScrollBar(new JScrollBar());
         spTable.getVerticalScrollBar().setBackground(Color.WHITE);
@@ -37,434 +27,10 @@ public class Form_Home extends javax.swing.JPanel {
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-
-//           Add row table
-        for (Model_Accident accidente : listAccidents) {
-            
-            table.addRow(new Object[]{accidente.getNum_Accidente(), accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
-        }
-
     }
-
-    private void fill_data_listAccidents() {
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("12/12/2023");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.REJECT);
-
-        this.listAccidents.add(accident);
-        accident = new Model_Accident();
-
-        accident.setNum_Accidente("2");
-        accident.setFecha("13/12/2023");
-        accident.setHora("05:20");
-        accident.setCarretera("N-121-A");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-510");
-//        accident.setZona_Atestados("Atestadis");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-        accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-        
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-         accident = new Model_Accident();
-
-        accident.setNum_Accidente("1");
-        accident.setFecha("15/01/2024");
-        accident.setHora("12:00");
-        accident.setCarretera("N-625");
-        accident.setKilometro("12,5");
-        accident.setNum_Diligencias("123");
-        accident.setPatrulla("NA-120");
-//        accident.setZona_Atestados("Pamplona");
-        accident.setStattus(StatusType.APPROBED);
-
-        this.listAccidents.add(accident);
-
-    }
+    
+    
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -478,6 +44,17 @@ public class Form_Home extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         spTable = new javax.swing.JScrollPane();
         table = new com.conde.swing.Table();
+
+        setBackground(new java.awt.Color(255, 255, 255));
+        addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                formAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
 
         panel.setLayout(new java.awt.GridLayout(1, 0, 10, 0));
 
@@ -569,6 +146,11 @@ public class Form_Home extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
+
+        cargarAccidentes();
+    }//GEN-LAST:event_formAncestorAdded
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.conde.component.Card_Accident card1;
@@ -580,4 +162,20 @@ public class Form_Home extends javax.swing.JPanel {
     private javax.swing.JScrollPane spTable;
     private com.conde.swing.Table table;
     // End of variables declaration//GEN-END:variables
+
+    private void cargarAccidentes() {
+       //Consultamos en la base de datos
+       Accidentes_JDBC listAcc = new Accidentes_JDBC();
+       
+      //Rellenamos el Arraylist
+      
+      listAccidents  = listAcc.getListAccidents();
+             
+       //Lo mostramos en la tabla
+       
+        for (Model_Accident accidente : listAccidents) {
+            
+            table.addRow(new Object[]{accidente.getNum_Accidente(), accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
+        }
+    }
 }

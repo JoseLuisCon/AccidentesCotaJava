@@ -1,11 +1,12 @@
 package com.conde.main;
 
-import com.conde.event.EventMenuSelected;
 import com.conde.form.Form_1;
 import com.conde.form.Form_2;
-import com.conde.form.Form_3;
 import com.conde.form.Form_Home;
+import com.conde.model.ConexionAccess;
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 public class Main extends javax.swing.JFrame {
@@ -13,7 +14,7 @@ public class Main extends javax.swing.JFrame {
     private Form_Home home;
     private Form_1 form1;
     private Form_2 form2;
-
+    
 
     public Main() {
         initComponents();
@@ -37,13 +38,26 @@ public class Main extends javax.swing.JFrame {
                     setForm(form2);
                     break;
                 case 5:
-                    System.exit(0);
+                    ConexionAccess.desConnection();
+                {
+                    try {
+                        Thread.sleep(600);
+                        System.exit(0);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                    
+
                 default:
                     break;
             }
         });
 
         setForm(new Form_Home());
+        
+        ConexionAccess.conectar();
+        
     }
 
     private void setForm(JComponent com) {
@@ -80,18 +94,18 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, 1145, Short.MAX_VALUE)
                     .addGroup(panelBorder1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                        .addGap(0, 0, 0)
                         .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addGap(0, 0, 0))))
         );
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(menu, javax.swing.GroupLayout.DEFAULT_SIZE, 1014, Short.MAX_VALUE)
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addComponent(header1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(0, 0, 0))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

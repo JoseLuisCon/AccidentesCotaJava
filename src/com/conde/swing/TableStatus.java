@@ -35,9 +35,9 @@ public class TableStatus extends JLabel {
             Graphics2D g2 = (Graphics2D) grphcs;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             GradientPaint g;
-            if (type == StatusType.PENDDING) {
+            if (type == StatusType.PAMPLONA) {
                 g = new GradientPaint(0, 0, new Color(183, 123, 247), 0, getHeight(), new Color(167, 94, 236));
-            } else if (type == StatusType.APPROBED) {
+            } else if (type == StatusType.TUDELA) {
                 g = new GradientPaint(0, 0, new Color(142, 142, 250), 0, getHeight(), new Color(123, 123, 245));
             } else {
                 g = new GradientPaint(0, 0, new Color(241, 208, 62), 0, getHeight(), new Color(211, 184, 61));

@@ -45,8 +45,8 @@ public class Card_Accident extends javax.swing.JPanel {
 
         lblIcon.setIcon(data.getIcon());
         lblDescripcion.setText(data.getDescripcion());
-        lblNumAccidente.setText(data.getNum_Accidente());
-        lblTipoAccidente.setText(data.getTipo_Siniestro());
+        lblNumAccidente.setText(String.valueOf(data.getNum_Accidente()));
+        lblTipoAccidente.setText(String.valueOf(data.getTipo_Siniestro()));
         lblZonaAtestados.setText(data.getZona_Atestados());
        
     }
