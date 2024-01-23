@@ -5,6 +5,8 @@ import com.conde.form.Form_2;
 import com.conde.form.Form_Home;
 import com.conde.model.ConexionAccess;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -17,7 +19,22 @@ public class Main extends javax.swing.JFrame {
     
 
     public Main() {
+        
         initComponents();
+        // Obtener el tamaño de la pantalla
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // Calcular el ancho y alto deseado para el JFrame (por ejemplo, el 80% del tamaño de la pantalla)
+        int width = screenSize.width;
+        int height = screenSize.height;
+        int x=(int) (screenSize.width * 0.3) / 2;
+        int y=(int) (screenSize.height*0.3) / 2;
+        // Establecer el tamaño del JFrame
+        setBounds(x, y,  (int) (screenSize.width * 0.7),  (int) (screenSize.height * 0.7));
+//        setSize(width, height);
+        
+        
+        
         setBackground(new Color(0, 0, 0, 0));
         menu.initMoving(Main.this);
 

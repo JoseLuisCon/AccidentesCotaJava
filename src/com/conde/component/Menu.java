@@ -17,11 +17,7 @@ import javax.swing.JFrame;
 
 public class Menu extends javax.swing.JPanel {
 
-    private EventMenuSelected event;
-//    private JLabelLink link= new JLabelLink();
-
     public void addEventMenuSelected(EventMenuSelected event) {
-        this.event = event;
         listMenu1.addEventMenuSelected(event);
     }
 
@@ -51,9 +47,6 @@ public class Menu extends javax.swing.JPanel {
         listMenu1.addItem(new Model_Menu("5", "Salir", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
 
-//        Icon icon = new ImageIcon(getClass().getResource("icons/ESCUDOATGCCOLOR64.png"));
-//        link.setIcon(icon);
-//        link.setText("By Conde");
     }
 
     @SuppressWarnings("unchecked")

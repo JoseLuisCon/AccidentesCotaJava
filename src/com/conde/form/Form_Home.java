@@ -1,5 +1,6 @@
 package com.conde.form;
 
+import com.conde.event.EventRowSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.StatusType;
@@ -9,16 +10,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
 
 
 public class Form_Home extends javax.swing.JPanel {
 
     private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
+    private EventRowSelected event;
 
-    private Model_Accident accident;
 
     public Form_Home() {
-        this.accident = new Model_Accident();
+  
         initComponents();
         
         spTable.setVerticalScrollBar(new JScrollBar());
@@ -27,6 +29,14 @@ public class Form_Home extends javax.swing.JPanel {
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+        
+        table.addEventRowSelected((int index)->{
+            System.out.println("Fila Seleccionada"+index);
+        
+        
+        });
+        
+        
     }
     
     
@@ -171,7 +181,10 @@ public class Form_Home extends javax.swing.JPanel {
       
       listAccidents  = listAcc.getListAccidents();
              
-       //Lo mostramos en la tabla
+       DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        dtm.setRowCount(0);
+        
+        //Lo mostramos en la tabla
        
         for (Model_Accident accidente : listAccidents) {
             
