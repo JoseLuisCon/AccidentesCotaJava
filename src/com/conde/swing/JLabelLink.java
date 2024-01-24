@@ -27,13 +27,6 @@ public class JLabelLink extends JLabel{
         makeLink();
     }
     
-//    public JLabelLink(String url, String txt, Icon image) {
-//        super(txt);
-//        this.url = url;
-//        this.texto = txt;
-//     
-//        makeLink();
-//    }
 
     private void makeLink() {
         addMouseListener(new MouseListener(){

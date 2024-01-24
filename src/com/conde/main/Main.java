@@ -3,6 +3,7 @@ package com.conde.main;
 import com.conde.form.Form_1;
 import com.conde.form.Form_2;
 import com.conde.form.Form_Home;
+
 import com.conde.model.ConexionAccess;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,13 +26,11 @@ public class Main extends javax.swing.JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         // Calcular el ancho y alto deseado para el JFrame (por ejemplo, el 80% del tamaño de la pantalla)
-        int width = screenSize.width;
-        int height = screenSize.height;
         int x=(int) (screenSize.width * 0.3) / 2;
         int y=(int) (screenSize.height*0.3) / 2;
         // Establecer el tamaño del JFrame
         setBounds(x, y,  (int) (screenSize.width * 0.7),  (int) (screenSize.height * 0.7));
-//        setSize(width, height);
+
         
         
         

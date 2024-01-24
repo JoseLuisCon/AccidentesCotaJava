@@ -50,12 +50,13 @@
     <Container class="javax.swing.JLayeredPane" name="panel">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-        <Property name="columns" type="int" value="0"/>
-        <Property name="horizontalGap" type="int" value="10"/>
-        <Property name="rows" type="int" value="1"/>
+        <Property name="columns" type="int" value="2"/>
+        <Property name="horizontalGap" type="int" value="5"/>
+        <Property name="rows" type="int" value="2"/>
+        <Property name="verticalGap" type="int" value="5"/>
       </Layout>
       <SubComponents>
-        <Component class="com.conde.component.Card_Accident" name="card1">
+        <Component class="com.conde.component.Card_Accident" name="data_Aux_Accidente">
           <Properties>
             <Property name="color1" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fa" green="8e" red="8e" type="rgb"/>
@@ -65,15 +66,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="com.conde.component.Card_Accident" name="card2">
-          <Properties>
-            <Property name="color1" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="f7" green="7b" red="ba" type="rgb"/>
-            </Property>
-            <Property name="color2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ec" green="5e" red="a7" type="rgb"/>
-            </Property>
-          </Properties>
+        <Component class="com.conde.component.Card_Veh&#xed;culos" name="vehiculos">
         </Component>
         <Component class="com.conde.component.Card_Accident" name="card3">
           <Properties>

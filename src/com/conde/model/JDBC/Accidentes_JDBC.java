@@ -94,6 +94,27 @@ public class Accidentes_JDBC {
         return acc;
     }
 
+    public String getTipoAccidenteById(int Id) {
+
+        String sql = "SELECT TIPO FROM TIPO_SINIESTRO WHERE Id =" + Id;
+        String tipo_Accidente="";
+
+        try {
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+
+            if (rs.next()) {
+
+                tipo_Accidente = rs.getString("TIPO");
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return tipo_Accidente;
+    }
+
     private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
     private Connection conexion;
     private Statement st;

@@ -2,11 +2,12 @@ package com.conde.component;
 
 import com.conde.event.EventMenuSelected;
 import com.conde.model.Model_Menu;
-import com.conde.swing.JLabelLink;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,6 +15,7 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class Menu extends javax.swing.JPanel {
 
@@ -25,7 +27,11 @@ public class Menu extends javax.swing.JPanel {
         initComponents();
         setOpaque(false);
         listMenu1.setOpaque(false);
+
         init();
+        pintarImagen(lblLogo, "src/com/conde/resources/icons/logTraf2.png");
+        
+        lblMailTo.InitLink("By Conde", "mailto:condepa45@gmail.com");
     }
 
     private void init() {
@@ -49,6 +55,17 @@ public class Menu extends javax.swing.JPanel {
 
     }
 
+    private void pintarImagen(JLabel lbl, String ruta) {
+
+        imagen = new ImageIcon(ruta);
+
+        lbl.setBounds(0,0,65, 86);
+        icon = new ImageIcon(imagen.getImage().getScaledInstance(lbl.getWidth(), lbl.getHeight(), Image.SCALE_DEFAULT));
+        lbl.setIcon(icon);
+        repaint();
+
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -56,7 +73,8 @@ public class Menu extends javax.swing.JPanel {
         panelMoving = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         listMenu1 = new com.conde.swing.ListMenu<>();
-        jLabelLink1 = new com.conde.swing.JLabelLink();
+        lblMailTo = new com.conde.swing.JLabelLink();
+        lblLogo = new javax.swing.JLabel();
 
         panelMoving.setOpaque(false);
 
@@ -71,7 +89,7 @@ public class Menu extends javax.swing.JPanel {
             panelMovingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMovingLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE))
         );
         panelMovingLayout.setVerticalGroup(
             panelMovingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -81,7 +99,20 @@ public class Menu extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabelLink1.setText("jLabelLink1");
+        lblMailTo.setForeground(new java.awt.Color(255, 255, 255));
+        lblMailTo.setText("By Conde");
+        lblMailTo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblMailToMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblMailToMouseExited(evt);
+            }
+        });
+
+        lblLogo.setAlignmentY(0.0F);
+        lblLogo.setAutoscrolls(true);
+        lblLogo.setIconTextGap(0);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -89,9 +120,11 @@ public class Menu extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panelMoving, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(listMenu1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelLink1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMailTo, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -99,12 +132,22 @@ public class Menu extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelMoving, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(listMenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
+                .addComponent(listMenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelLink1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblMailTo, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void lblMailToMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMailToMouseEntered
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_lblMailToMouseEntered
+
+    private void lblMailToMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMailToMouseExited
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_lblMailToMouseExited
 
     @Override
     protected void paintChildren(Graphics grphcs) {
@@ -136,9 +179,15 @@ public class Menu extends javax.swing.JPanel {
             }
         });
     }
+
+    private ImageIcon imagen;
+    private Icon icon;
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private com.conde.swing.JLabelLink jLabelLink1;
+    private javax.swing.JLabel lblLogo;
+    private com.conde.swing.JLabelLink lblMailTo;
     private com.conde.swing.ListMenu<String> listMenu1;
     private javax.swing.JPanel panelMoving;
     // End of variables declaration//GEN-END:variables

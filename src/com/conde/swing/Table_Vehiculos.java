@@ -14,7 +14,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class Table extends JTable {
+public class Table_Vehiculos extends JTable {
     
     private EventRowSelected event;
     
@@ -22,7 +22,7 @@ public class Table extends JTable {
         this.event = event;
     }
 
-    public Table() {
+    public Table_Vehiculos() {
 
         setShowHorizontalLines(true);
         setGridColor(new Color(230, 230, 230));
@@ -36,7 +36,7 @@ public class Table extends JTable {
 
                 TableHeader header = new TableHeader(o + "");
                 header.setHorizontalAlignment(JLabel.CENTER);
-                header.setFont(new Font("sansserif",1, 16));
+                header.setFont(new Font("sansserif",1, 12));
                 return header;
             }
         });

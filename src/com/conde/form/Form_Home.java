@@ -7,6 +7,8 @@ import com.conde.model.StatusType;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import java.lang.Object;
+import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -16,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 public class Form_Home extends javax.swing.JPanel {
 
     private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
-    private EventRowSelected event;
+    private Accidentes_JDBC datos_model = new Accidentes_JDBC();
 
 
     public Form_Home() {
@@ -31,9 +33,22 @@ public class Form_Home extends javax.swing.JPanel {
         spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
         
         table.addEventRowSelected((int index)->{
-            System.out.println("Fila Seleccionada"+index);
-        
-        
+            Model_Accident accidenteOK = new Model_Accident();
+            //Rellenar datos card1
+            for (Model_Accident Accidente : listAccidents) {
+                if (Accidente.getNum_Accidente()==index){
+                    accidenteOK = Accidente;
+                    break;
+                }
+ 
+            }
+            // Cargamos datos del accidente seleccionado en el card1
+            ImageIcon image = new ImageIcon("src/com/conde/resources/icons/coche.png");
+            Icon icon = new ImageIcon(image.getImage());
+            accidenteOK.setIcon(icon);
+            String tipoAccidenteString = datos_model.getTipoAccidenteById(accidenteOK.getTipo_Siniestro());
+            data_Aux_Accidente.setData(accidenteOK, tipoAccidenteString);
+            
         });
         
         
@@ -47,8 +62,8 @@ public class Form_Home extends javax.swing.JPanel {
     private void initComponents() {
 
         panel = new javax.swing.JLayeredPane();
-        card1 = new com.conde.component.Card_Accident();
-        card2 = new com.conde.component.Card_Accident();
+        data_Aux_Accidente = new com.conde.component.Card_Accident();
+        vehiculos = new com.conde.component.Card_Vehículos();
         card3 = new com.conde.component.Card_Accident();
         panelBorder1 = new com.conde.swing.PanelBorder();
         jLabel1 = new javax.swing.JLabel();
@@ -66,15 +81,12 @@ public class Form_Home extends javax.swing.JPanel {
             }
         });
 
-        panel.setLayout(new java.awt.GridLayout(1, 0, 10, 0));
+        panel.setLayout(new java.awt.GridLayout(2, 2, 5, 5));
 
-        card1.setColor1(new java.awt.Color(142, 142, 250));
-        card1.setColor2(new java.awt.Color(123, 123, 245));
-        panel.add(card1);
-
-        card2.setColor1(new java.awt.Color(186, 123, 247));
-        card2.setColor2(new java.awt.Color(167, 94, 236));
-        panel.add(card2);
+        data_Aux_Accidente.setColor1(new java.awt.Color(142, 142, 250));
+        data_Aux_Accidente.setColor2(new java.awt.Color(123, 123, 245));
+        panel.add(data_Aux_Accidente);
+        panel.add(vehiculos);
 
         card3.setColor1(new java.awt.Color(241, 208, 62));
         card3.setColor2(new java.awt.Color(211, 184, 61));
@@ -163,14 +175,14 @@ public class Form_Home extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.conde.component.Card_Accident card1;
-    private com.conde.component.Card_Accident card2;
     private com.conde.component.Card_Accident card3;
+    private com.conde.component.Card_Accident data_Aux_Accidente;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLayeredPane panel;
     private com.conde.swing.PanelBorder panelBorder1;
     private javax.swing.JScrollPane spTable;
     private com.conde.swing.Table table;
+    private com.conde.component.Card_Vehículos vehiculos;
     // End of variables declaration//GEN-END:variables
 
     private void cargarAccidentes() {

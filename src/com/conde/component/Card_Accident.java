@@ -41,13 +41,12 @@ public class Card_Accident extends javax.swing.JPanel {
         
     }
 
-    public void setData(Model_Accident data) {
+    public void setData(Model_Accident data, String tipo_Accidente) {
 
         lblIcon.setIcon(data.getIcon());
-        lblDescripcion.setText(data.getDescripcion());
         lblNumAccidente.setText(String.valueOf(data.getNum_Accidente()));
-        lblTipoAccidente.setText(String.valueOf(data.getTipo_Siniestro()));
-        lblZonaAtestados.setText(data.getZona_Atestados());
+        lblTipoAccidente.setText("<html>"+tipo_Accidente+"</html>");
+        lblDescripcion.setText("<html>"+data.getDescripcion()+"</html>");
        
     }
 
@@ -57,41 +56,36 @@ public class Card_Accident extends javax.swing.JPanel {
 
         lblIcon = new javax.swing.JLabel();
         lblNumAccidente = new javax.swing.JLabel();
-        lblZonaAtestados = new javax.swing.JLabel();
         lblTipoAccidente = new javax.swing.JLabel();
         lblDescripcion = new javax.swing.JLabel();
 
         setOpaque(false);
         setLayout(null);
 
-        lblIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/coche.png"))); // NOI18N
+        lblIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/accidente.png"))); // NOI18N
         add(lblIcon);
-        lblIcon.setBounds(25, 18, 32, 32);
+        lblIcon.setBounds(10, 10, 70, 60);
 
         lblNumAccidente.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblNumAccidente.setForeground(new java.awt.Color(255, 255, 255));
         lblNumAccidente.setText("Núm. Accidente:");
+        lblNumAccidente.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(lblNumAccidente);
-        lblNumAccidente.setBounds(20, 70, 120, 30);
-
-        lblZonaAtestados.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        lblZonaAtestados.setForeground(new java.awt.Color(255, 255, 255));
-        lblZonaAtestados.setText("Zona atestados");
-        add(lblZonaAtestados);
-        lblZonaAtestados.setBounds(20, 110, 130, 19);
+        lblNumAccidente.setBounds(10, 80, 140, 30);
 
         lblTipoAccidente.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblTipoAccidente.setForeground(new java.awt.Color(255, 255, 255));
         lblTipoAccidente.setText("Tipo accidente");
+        lblTipoAccidente.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(lblTipoAccidente);
-        lblTipoAccidente.setBounds(20, 140, 130, 19);
+        lblTipoAccidente.setBounds(10, 110, 330, 40);
 
         lblDescripcion.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lblDescripcion.setForeground(new java.awt.Color(255, 255, 255));
         lblDescripcion.setText("Descripción:");
         lblDescripcion.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(lblDescripcion);
-        lblDescripcion.setBounds(20, 170, 100, 20);
+        lblDescripcion.setBounds(10, 160, 330, 80);
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
@@ -113,6 +107,5 @@ public class Card_Accident extends javax.swing.JPanel {
     private javax.swing.JLabel lblIcon;
     private javax.swing.JLabel lblNumAccidente;
     private javax.swing.JLabel lblTipoAccidente;
-    private javax.swing.JLabel lblZonaAtestados;
     // End of variables declaration//GEN-END:variables
 }
