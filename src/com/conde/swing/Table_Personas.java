@@ -14,15 +14,13 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class Table_Vehiculos extends JTable {
+public class Table_Personas extends JTable {
     
     private EventRowSelected event;
     
-     public void addEventRowSelected(EventRowSelected event){
-        this.event = event;
-    }
+     
 
-    public Table_Vehiculos() {
+    public Table_Personas() {
 
         setShowHorizontalLines(true);
         setGridColor(new Color(230, 230, 230));
@@ -80,33 +78,33 @@ public class Table_Vehiculos extends JTable {
             }
         });
 
-        addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int filaSeleccionada = rowAtPoint(e.getPoint());
-                int numVehiculo = (int) getValueAt(filaSeleccionada,0);
-                event.selectedRow(numVehiculo);
-            } 
-        });
+//        addMouseListener(new MouseAdapter(){
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                int filaSeleccionada = rowAtPoint(e.getPoint());
+//                int numVehiculo = (int) getValueAt(filaSeleccionada,0);
+//                event.selectedRow(numVehiculo);
+//            } 
+//        });
         
-        addKeyListener(new KeyListener(){
-            @Override
-            public void keyTyped(KeyEvent e) {}
-
-            @Override
-            public void keyPressed(KeyEvent e) {}
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-              if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    // Obtener la fila seleccionada al desplazarse con las flechas arriba/abajo
-                    int filaSeleccionada = getSelectedRow();
-                    int numVehiculo = (int) getValueAt(filaSeleccionada,0);
-                    event.selectedRow(numVehiculo);
-
-                }
-            }
-        });
+//        addKeyListener(new KeyListener(){
+//            @Override
+//            public void keyTyped(KeyEvent e) {}
+//
+//            @Override
+//            public void keyPressed(KeyEvent e) {}
+//
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//              if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+//                    // Obtener la fila seleccionada al desplazarse con las flechas arriba/abajo
+//                    int filaSeleccionada = getSelectedRow();
+//                    int numVehiculo = (int) getValueAt(filaSeleccionada,0);
+//                    event.selectedRow(numVehiculo);
+//
+//                }
+//            }
+//        });
     }
 
     public void addRow(Object[] row) {

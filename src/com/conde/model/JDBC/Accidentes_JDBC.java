@@ -2,6 +2,7 @@ package com.conde.model.JDBC;
 
 import com.conde.model.ConexionAccess;
 import com.conde.model.Model_Accident;
+import com.conde.model.Vehiculo;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -97,7 +98,7 @@ public class Accidentes_JDBC {
     public String getTipoAccidenteById(int Id) {
 
         String sql = "SELECT TIPO FROM TIPO_SINIESTRO WHERE Id =" + Id;
-        String tipo_Accidente="";
+        String tipo_Accidente = "";
 
         try {
             st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -113,6 +114,41 @@ public class Accidentes_JDBC {
             System.out.println(e.getMessage());
         }
         return tipo_Accidente;
+    }
+
+    public ArrayList<Vehiculo> getVehiculoToAccidentById(int index) {
+        ArrayList<Vehiculo> listVeh = new ArrayList<>();
+        String sql = "SELECT * FROM Vehiculos WHERE Id=" + index;
+
+        try {
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                Vehiculo veh = new Vehiculo(
+                        rs.getInt("Id"),
+                        rs.getInt("NUM_ACCI"),
+                        rs.getString("MATRICULA"),
+                        rs.getString("MARCA"),
+                        rs.getString("MODELO"),
+                        rs.getString("GESTION"),
+                        rs.getString("OBSERVACIONES")
+                       
+                );
+                
+                listVeh.add(veh);
+                
+                rs.next();
+            }
+            
+            return listVeh;
+
+        } catch (Exception e) {
+            System.out.println("Error en la carga de vehículos."+e.getMessage());
+        }
+        
+        return null;
+
     }
 
     private ArrayList<Model_Accident> listAccidents = new ArrayList<>();

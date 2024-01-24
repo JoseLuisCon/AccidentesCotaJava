@@ -4,6 +4,7 @@ import com.conde.event.EventRowSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.StatusType;
+import com.conde.model.Vehiculo;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -28,6 +29,7 @@ public class Form_Home extends javax.swing.JPanel {
         spTable.setVerticalScrollBar(new JScrollBar());
         spTable.getVerticalScrollBar().setBackground(Color.WHITE);
         spTable.getViewport().setBackground(Color.WHITE);
+        
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
@@ -43,11 +45,13 @@ public class Form_Home extends javax.swing.JPanel {
  
             }
             // Cargamos datos del accidente seleccionado en el card1
-            ImageIcon image = new ImageIcon("src/com/conde/resources/icons/coche.png");
+            ImageIcon image = new ImageIcon("src/com/conde/resources/icons/accidente.png");
             Icon icon = new ImageIcon(image.getImage());
             accidenteOK.setIcon(icon);
             String tipoAccidenteString = datos_model.getTipoAccidenteById(accidenteOK.getTipo_Siniestro());
             data_Aux_Accidente.setData(accidenteOK, tipoAccidenteString);
+            
+            cargaVehiculosAccidente(index);
             
         });
         
@@ -60,11 +64,13 @@ public class Form_Home extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        header1 = new com.conde.component.Header();
         panel = new javax.swing.JLayeredPane();
         data_Aux_Accidente = new com.conde.component.Card_Accident();
-        vehiculos = new com.conde.component.Card_Vehículos();
-        card3 = new com.conde.component.Card_Accident();
+        vehiculos = new com.conde.component.Card_Vehiculos();
+        personas = new com.conde.component.Card_Persona();
         panelBorder1 = new com.conde.swing.PanelBorder();
         jLabel1 = new javax.swing.JLabel();
         spTable = new javax.swing.JScrollPane();
@@ -81,16 +87,44 @@ public class Form_Home extends javax.swing.JPanel {
             }
         });
 
-        panel.setLayout(new java.awt.GridLayout(2, 2, 5, 5));
+        java.awt.GridBagLayout panelLayout = new java.awt.GridBagLayout();
+        panelLayout.columnWidths = new int[] {0, 200, 0, 200, 0, 200, 0, 200, 0};
+        panelLayout.rowHeights = new int[] {0, 100, 0};
+        panelLayout.columnWeights = new double[] {0.2, 0.0, 0.1, 0.0, 0.4};
+        panelLayout.rowWeights = new double[] {0.0};
+        panel.setLayout(panelLayout);
 
         data_Aux_Accidente.setColor1(new java.awt.Color(142, 142, 250));
         data_Aux_Accidente.setColor2(new java.awt.Color(123, 123, 245));
-        panel.add(data_Aux_Accidente);
-        panel.add(vehiculos);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        panel.add(data_Aux_Accidente, gridBagConstraints);
 
-        card3.setColor1(new java.awt.Color(241, 208, 62));
-        card3.setColor2(new java.awt.Color(211, 184, 61));
-        panel.add(card3);
+        vehiculos.setColor1(new java.awt.Color(101, 157, 15));
+        vehiculos.setColor2(new java.awt.Color(191, 226, 137));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        panel.add(vehiculos, gridBagConstraints);
+
+        personas.setColor1(new java.awt.Color(0, 180, 208));
+        personas.setColor2(new java.awt.Color(0, 131, 176));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        panel.add(personas, gridBagConstraints);
 
         panelBorder1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -132,7 +166,7 @@ public class Form_Home extends javax.swing.JPanel {
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 857, Short.MAX_VALUE)
+                    .addComponent(spTable)
                     .addComponent(jLabel1))
                 .addGap(20, 20, 20))
         );
@@ -142,7 +176,7 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 1384, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
 
@@ -153,54 +187,69 @@ public class Form_Home extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panel))
+                    .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 1600, Short.MAX_VALUE))
                 .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
+                .addContainerGap()
+                .addComponent(header1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-
         cargarAccidentes();
     }//GEN-LAST:event_formAncestorAdded
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.conde.component.Card_Accident card3;
     private com.conde.component.Card_Accident data_Aux_Accidente;
+    private com.conde.component.Header header1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLayeredPane panel;
     private com.conde.swing.PanelBorder panelBorder1;
+    private com.conde.component.Card_Persona personas;
     private javax.swing.JScrollPane spTable;
     private com.conde.swing.Table table;
-    private com.conde.component.Card_Vehículos vehiculos;
+    private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
 
     private void cargarAccidentes() {
-       //Consultamos en la base de datos
-       Accidentes_JDBC listAcc = new Accidentes_JDBC();
        
       //Rellenamos el Arraylist
+      listAccidents.clear();
       
-      listAccidents  = listAcc.getListAccidents();
+      listAccidents  = datos_model.getListAccidents();
              
        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-        dtm.setRowCount(0);
+       dtm.setRowCount(0);
         
         //Lo mostramos en la tabla
        
-        for (Model_Accident accidente : listAccidents) {
-            
+        for (Model_Accident accidente : listAccidents) {    
             table.addRow(new Object[]{accidente.getNum_Accidente(), accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
         }
+    }
+
+    private void cargaVehiculosAccidente(int index) {
+        
+        ArrayList<Vehiculo> vehiculosAccidente = new ArrayList<>();
+       
+        vehiculosAccidente = datos_model.getVehiculoToAccidentById(index);
+        
+        vehiculos.clearRows();
+        
+        if (vehiculosAccidente != null){
+            vehiculos.setData(vehiculosAccidente);
+        }
+        
     }
 }
