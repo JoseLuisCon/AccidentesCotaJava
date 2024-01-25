@@ -3,6 +3,7 @@ package com.conde.form;
 import com.conde.event.EventRowSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
+import com.conde.model.Persona;
 import com.conde.model.StatusType;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
@@ -52,9 +53,10 @@ public class Form_Home extends javax.swing.JPanel {
             data_Aux_Accidente.setData(accidenteOK, tipoAccidenteString);
             
             cargaVehiculosAccidente(index);
+            cargaPersonasAccidente(index);
             
         });
-        
+      
         
     }
     
@@ -176,7 +178,7 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 1384, Short.MAX_VALUE)
+                .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 1257, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
 
@@ -243,13 +245,27 @@ public class Form_Home extends javax.swing.JPanel {
         
         ArrayList<Vehiculo> vehiculosAccidente = new ArrayList<>();
        
-        vehiculosAccidente = datos_model.getVehiculoToAccidentById(index);
+        vehiculosAccidente = datos_model.getVehiculoInAccidentById(index);
         
         vehiculos.clearRows();
         
         if (vehiculosAccidente != null){
             vehiculos.setData(vehiculosAccidente);
         }
+        
+    }
+
+    private void cargaPersonasAccidente(int index) {
+        ArrayList<Persona> personasAccidente = new ArrayList<>();
+        
+        personasAccidente = datos_model.getPersonasInAccidenteById(index);
+        
+        personas.clearRows();
+        personas.setToolTipRows(personasAccidente);
+        if (personasAccidente != null){
+            personas.setData(personasAccidente);
+        }
+        
         
     }
 }

@@ -1,15 +1,19 @@
 package com.conde.component;
 
+import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
+import com.conde.swing.TableActionCellEditor;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 public class Card_Persona extends javax.swing.JPanel {
 
@@ -32,40 +36,52 @@ public class Card_Persona extends javax.swing.JPanel {
     private Color color1;
     private Color color2;
 
-
     public Card_Persona() {
         initComponents();
         setOpaque(false);
-              
+
         color1 = Color.BLACK;
         color2 = Color.WHITE;
-        
+
         sp_tbl_personas.getViewport().setBackground(Color.WHITE);
-        
+
     }
 
     public void setData(ArrayList<Persona> data) {
-        
+
         clearRows();
 
-//          for (Vehiculo vehic : data) {
-//            
-//            tbl_Personas.addRow(
-//                    new Object[]{
-//                        vehic.getId_Vehiculo(),
-//                        vehic.getMatricula(),
-//                        vehic.getMarca(),
-//                        vehic.getModelo(),
-//                        vehic.getGestion(),
-//                        vehic.getObservaciones()
-//                    });
-//        }
-       
+        for (Persona pers : data) {
+            Object matricula = new Object();
+            matricula = getMatricula(pers.getId_Vehiculo());
+            String aux;
+            if (matricula != null) {
+                aux = (String) matricula;
+            } else {
+                aux = "No vehiculo";
+            }
+            Object[] row = new Object[]{
+                pers.getId_Persona(),
+                pers.getId_Accidente(),
+                (Object) aux,
+                pers.getDocumento(),
+                pers.getTipo_persona(),
+                pers.getResultado(),
+            };
+
+            tbl_Personas.addRow(row);
+
+        }
+
     }
-    
+
     public void clearRows() {
         DefaultTableModel dtm = (DefaultTableModel) tbl_Personas.getModel();
         dtm.setRowCount(0);
+    }
+
+    public void setToolTipRows(ArrayList<Persona> listaPersonas) {
+        tbl_Personas.setListaPersonas(listaPersonas);
     }
 
     @SuppressWarnings("unchecked")
@@ -104,23 +120,25 @@ public class Card_Persona extends javax.swing.JPanel {
 
         tbl_Personas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Id", "Num_Accidente", "Matrícula", "Documento", "Tipo", "Resultado", "Observaciones", "Detalles"
+                "Id", "Num_Accidente", "Matrícula", "Documento", "Tipo", "Resultado"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tbl_Personas.setGridColor(new java.awt.Color(255, 255, 255));
+        tbl_Personas.setRowHeight(30);
+        tbl_Personas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tbl_Personas.setShowHorizontalLines(false);
+        tbl_Personas.setUpdateSelectionOnSort(false);
         sp_tbl_personas.setViewportView(tbl_Personas);
         if (tbl_Personas.getColumnModel().getColumnCount() > 0) {
             tbl_Personas.getColumnModel().getColumn(0).setMinWidth(0);
@@ -175,7 +193,7 @@ public class Card_Persona extends javax.swing.JPanel {
         GradientPaint g = new GradientPaint(0, 0, color1, 0, getHeight(), color2);
         g2.setPaint(g);
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-        g2.setColor(new Color(255,255,255,50));
+        g2.setColor(new Color(255, 255, 255, 50));
         super.paintComponent(grphcs);
     }
 
@@ -190,5 +208,14 @@ public class Card_Persona extends javax.swing.JPanel {
     private com.conde.swing.Table_Personas tbl_Personas;
     // End of variables declaration//GEN-END:variables
 
- 
+    private String getMatricula(int id_Vehiculo) {
+
+        Accidentes_JDBC dataModel = new Accidentes_JDBC();
+
+        String matricula = dataModel.getMatriculaById(id_Vehiculo);
+
+        return matricula;
+
+    }
+
 }

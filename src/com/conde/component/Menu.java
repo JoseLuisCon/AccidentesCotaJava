@@ -29,7 +29,7 @@ public class Menu extends javax.swing.JPanel {
         listMenu1.setOpaque(false);
 
         init();
-        pintarImagen(lblLogo, "src/com/conde/resources/icons/logTraf2.png");
+//        pintarImagen(lblLogo, "src/com/conde/resources/icons/");
         
         lblMailTo.InitLink("By Conde", "mailto:condepa45@gmail.com");
     }
@@ -52,17 +52,13 @@ public class Menu extends javax.swing.JPanel {
         listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
         listMenu1.addItem(new Model_Menu("5", "Salir", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
-
-    }
-
-    private void pintarImagen(JLabel lbl, String ruta) {
-
-        imagen = new ImageIcon(ruta);
-
-        lbl.setBounds(0,0,65, 86);
-        icon = new ImageIcon(imagen.getImage().getScaledInstance(lbl.getWidth(), lbl.getHeight(), Image.SCALE_DEFAULT));
-        lbl.setIcon(icon);
-        repaint();
+        
+        
+        lblLogo.setBounds(0,0,65, 86);
+        ImageIcon imagen = new ImageIcon("src/com/conde/resources/icons/logo_traf.png");
+        Icon  icon = new ImageIcon(imagen.getImage().getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT));
+        lblLogo.setIcon(icon);
+        
 
     }
 
@@ -180,10 +176,7 @@ public class Menu extends javax.swing.JPanel {
         });
     }
 
-    private ImageIcon imagen;
-    private Icon icon;
-
-
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblLogo;

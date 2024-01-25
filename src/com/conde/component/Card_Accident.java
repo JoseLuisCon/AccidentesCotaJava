@@ -67,7 +67,7 @@ public class Card_Accident extends javax.swing.JPanel {
         lblIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/accidente_32px.png"))); // NOI18N
         lblIcon.setText(" Detalles accidente");
         add(lblIcon);
-        lblIcon.setBounds(10, 10, 210, 32);
+        lblIcon.setBounds(10, 10, 250, 40);
 
         lblNumAccidente.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblNumAccidente.setForeground(new java.awt.Color(255, 255, 255));

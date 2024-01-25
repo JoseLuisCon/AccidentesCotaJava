@@ -36,11 +36,11 @@ public class TableStatus extends JLabel {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             GradientPaint g;
             if (type == StatusType.PAMPLONA) {
-                g = new GradientPaint(0, 0, new Color(183, 123, 247), 0, getHeight(), new Color(167, 94, 236));
+                g = new GradientPaint(0, 0, new Color(117, 211, 117 ), 0, getHeight(), new Color(198, 223, 198));
             } else if (type == StatusType.TUDELA) {
-                g = new GradientPaint(0, 0, new Color(142, 142, 250), 0, getHeight(), new Color(123, 123, 245));
+                g = new GradientPaint(0, 0, new Color(79, 219, 202 ), 0, getHeight(), new Color(201, 232, 228));
             } else {
-                g = new GradientPaint(0, 0, new Color(241, 208, 62), 0, getHeight(), new Color(211, 184, 61));
+                g = new GradientPaint(0, 0, new Color(234, 216, 84 ), 0, getHeight(), new Color(231, 222, 157));
             }
             g2.setPaint(g);
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), 1, 1);

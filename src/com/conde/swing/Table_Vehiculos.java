@@ -50,10 +50,10 @@ public class Table_Vehiculos extends JTable {
 
                     setBorder(noFocusBorder);
                     if (isSelected) {
-                        com.setForeground(new Color(240, 238, 102));
-                        com.setBackground(new Color(234, 151, 127));
+                       com.setForeground(new Color(240, 238, 102));
+                        com.setBackground(new Color(6, 72, 72 ));
                     } else {
-                        com.setForeground(new Color(39, 55, 70));
+                        com.setForeground(new Color(53, 54, 53));
                     }
 
                     setHorizontalAlignment(JLabel.CENTER);
@@ -65,14 +65,14 @@ public class Table_Vehiculos extends JTable {
                     
                     setBorder(noFocusBorder);
                      if (isSelected) {
-                        com.setForeground(new Color(240, 238, 102));
-                        com.setBackground(new Color(234, 151, 127));
+                      com.setForeground(new Color(240, 238, 102));
+                        com.setBackground(new Color(6, 72, 72 ));
                     } else {
                         com.setForeground(Color.RED);
                     }
 
                     setHorizontalAlignment(JLabel.CENTER);
-                    setFont(new Font("sansserif", Font.PLAIN, 12));
+                    setFont(new Font("sansserif", Font.BOLD, 12));
                     return com;
                     
                 }
@@ -80,33 +80,7 @@ public class Table_Vehiculos extends JTable {
             }
         });
 
-        addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int filaSeleccionada = rowAtPoint(e.getPoint());
-                int numVehiculo = (int) getValueAt(filaSeleccionada,0);
-                event.selectedRow(numVehiculo);
-            } 
-        });
-        
-        addKeyListener(new KeyListener(){
-            @Override
-            public void keyTyped(KeyEvent e) {}
-
-            @Override
-            public void keyPressed(KeyEvent e) {}
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-              if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    // Obtener la fila seleccionada al desplazarse con las flechas arriba/abajo
-                    int filaSeleccionada = getSelectedRow();
-                    int numVehiculo = (int) getValueAt(filaSeleccionada,0);
-                    event.selectedRow(numVehiculo);
-
-                }
-            }
-        });
+      
     }
 
     public void addRow(Object[] row) {

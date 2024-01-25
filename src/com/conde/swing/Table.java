@@ -36,7 +36,7 @@ public class Table extends JTable {
 
                 TableHeader header = new TableHeader(o + "");
                 header.setHorizontalAlignment(JLabel.CENTER);
-                header.setFont(new Font("sansserif",1, 16));
+                header.setFont(new Font("sansserif",Font.BOLD, 18));
                 return header;
             }
         });
@@ -47,23 +47,25 @@ public class Table extends JTable {
                 if (column != 7) {
                     Component com = super.getTableCellRendererComponent(table, o, isSelected, hasFocus, row, column);
                     com.setBackground(Color.white);
+                    setHorizontalAlignment(JLabel.CENTER);
+                    setFont(new Font("sansserif", Font.PLAIN, 16));
 
                     setBorder(noFocusBorder);
                     if (isSelected) {
                         com.setForeground(new Color(240, 238, 102));
-                        com.setBackground(new Color(234, 151, 127));
+                        com.setBackground(new Color(6, 72, 72 ));
                     } else {
-                        com.setForeground(new Color(39, 55, 70));
+                        com.setForeground(new Color(53, 54, 53));
                     }
 
-                    setHorizontalAlignment(JLabel.CENTER);
-                    setFont(new Font("sansserif", Font.PLAIN, 14));
+                    
                     return com;
                 } else {
-
+                    
                     StatusType type;
                     type = (StatusType) o;
                     CellStatus cell = new CellStatus(type);
+             
                     return cell;
                 }
 
@@ -73,10 +75,18 @@ public class Table extends JTable {
         addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e) {
+                
+            } 
+
+            @Override
+            public void mousePressed(MouseEvent e) {
                 int filaSeleccionada = rowAtPoint(e.getPoint());
                 int numAccidente = (int) getValueAt(filaSeleccionada,0);
                 event.selectedRow(numAccidente);
-            } 
+            }
+            
+            
+            
         });
         
         addKeyListener(new KeyListener(){

@@ -2,6 +2,7 @@ package com.conde.model.JDBC;
 
 import com.conde.model.ConexionAccess;
 import com.conde.model.Model_Accident;
+import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -20,8 +21,8 @@ public class Accidentes_JDBC {
         try {
             st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(sql);
-            rs.first();
-            while (!rs.isAfterLast()) {
+            
+            while (rs.next()) {
                 Model_Accident acc = new Model_Accident();
                 acc.setNum_Accidente(rs.getInt("Id"));
                 //Fecha
@@ -40,7 +41,7 @@ public class Accidentes_JDBC {
 
                 listAccidents.add(acc);
 
-                rs.next();
+                
             }
 
             rs.close();
@@ -109,14 +110,17 @@ public class Accidentes_JDBC {
                 tipo_Accidente = rs.getString("TIPO");
 
             }
-
+            rs.close();
+            st.close();
         } catch (SQLException e) {
+
             System.out.println(e.getMessage());
         }
+
         return tipo_Accidente;
     }
 
-    public ArrayList<Vehiculo> getVehiculoToAccidentById(int index) {
+    public ArrayList<Vehiculo> getVehiculoInAccidentById(int index) {
         ArrayList<Vehiculo> listVeh = new ArrayList<>();
         String sql = "SELECT * FROM Vehiculos WHERE Id=" + index;
 
@@ -133,27 +137,94 @@ public class Accidentes_JDBC {
                         rs.getString("MODELO"),
                         rs.getString("GESTION"),
                         rs.getString("OBSERVACIONES")
-                       
                 );
-                
+
                 listVeh.add(veh);
-                
-                rs.next();
+
+               
             }
-            
+            rs.close();
+            st.close();
+
             return listVeh;
 
         } catch (Exception e) {
-            System.out.println("Error en la carga de vehículos."+e.getMessage());
+            System.out.println("Error en la carga de vehículos." + e.getMessage());
         }
-        
+
         return null;
 
+    }
+
+    public ArrayList<Persona> getPersonasInAccidenteById(int index) {
+        ArrayList<Persona> listPer = new ArrayList<>();
+        String sql = "SELECT * FROM PERSONAS WHERE Num_Accidente=" + index;
+
+        try {
+            st = conexion.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                Persona per = new Persona(
+                        rs.getInt("Id"),
+                        rs.getInt("Num_Accidente"),
+                        rs.getInt("Num_Vehiculo"),
+                        rs.getString("Documento"),
+                        rs.getString("Tipo_Persona"),
+                        rs.getString("Resultado"),
+                        rs.getBoolean("Trasladado"),
+                        rs.getString("Lugar_Traslado"),
+                        rs.getBoolean("Alcoholemia"),
+                        rs.getBoolean("Alcoholemia_Positiva"),
+                        rs.getBoolean("Drogas"),
+                        rs.getBoolean("Drogas_Positiva"),
+                        rs.getString("Observaciones")
+                );
+
+     
+                listPer.add(per);
+
+                
+            }
+            
+            rs.close();
+            st.close();
+
+            return listPer;
+
+        } catch (Exception e) {
+
+            System.out.println("Error en la carga de personas." + e.getMessage());
+        }
+
+        return null;
     }
 
     private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
     private Connection conexion;
     private Statement st;
     private ResultSet rs;
+
+    public String getMatriculaById(int Id_Vehiculo) {
+        String sql = "SELECT MATRICULA FROM Vehiculos WHERE Id =" + Id_Vehiculo;
+        String matriculaStr=null;
+        try {
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+
+            if (rs.next()) {
+
+                matriculaStr = rs.getString("MATRICULA").toString();
+
+            }
+            rs.close();
+            st.close();
+        } catch (SQLException e) {
+
+            System.out.println(e.getMessage());
+        }
+
+        return matriculaStr;
+    }
 
 }
