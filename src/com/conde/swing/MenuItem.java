@@ -48,7 +48,7 @@ public class MenuItem extends javax.swing.JPanel {
         lblIcon = new javax.swing.JLabel();
         lblName = new javax.swing.JLabel();
 
-        lblName.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        lblName.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lblName.setForeground(new java.awt.Color(255, 255, 255));
         lblName.setText("Accidentes");
 
