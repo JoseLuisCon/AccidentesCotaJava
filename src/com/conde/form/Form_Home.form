@@ -61,10 +61,10 @@
         <Component class="com.conde.component.Card_Accident" name="data_Aux_Accidente">
           <Properties>
             <Property name="color1" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="fa" green="8e" red="8e" type="rgb"/>
+              <Color blue="74" green="4e" red="bf" type="rgb"/>
             </Property>
             <Property name="color2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="f5" green="7b" red="7b" type="rgb"/>
+              <Color blue="89" green="71" red="b8" type="rgb"/>
             </Property>
           </Properties>
           <Constraints>
@@ -490,7 +490,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="com.conde.swing.Table" name="table">
+            <Component class="com.conde.swing.Table_Accidentes" name="table">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="8" rowCount="0">

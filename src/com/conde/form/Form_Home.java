@@ -1,13 +1,10 @@
 package com.conde.form;
 
-import com.conde.event.EventRowSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.Persona;
-import com.conde.model.StatusType;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
-import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.lang.Object;
@@ -77,7 +74,7 @@ public class Form_Home extends javax.swing.JPanel {
         panelBorder1 = new com.conde.swing.PanelBorder();
         jLabel1 = new javax.swing.JLabel();
         spTable = new javax.swing.JScrollPane();
-        table = new com.conde.swing.Table();
+        table = new com.conde.swing.Table_Accidentes();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(1750, 840));
@@ -98,8 +95,8 @@ public class Form_Home extends javax.swing.JPanel {
         panelLayout.rowWeights = new double[] {0.0};
         panel.setLayout(panelLayout);
 
-        data_Aux_Accidente.setColor1(new java.awt.Color(142, 142, 250));
-        data_Aux_Accidente.setColor2(new java.awt.Color(123, 123, 245));
+        data_Aux_Accidente.setColor1(new java.awt.Color(191, 78, 116));
+        data_Aux_Accidente.setColor2(new java.awt.Color(184, 113, 137));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -216,7 +213,7 @@ public class Form_Home extends javax.swing.JPanel {
     private com.conde.swing.PanelBorder panelBorder1;
     private com.conde.component.Card_Persona personas;
     private javax.swing.JScrollPane spTable;
-    private com.conde.swing.Table table;
+    private com.conde.swing.Table_Accidentes table;
     private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
 
