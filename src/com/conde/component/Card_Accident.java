@@ -49,6 +49,14 @@ public class Card_Accident extends javax.swing.JPanel {
         lblDescripcion.setText("<html>Descripción: "+data.getDescripcion()+"</html>");
        
     }
+    
+    public void deleteData(){
+    
+        lblNumAccidente.setText("Núm. Accidente:");
+        lblTipoAccidente.setText("<html>Tipo siniestro: </html>");
+        lblDescripcion.setText("<html>Descripción: </html>");
+    
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

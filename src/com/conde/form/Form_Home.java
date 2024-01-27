@@ -1,5 +1,8 @@
 package com.conde.form;
 
+import com.conde.cell.TableActionCellEditor;
+import com.conde.cell.TableActionEvent;
+
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.Persona;
@@ -8,58 +11,97 @@ import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.lang.Object;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
-
 public class Form_Home extends javax.swing.JPanel {
 
     private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
-    
 
     public Form_Home() {
-  
+
         initComponents();
-        
+
         spTable.setVerticalScrollBar(new JScrollBar());
         spTable.getVerticalScrollBar().setBackground(Color.WHITE);
         spTable.getViewport().setBackground(Color.WHITE);
-        
+
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-        
-        table.addEventRowSelected((int index)->{
+
+        table.addEventRowSelected((int index) -> {
             Model_Accident accidenteOK = new Model_Accident();
             //Rellenar datos card1
             for (Model_Accident Accidente : listAccidents) {
-                if (Accidente.getNum_Accidente()==index){
+                if (Accidente.getNum_Accidente() == index) {
                     accidenteOK = Accidente;
                     break;
                 }
- 
+
             }
+
+            TableActionEvent event = new TableActionEvent() {
+                @Override
+                public void onEdit(int row) {
+                    System.out.println("Editando fila: " + row);
+                }
+
+                @Override
+                public void onDelete(int row) {
+                    if (table.isEditing()) {
+                        table.getCellEditor().stopCellEditing();
+                    }
+
+                    int respDelete = JOptionPane.showConfirmDialog(null, "Atención: Se borraran todos los datos del accidente\n (Vehiculos y personas implicadas)\n¿Desea continuar?", "Atención", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                    if (respDelete == JOptionPane.OK_OPTION) {
+                        try{
+                            int id_Accidente = (int) table.getValueAt(row, 0);
+                        datos_model.deleteAccidenteById(id_Accidente);
+                        }catch (SQLException e){
+                            System.out.println("Error en el borrado del accidente en la base de datos");
+                        }
+                        
+
+                        DefaultTableModel model = (DefaultTableModel) table.getModel();
+                        model.removeRow(row);
+                        vehiculos.clearRows();
+                        personas.clearRows();
+                        data_Aux_Accidente.deleteData();
+
+                    }
+
+                }
+            };
+
+            table.getColumnModel().getColumn(1).setCellEditor(new TableActionCellEditor(event));
+
             // Cargamos datos del accidente seleccionado en el card1
             ImageIcon image = new ImageIcon("src/com/conde/resources/icons/accidente.png");
             Icon icon = new ImageIcon(image.getImage());
             accidenteOK.setIcon(icon);
             String tipoAccidenteString = datos_model.getTipoAccidenteById(accidenteOK.getTipo_Siniestro());
             data_Aux_Accidente.setData(accidenteOK, tipoAccidenteString);
-            
+
             cargaVehiculosAccidente(index);
-            cargaPersonasAccidente(index);
-            
+            try {
+                cargaPersonasAccidente(index);
+            } catch (SQLException ex) {
+                Logger.getLogger(Form_Home.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         });
-      
-        
+
     }
-    
-    
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -135,23 +177,30 @@ public class Form_Home extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Num. Accidente", "Fecha", "Hora", "Carretera", "Kilometro", "Num. Diligencias", "Patrulla", "Zona Atestados"
+                "Num. Accidente", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Num. Diligencias", "Patrulla", "Zona Atestados"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, true, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        table.setFocusable(false);
+        table.setOpaque(false);
+        table.setRowHeight(40);
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        table.setShowHorizontalLines(false);
         spTable.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
             table.getColumnModel().getColumn(0).setMaxWidth(0);
+            table.getColumnModel().getColumn(1).setMinWidth(100);
+            table.getColumnModel().getColumn(1).setPreferredWidth(100);
+            table.getColumnModel().getColumn(1).setMaxWidth(100);
         }
 
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
@@ -180,12 +229,16 @@ public class Form_Home extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 1406, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 1406, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -194,9 +247,9 @@ public class Form_Home extends javax.swing.JPanel {
                 .addComponent(header1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(20, 20, 20))
+                .addGap(14, 14, 14))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -218,47 +271,45 @@ public class Form_Home extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarAccidentes() {
-       
-      //Rellenamos el Arraylist
-      listAccidents.clear();
-      
-      listAccidents  = datos_model.getListAccidents();
-             
-       DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-       dtm.setRowCount(0);
-        
+
+        //Rellenamos el Arraylist
+        listAccidents.clear();
+
+        listAccidents = datos_model.getListAccidents();
+
+        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        dtm.setRowCount(0);
+
         //Lo mostramos en la tabla
-       
-        for (Model_Accident accidente : listAccidents) {    
-            table.addRow(new Object[]{accidente.getNum_Accidente(), accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
+        for (Model_Accident accidente : listAccidents) {
+            table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
         }
     }
 
     private void cargaVehiculosAccidente(int index) {
-        
+
         ArrayList<Vehiculo> vehiculosAccidente = new ArrayList<>();
-       
+
         vehiculosAccidente = datos_model.getVehiculoInAccidentById(index);
-        
+
         vehiculos.clearRows();
-        
-        if (vehiculosAccidente != null){
+
+        if (vehiculosAccidente != null) {
             vehiculos.setData(vehiculosAccidente);
         }
-        
+
     }
 
-    private void cargaPersonasAccidente(int index) {
+    private void cargaPersonasAccidente(int index) throws SQLException {
         ArrayList<Persona> personasAccidente = new ArrayList<>();
-        
+
         personasAccidente = datos_model.getPersonasInAccidenteById(index);
-        
+
         personas.clearRows();
         personas.setToolTipRows(personasAccidente);
-        if (personasAccidente != null){
+        if (personasAccidente != null) {
             personas.setData(personasAccidente);
         }
-        
-        
+
     }
 }

@@ -67,8 +67,7 @@ public class Table_Personas extends JTable {
                     return com;
 
                 } else {
-
-                    
+                    com.setBackground(Color.white);
 
                     setBorder(noFocusBorder);
                     if (isSelected) {

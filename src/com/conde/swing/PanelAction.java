@@ -43,4 +43,8 @@ public class PanelAction extends javax.swing.JPanel {
         
         setBackground(Color.WHITE);
     }
+
+    public void repaintLabels() {
+        
+    }
 }

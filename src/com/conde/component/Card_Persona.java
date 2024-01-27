@@ -4,13 +4,14 @@ import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
-import com.conde.swing.TableActionCellEditor;
+import com.conde.cell.TableActionCellEditor;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -47,7 +48,7 @@ public class Card_Persona extends javax.swing.JPanel {
 
     }
 
-    public void setData(ArrayList<Persona> data) {
+    public void setData(ArrayList<Persona> data) throws SQLException {
 
         clearRows();
 
@@ -208,7 +209,7 @@ public class Card_Persona extends javax.swing.JPanel {
     private com.conde.swing.Table_Personas tbl_Personas;
     // End of variables declaration//GEN-END:variables
 
-    private String getMatricula(int id_Vehiculo) {
+    private String getMatricula(int id_Vehiculo) throws SQLException {
 
         Accidentes_JDBC dataModel = new Accidentes_JDBC();
 
