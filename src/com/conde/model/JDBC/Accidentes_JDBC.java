@@ -21,7 +21,7 @@ public class Accidentes_JDBC {
         try {
             st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(sql);
-            
+
             while (rs.next()) {
                 Model_Accident acc = new Model_Accident();
                 acc.setNum_Accidente(rs.getInt("Id"));
@@ -41,7 +41,6 @@ public class Accidentes_JDBC {
 
                 listAccidents.add(acc);
 
-                
             }
 
             rs.close();
@@ -141,7 +140,6 @@ public class Accidentes_JDBC {
 
                 listVeh.add(veh);
 
-               
             }
             rs.close();
             st.close();
@@ -181,12 +179,10 @@ public class Accidentes_JDBC {
                         rs.getString("Observaciones")
                 );
 
-     
                 listPer.add(per);
 
-                
             }
-            
+
             rs.close();
             st.close();
 
@@ -200,31 +196,80 @@ public class Accidentes_JDBC {
         return null;
     }
 
-    private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
-    private Connection conexion;
-    private Statement st;
-    private ResultSet rs;
+    public String getMatriculaById(int Id_Vehiculo) throws SQLException {
+        String sql = "SELECT MATRICULA FROM Vehiculos WHERE Id ="+Id_Vehiculo;
+        String matriculaStr = null;
 
-    public String getMatriculaById(int Id_Vehiculo) {
-        String sql = "SELECT MATRICULA FROM Vehiculos WHERE Id =" + Id_Vehiculo;
-        String matriculaStr=null;
-        try {
-            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            rs = st.executeQuery(sql);
+       st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+       rs = st.executeQuery(sql);
+       
 
-            if (rs.next()) {
+        if (rs.next()) {
 
-                matriculaStr = rs.getString("MATRICULA").toString();
+            matriculaStr = rs.getString("MATRICULA");
 
-            }
-            rs.close();
-            st.close();
-        } catch (SQLException e) {
-
-            System.out.println(e.getMessage());
         }
+        rs.close();
+        st.close();
 
         return matriculaStr;
     }
+
+    public void deleteVehiculosByIdAccidente(int Id_Accdient) throws SQLException {
+
+        String sql = "Delete FROM Vehiculos WHERE NUM_ACCI=?";
+
+        ps = conexion.prepareStatement(sql);
+        ps.setInt(1, Id_Accdient);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
+
+    }
+
+    public void deletePersonasByIdAccidente(int Id_Accdient) throws SQLException {
+        
+        String sql = "Delete FROM Personas WHERE Num_Accidente=?";
+
+        ps = conexion.prepareStatement(sql);
+        ps.setInt(1, Id_Accdient);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
+
+    }
+
+    public void deleteAccidenteById(int Id_Accidente) throws SQLException  {
+        conexion.setAutoCommit(false);
+        //iniciamos transacción de borrado de accidentes
+        try {
+            
+            
+            deleteVehiculosByIdAccidente(Id_Accidente);
+            deletePersonasByIdAccidente(Id_Accidente);
+            
+            String sql = "Delete FROM Accidentes WHERE Id=?";
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, Id_Accidente);
+            ps.executeUpdate();
+            ps.close();
+            st.close();
+            
+            conexion.commit();
+            
+        } catch (SQLException e) {
+            conexion.rollback();
+            System.out.println(e.getMessage());
+        }
+        
+        
+
+    }
+
+    private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
+    private Connection conexion;
+    private Statement st;
+    private PreparedStatement ps;
+    private ResultSet rs;
 
 }
