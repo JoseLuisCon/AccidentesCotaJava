@@ -29,7 +29,8 @@ public class Table_Accidentes extends JTable {
 
         setShowHorizontalLines(true);
         setGridColor(new Color(230, 230, 230));
-        setRowHeight(30);
+        setRowHeight(40);
+        
 
         getTableHeader().setReorderingAllowed(false);
 
@@ -113,7 +114,9 @@ public class Table_Accidentes extends JTable {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                 
                 if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+               
                     // Obtener la fila seleccionada al desplazarse con las flechas arriba/abajo
                     int filaSeleccionada = getSelectedRow();
                     int numAccidente = (int) getValueAt(filaSeleccionada, 0);

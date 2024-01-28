@@ -5,7 +5,10 @@ import com.conde.form.Form_2;
 import com.conde.form.Form_Home;
 
 import com.conde.model.ConexionAccess;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.IntelliJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import java.awt.Color;
@@ -47,9 +50,13 @@ public class Main extends javax.swing.JFrame {
                     setForm(home);
                     break;
                 case 2:
-              
+                    
+//                    FlatIntelliJLaf.registerCustomDefaultsSource("com/conde/style");
+////                    FlatIntelliJLaf.setup();
+                    
+                    FlatMacDarkLaf.registerCustomDefaultsSource("com/conde/style");
                     FlatMacDarkLaf.setup();
-         
+           
                     form1 = new Form_ADD_Accidente();
                     setForm(form1);
                     break;

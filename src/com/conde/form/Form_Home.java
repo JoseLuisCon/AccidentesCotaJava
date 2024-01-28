@@ -2,12 +2,14 @@ package com.conde.form;
 
 import com.conde.cell.TableActionCellEditor;
 import com.conde.cell.TableActionEvent;
+import com.conde.event.EventRowSelected;
 
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.lang.Object;
@@ -15,28 +17,31 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.plaf.ScrollPaneUI;
 import javax.swing.table.DefaultTableModel;
 
 public class Form_Home extends javax.swing.JPanel {
 
     private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
+    private EventRowSelected event;
 
     public Form_Home() {
 
         initComponents();
 
-        spTable.setVerticalScrollBar(new JScrollBar());
-        spTable.getVerticalScrollBar().setBackground(Color.WHITE);
-        spTable.getViewport().setBackground(Color.WHITE);
+        
+//        spTable.getVerticalScrollBar().setBackground(Color.WHITE);
+//        spTable.getViewport().setBackground(Color.WHITE);
 
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
-        spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+        s.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
 
         table.addEventRowSelected((int index) -> {
             Model_Accident accidenteOK = new Model_Accident();
@@ -115,7 +120,7 @@ public class Form_Home extends javax.swing.JPanel {
         personas = new com.conde.component.Card_Persona();
         panelBorder1 = new com.conde.swing.PanelBorder();
         jLabel1 = new javax.swing.JLabel();
-        spTable = new javax.swing.JScrollPane();
+        s = new raven.scroll.win11.ScrollPaneWin11();
         table = new com.conde.swing.Table_Accidentes();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -169,15 +174,12 @@ public class Form_Home extends javax.swing.JPanel {
         jLabel1.setForeground(new java.awt.Color(127, 127, 127));
         jLabel1.setText("Listado de accidentes");
 
-        spTable.setBorder(null);
-        spTable.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Num. Accidente", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Num. Diligencias", "Patrulla", "Zona Atestados"
+                "Id", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Núm. Diligencias", "Patrulla", "Zona Atestados"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -188,11 +190,7 @@ public class Form_Home extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        table.setFocusable(false);
-        table.setOpaque(false);
-        table.setRowHeight(40);
-        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        spTable.setViewportView(table);
+        s.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -200,6 +198,24 @@ public class Form_Home extends javax.swing.JPanel {
             table.getColumnModel().getColumn(1).setMinWidth(100);
             table.getColumnModel().getColumn(1).setPreferredWidth(100);
             table.getColumnModel().getColumn(1).setMaxWidth(100);
+            table.getColumnModel().getColumn(2).setMinWidth(150);
+            table.getColumnModel().getColumn(2).setPreferredWidth(150);
+            table.getColumnModel().getColumn(2).setMaxWidth(150);
+            table.getColumnModel().getColumn(3).setMinWidth(100);
+            table.getColumnModel().getColumn(3).setPreferredWidth(100);
+            table.getColumnModel().getColumn(3).setMaxWidth(100);
+            table.getColumnModel().getColumn(4).setMinWidth(180);
+            table.getColumnModel().getColumn(4).setPreferredWidth(180);
+            table.getColumnModel().getColumn(4).setMaxWidth(180);
+            table.getColumnModel().getColumn(5).setMinWidth(150);
+            table.getColumnModel().getColumn(5).setPreferredWidth(150);
+            table.getColumnModel().getColumn(5).setMaxWidth(150);
+            table.getColumnModel().getColumn(6).setMinWidth(150);
+            table.getColumnModel().getColumn(6).setPreferredWidth(150);
+            table.getColumnModel().getColumn(6).setMaxWidth(150);
+            table.getColumnModel().getColumn(7).setMinWidth(150);
+            table.getColumnModel().getColumn(7).setPreferredWidth(150);
+            table.getColumnModel().getColumn(7).setMaxWidth(150);
         }
 
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
@@ -207,11 +223,11 @@ public class Form_Home extends javax.swing.JPanel {
         panelBorder1Layout.setHorizontalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addGap(28, 28, 28)
                 .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(spTable, javax.swing.GroupLayout.PREFERRED_SIZE, 1393, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32))
+                    .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 1369, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16))
         );
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -219,8 +235,7 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -264,7 +279,7 @@ public class Form_Home extends javax.swing.JPanel {
     private javax.swing.JLayeredPane panel;
     private com.conde.swing.PanelBorder panelBorder1;
     private com.conde.component.Card_Persona personas;
-    private javax.swing.JScrollPane spTable;
+    private raven.scroll.win11.ScrollPaneWin11 s;
     private com.conde.swing.Table_Accidentes table;
     private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
@@ -278,7 +293,7 @@ public class Form_Home extends javax.swing.JPanel {
 
         DefaultTableModel dtm = (DefaultTableModel) table.getModel();
         dtm.setRowCount(0);
-
+        
         //Lo mostramos en la tabla
         for (Model_Accident accidente : listAccidents) {
             table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
