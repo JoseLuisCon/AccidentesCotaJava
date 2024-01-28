@@ -83,13 +83,7 @@ public class ListMenu<E extends Object> extends JList<E> {
         
     }
 
-//    @Override
-//    public boolean mouseExit(Event evt, int x, int y) {
-//        overIndex=-1;
-//        repaint();
-//    }
-    
-  
+
 
     
     

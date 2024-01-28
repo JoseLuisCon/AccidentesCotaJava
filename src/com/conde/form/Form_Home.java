@@ -192,7 +192,6 @@ public class Form_Home extends javax.swing.JPanel {
         table.setOpaque(false);
         table.setRowHeight(40);
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        table.setShowHorizontalLines(false);
         spTable.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setMinWidth(0);
@@ -238,7 +237,7 @@ public class Form_Home extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -293,7 +292,7 @@ public class Form_Home extends javax.swing.JPanel {
         vehiculosAccidente = datos_model.getVehiculoInAccidentById(index);
 
         vehiculos.clearRows();
-
+        vehiculos.setToolTipRows(vehiculosAccidente);
         if (vehiculosAccidente != null) {
             vehiculos.setData(vehiculosAccidente);
         }

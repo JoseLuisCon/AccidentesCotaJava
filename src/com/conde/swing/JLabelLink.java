@@ -11,7 +11,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.JLabel;
 
 
@@ -19,7 +18,6 @@ public class JLabelLink extends JLabel{
 
      
     private String url;
-    private String texto;
 
     public void InitLink(String Texto, String url){
         this.setText(Texto);
