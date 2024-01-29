@@ -1,4 +1,4 @@
-package raven.scroll.win11;
+package com.conde.swing;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -34,7 +34,7 @@ public class ScrollBarWin11UI extends BasicScrollBarUI {
     private boolean show;
     private boolean hover;
     private boolean press;
-    private final int scrollSize = 14;
+    private final int scrollSize = 16;
     private final MouseAdapter mouseEvent;
 
     public static ComponentUI createUI(JComponent c) {

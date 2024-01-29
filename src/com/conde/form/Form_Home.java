@@ -120,7 +120,7 @@ public class Form_Home extends javax.swing.JPanel {
         personas = new com.conde.component.Card_Persona();
         panelBorder1 = new com.conde.swing.PanelBorder();
         jLabel1 = new javax.swing.JLabel();
-        s = new raven.scroll.win11.ScrollPaneWin11();
+        s = new com.conde.swing.ScrollPaneWin11();
         table = new com.conde.swing.Table_Accidentes();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -279,7 +279,7 @@ public class Form_Home extends javax.swing.JPanel {
     private javax.swing.JLayeredPane panel;
     private com.conde.swing.PanelBorder panelBorder1;
     private com.conde.component.Card_Persona personas;
-    private raven.scroll.win11.ScrollPaneWin11 s;
+    private com.conde.swing.ScrollPaneWin11 s;
     private com.conde.swing.Table_Accidentes table;
     private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
