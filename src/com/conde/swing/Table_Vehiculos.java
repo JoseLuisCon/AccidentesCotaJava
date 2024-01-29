@@ -1,7 +1,9 @@
 package com.conde.swing;
 
 import com.conde.event.EventRowSelected;
+import com.conde.model.Persona;
 import com.conde.model.StatusType;
+import com.conde.model.Vehiculo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -9,16 +11,25 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class Table_Vehiculos extends JTable {
-    
+
     private EventRowSelected event;
     
-     public void addEventRowSelected(EventRowSelected event){
+    private ArrayList<Vehiculo> listaVehiculos = new ArrayList<>();
+    
+      public void setListaVehículos(ArrayList<Vehiculo> listaVehiculos) {
+        this.listaVehiculos = listaVehiculos;
+    }
+    
+    public void addEventRowSelected(EventRowSelected event) {
         this.event = event;
     }
 
@@ -27,7 +38,7 @@ public class Table_Vehiculos extends JTable {
         setShowHorizontalLines(true);
         setGridColor(new Color(230, 230, 230));
         setRowHeight(20);
-        
+
         getTableHeader().setReorderingAllowed(false);
 
         getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
@@ -36,7 +47,7 @@ public class Table_Vehiculos extends JTable {
 
                 TableHeader header = new TableHeader(o + "");
                 header.setHorizontalAlignment(JLabel.CENTER);
-                header.setFont(new Font("sansserif",1, 12));
+                header.setFont(new Font("sansserif", 1, 12));
                 return header;
             }
         });
@@ -50,8 +61,8 @@ public class Table_Vehiculos extends JTable {
 
                     setBorder(noFocusBorder);
                     if (isSelected) {
-                       com.setForeground(new Color(240, 238, 102));
-                        com.setBackground(new Color(6, 72, 72 ));
+                        com.setForeground(new Color(240, 238, 102));
+                        com.setBackground(new Color(6, 72, 72));
                     } else {
                         com.setForeground(new Color(53, 54, 53));
                     }
@@ -62,11 +73,11 @@ public class Table_Vehiculos extends JTable {
                 } else {
                     Component com = super.getTableCellRendererComponent(table, o, isSelected, hasFocus, row, column);
                     com.setBackground(Color.white);
-                    
+
                     setBorder(noFocusBorder);
-                     if (isSelected) {
-                      com.setForeground(new Color(240, 238, 102));
-                        com.setBackground(new Color(6, 72, 72 ));
+                    if (isSelected) {
+                        com.setForeground(new Color(240, 238, 102));
+                        com.setBackground(new Color(6, 72, 72));
                     } else {
                         com.setForeground(Color.RED);
                     }
@@ -74,14 +85,60 @@ public class Table_Vehiculos extends JTable {
                     setHorizontalAlignment(JLabel.CENTER);
                     setFont(new Font("sansserif", Font.BOLD, 12));
                     return com;
-                    
+
                 }
 
             }
         });
+        
+        
+    // Agregar un MouseMotionListener a la tabla para manejar eventos de movimiento del ratón
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
 
-      
+                // Obtener la fila y la columna en la que se encuentra el ratón
+                int fila = rowAtPoint(e.getPoint());
+                int columna = columnAtPoint(e.getPoint());
+
+                // Verificar si la fila y la columna son válidas
+                if (fila >= 0 && columna >= 0) {
+                    // Obtener el valor de la celda
+                    Object num_Vehiculo = getValueAt(fila, 0);
+                    Vehiculo vehiculo = buscaNumVehiculo((int) num_Vehiculo);
+                    String toolTip = "";
+                    if (!vehiculo.getObservaciones().isEmpty()){
+                        toolTip = vehiculo.getObservaciones();
+                    }
+                    
+                    setToolTipText(toolTip);
+
+                } else {
+                    // Si el ratón no está sobre una celda, eliminar el tooltip
+                    setToolTipText(null);
+                }
+
+            }
+
+            private Vehiculo buscaNumVehiculo(int Num_Vehiculo) {
+
+                for (Vehiculo vehiculo : listaVehiculos) {
+                    if (vehiculo.getId_Vehiculo() == Num_Vehiculo) {
+                        return vehiculo;
+                    }
+                }
+                return null;
+            }
+        });
+        
+        
+
     }
+
+   
+
+   
+    
 
     public void addRow(Object[] row) {
         DefaultTableModel model = (DefaultTableModel) getModel();

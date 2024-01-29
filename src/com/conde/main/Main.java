@@ -1,13 +1,12 @@
 package com.conde.main;
 
-import com.conde.form.Form_1;
+import com.conde.form.Form_ADD_Accidente;
 import com.conde.form.Form_2;
 import com.conde.form.Form_Home;
 
 import com.conde.model.ConexionAccess;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -15,33 +14,27 @@ import javax.swing.JComponent;
 public class Main extends javax.swing.JFrame {
 
     private Form_Home home;
-    private Form_1 form1;
+    private Form_ADD_Accidente form1;
     private Form_2 form2;
-    
 
     public Main() {
-        
+
         initComponents();
         // Obtener el tamaño de la pantalla
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        // Calcular el ancho y alto deseado para el JFrame (por ejemplo, el 80% del tamaño de la pantalla)
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//
+//        // Calcular el ancho y alto deseado para el JFrame (por ejemplo, el 80% del tamaño de la pantalla)
 //        int x=(int) (screenSize.width * 0.3) / 2;
 //        int y=(int) (screenSize.height*0.3) / 2;
 //        // Establecer el tamaño del JFrame
 //        setBounds(x, y,  (int) (screenSize.width * 0.7),  (int) (screenSize.height * 0.7));
 
-        
-        
-        
         setBackground(new Color(0, 0, 0, 0));
         menu.initMoving(Main.this);
-        
 
         home = new Form_Home();
-        form1 = new Form_1();
+
         form2 = new Form_2();
-   
 
         menu.addEventMenuSelected((int index) -> {
             switch (index) {
@@ -49,6 +42,14 @@ public class Main extends javax.swing.JFrame {
                     setForm(home);
                     break;
                 case 2:
+                    
+//                    FlatIntelliJLaf.registerCustomDefaultsSource("com/conde/style");
+////                    FlatIntelliJLaf.setup();
+                    
+                    FlatMacDarkLaf.registerCustomDefaultsSource("com/conde/style");
+                    FlatMacDarkLaf.setup();
+           
+                    form1 = new Form_ADD_Accidente();
                     setForm(form1);
                     break;
                 case 3:
@@ -56,15 +57,14 @@ public class Main extends javax.swing.JFrame {
                     break;
                 case 5:
                     ConexionAccess.desConnection();
-                {
-                    try {
-                        Thread.sleep(600);
-                        System.exit(0);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                     {
+                        try {
+                            Thread.sleep(400);
+                            System.exit(0);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
-                }
-                    
 
                 default:
                     break;
@@ -72,9 +72,9 @@ public class Main extends javax.swing.JFrame {
         });
 
         setForm(home);
-        
+
         ConexionAccess.conectar();
-        
+
     }
 
     private void setForm(JComponent com) {
@@ -150,10 +150,11 @@ public class Main extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
-        /* Create and display the form */
+        
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+
                 new Main().setVisible(true);
             }
         });

@@ -29,7 +29,7 @@ public class Menu extends javax.swing.JPanel {
         listMenu1.setOpaque(false);
 
         init();
-//        pintarImagen(lblLogo, "src/com/conde/resources/icons/");
+
         
         lblMailTo.InitLink("By Conde", "mailto:condepa45@gmail.com");
     }
@@ -56,10 +56,9 @@ public class Menu extends javax.swing.JPanel {
         
         lblLogo.setBounds(0,0,65, 86);
         ImageIcon imagen = new ImageIcon("src/com/conde/resources/icons/logo_traf.png");
-//        ImageIcon imagen = new ImageIcon(this.getClass().getResource("/icons/logo_traf.png"));
         Icon  icon = new ImageIcon(imagen.getImage().getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT));
         lblLogo.setIcon(icon);
-//        lblLogo.setIcon(new ImageIcon(this.getClass().getResource("/icons/logo_traf.png")));
+
         
 
     }

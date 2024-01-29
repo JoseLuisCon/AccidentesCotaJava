@@ -36,7 +36,7 @@ public class PanelAction extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void init() {
-//        setSize(32, 32);
+        setSize(32, 32);
         ImageIcon image = new ImageIcon("src/com/conde/resources/icons/Info.png");
         Icon icon = new ImageIcon(image.getImage().getScaledInstance( 25 , 25, Image.SCALE_DEFAULT));
         btn_Show.setIcon(icon);
@@ -44,7 +44,5 @@ public class PanelAction extends javax.swing.JPanel {
         setBackground(Color.WHITE);
     }
 
-    public void repaintLabels() {
-        
-    }
+ 
 }

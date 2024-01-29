@@ -1,16 +1,10 @@
 package com.conde.swing;
 
 import com.conde.event.EventRowSelected;
-import com.conde.model.Model_Accident;
 import com.conde.model.Persona;
-import com.conde.model.StatusType;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
@@ -86,32 +80,7 @@ public class Table_Personas extends JTable {
             }
         });
 
-//        addMouseListener(new MouseAdapter(){
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                int filaSeleccionada = rowAtPoint(e.getPoint());
-//                int numVehiculo = (int) getValueAt(filaSeleccionada,0);
-//                event.selectedRow(numVehiculo);
-//            } 
-//        });
-//        addKeyListener(new KeyListener(){
-//            @Override
-//            public void keyTyped(KeyEvent e) {}
-//
-//            @Override
-//            public void keyPressed(KeyEvent e) {}
-//
-//            @Override
-//            public void keyReleased(KeyEvent e) {
-//              if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-//                    // Obtener la fila seleccionada al desplazarse con las flechas arriba/abajo
-//                    int filaSeleccionada = getSelectedRow();
-//                    int numVehiculo = (int) getValueAt(filaSeleccionada,0);
-//                    event.selectedRow(numVehiculo);
-//
-//                }
-//            }
-//        });
+
         // Agregar un MouseMotionListener a la tabla para manejar eventos de movimiento del ratón
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override

@@ -6,9 +6,7 @@ import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Accidentes_JDBC {
 

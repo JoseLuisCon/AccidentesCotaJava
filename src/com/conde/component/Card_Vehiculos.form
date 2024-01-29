@@ -119,13 +119,12 @@
                 <Component class="com.conde.swing.Table_Vehiculos" name="tbl_Vehiculos">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="6" rowCount="0">
+                      <Table columnCount="5" rowCount="0">
                         <Column editable="false" title="Id_Vehiculo" type="java.lang.Object"/>
                         <Column editable="false" title="Matricula" type="java.lang.Object"/>
                         <Column editable="false" title="Marca" type="java.lang.Object"/>
                         <Column editable="false" title="Modelo" type="java.lang.Object"/>
                         <Column editable="false" title="Gestiones" type="java.lang.Object"/>
-                        <Column editable="false" title="Observaciones" type="java.lang.Object"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -135,22 +134,17 @@
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="200" minWidth="100" prefWidth="100" resizable="true">
+                        <Column maxWidth="100" minWidth="80" prefWidth="80" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="200" minWidth="100" prefWidth="100" resizable="true">
+                        <Column maxWidth="100" minWidth="80" prefWidth="80" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="200" minWidth="100" prefWidth="100" resizable="true">
-                          <Title/>
-                          <Editor/>
-                          <Renderer/>
-                        </Column>
-                        <Column maxWidth="400" minWidth="200" prefWidth="200" resizable="true">
+                        <Column maxWidth="100" minWidth="80" prefWidth="80" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>

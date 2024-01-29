@@ -23,7 +23,7 @@ public class MenuItem extends javax.swing.JPanel {
 
         } else if (data.getType() == Model_Menu.MenuType.TITLE) {
             lblIcon.setText(data.getName());
-            lblIcon.setFont(new Font("sansserif", 1, 12));
+//            lblIcon.setFont(new Font("sansserif", 1, 12));
             lblName.setVisible(false);
         } else {
             lblName.setText(" ");

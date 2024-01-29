@@ -13,7 +13,7 @@ public class TableStatus extends JLabel {
 
     public TableStatus() {
         setForeground(Color.white);
-        setFont(new Font("sansserif",1,12));
+        setFont(new Font("roboto",1,12));
         
     }
 
@@ -35,7 +35,7 @@ public class TableStatus extends JLabel {
             Graphics2D g2 = (Graphics2D) grphcs;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             GradientPaint g;
-            if (type == StatusType.PAMPLONA) {
+            if (type == StatusType.PAMPLONA ) {
                 g = new GradientPaint(0, 0, new Color(117, 211, 117 ), 0, getHeight(), new Color(198, 223, 198));
             } else if (type == StatusType.TUDELA) {
                 g = new GradientPaint(0, 0, new Color(79, 219, 202 ), 0, getHeight(), new Color(201, 232, 228));

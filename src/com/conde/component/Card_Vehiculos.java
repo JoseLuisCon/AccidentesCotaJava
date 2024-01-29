@@ -1,6 +1,5 @@
 package com.conde.component;
 
-import com.conde.model.Model_Accident;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -55,8 +54,8 @@ public class Card_Vehiculos extends javax.swing.JPanel {
                         vehic.getMatricula(),
                         vehic.getMarca(),
                         vehic.getModelo(),
-                        vehic.getGestion(),
-                        vehic.getObservaciones()
+                        vehic.getGestion()
+                   
                     });
         }
        
@@ -65,6 +64,10 @@ public class Card_Vehiculos extends javax.swing.JPanel {
     public void clearRows() {
         DefaultTableModel dtm = (DefaultTableModel) tbl_Vehiculos.getModel();
         dtm.setRowCount(0);
+    }
+    
+    public void setToolTipRows(ArrayList<Vehiculo> listaVehiculos){
+        tbl_Vehiculos.setListaVehículos(listaVehiculos);
     }
 
     @SuppressWarnings("unchecked")
@@ -110,11 +113,11 @@ public class Card_Vehiculos extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Id_Vehiculo", "Matricula", "Marca", "Modelo", "Gestiones", "Observaciones"
+                "Id_Vehiculo", "Matricula", "Marca", "Modelo", "Gestiones"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -127,21 +130,18 @@ public class Card_Vehiculos extends javax.swing.JPanel {
             tbl_Vehiculos.getColumnModel().getColumn(0).setMinWidth(0);
             tbl_Vehiculos.getColumnModel().getColumn(0).setPreferredWidth(0);
             tbl_Vehiculos.getColumnModel().getColumn(0).setMaxWidth(0);
-            tbl_Vehiculos.getColumnModel().getColumn(1).setMinWidth(100);
-            tbl_Vehiculos.getColumnModel().getColumn(1).setPreferredWidth(100);
-            tbl_Vehiculos.getColumnModel().getColumn(1).setMaxWidth(200);
-            tbl_Vehiculos.getColumnModel().getColumn(2).setMinWidth(100);
-            tbl_Vehiculos.getColumnModel().getColumn(2).setPreferredWidth(100);
-            tbl_Vehiculos.getColumnModel().getColumn(2).setMaxWidth(200);
-            tbl_Vehiculos.getColumnModel().getColumn(3).setMinWidth(100);
-            tbl_Vehiculos.getColumnModel().getColumn(3).setPreferredWidth(100);
-            tbl_Vehiculos.getColumnModel().getColumn(3).setMaxWidth(200);
+            tbl_Vehiculos.getColumnModel().getColumn(1).setMinWidth(80);
+            tbl_Vehiculos.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tbl_Vehiculos.getColumnModel().getColumn(1).setMaxWidth(100);
+            tbl_Vehiculos.getColumnModel().getColumn(2).setMinWidth(80);
+            tbl_Vehiculos.getColumnModel().getColumn(2).setPreferredWidth(80);
+            tbl_Vehiculos.getColumnModel().getColumn(2).setMaxWidth(100);
+            tbl_Vehiculos.getColumnModel().getColumn(3).setMinWidth(80);
+            tbl_Vehiculos.getColumnModel().getColumn(3).setPreferredWidth(80);
+            tbl_Vehiculos.getColumnModel().getColumn(3).setMaxWidth(100);
             tbl_Vehiculos.getColumnModel().getColumn(4).setMinWidth(200);
             tbl_Vehiculos.getColumnModel().getColumn(4).setPreferredWidth(200);
             tbl_Vehiculos.getColumnModel().getColumn(4).setMaxWidth(400);
-            tbl_Vehiculos.getColumnModel().getColumn(5).setMinWidth(200);
-            tbl_Vehiculos.getColumnModel().getColumn(5).setPreferredWidth(200);
-            tbl_Vehiculos.getColumnModel().getColumn(5).setMaxWidth(400);
         }
 
         jPanel3.add(sp_Table_Vehiculos, java.awt.BorderLayout.CENTER);
