@@ -179,7 +179,7 @@ public class Form_Home extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Id", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Núm. Diligencias", "Patrulla", "Zona Atestados"
+                "Id", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Patrulla", "Núm. Diligencias", "Zona Atestados"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -195,27 +195,6 @@ public class Form_Home extends javax.swing.JPanel {
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
             table.getColumnModel().getColumn(0).setMaxWidth(0);
-            table.getColumnModel().getColumn(1).setMinWidth(100);
-            table.getColumnModel().getColumn(1).setPreferredWidth(100);
-            table.getColumnModel().getColumn(1).setMaxWidth(100);
-            table.getColumnModel().getColumn(2).setMinWidth(150);
-            table.getColumnModel().getColumn(2).setPreferredWidth(150);
-            table.getColumnModel().getColumn(2).setMaxWidth(150);
-            table.getColumnModel().getColumn(3).setMinWidth(100);
-            table.getColumnModel().getColumn(3).setPreferredWidth(100);
-            table.getColumnModel().getColumn(3).setMaxWidth(100);
-            table.getColumnModel().getColumn(4).setMinWidth(180);
-            table.getColumnModel().getColumn(4).setPreferredWidth(180);
-            table.getColumnModel().getColumn(4).setMaxWidth(180);
-            table.getColumnModel().getColumn(5).setMinWidth(150);
-            table.getColumnModel().getColumn(5).setPreferredWidth(150);
-            table.getColumnModel().getColumn(5).setMaxWidth(150);
-            table.getColumnModel().getColumn(6).setMinWidth(150);
-            table.getColumnModel().getColumn(6).setPreferredWidth(150);
-            table.getColumnModel().getColumn(6).setMaxWidth(150);
-            table.getColumnModel().getColumn(7).setMinWidth(150);
-            table.getColumnModel().getColumn(7).setPreferredWidth(150);
-            table.getColumnModel().getColumn(7).setMaxWidth(150);
         }
 
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
@@ -224,18 +203,22 @@ public class Form_Home extends javax.swing.JPanel {
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 1369, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16))
+                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(panelBorder1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(1194, 1194, 1194))
+                    .addGroup(panelBorder1Layout.createSequentialGroup()
+                        .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

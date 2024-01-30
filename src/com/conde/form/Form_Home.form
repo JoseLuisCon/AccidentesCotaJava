@@ -451,11 +451,16 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      <Component id="s" min="-2" pref="1369" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="1194" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Component id="s" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -464,8 +469,9 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="s" pref="447" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="s" min="-2" pref="402" max="-2" attributes="0"/>
+                  <EmptySpace pref="39" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -482,7 +488,7 @@
             <Property name="text" type="java.lang.String" value="Listado de accidentes"/>
           </Properties>
         </Component>
-        <Container class="raven.scroll.win11.ScrollPaneWin11" name="s">
+        <Container class="com.conde.swing.ScrollPaneWin11" name="s">
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
@@ -496,8 +502,8 @@
                     <Column editable="false" title="Hora" type="java.lang.Object"/>
                     <Column editable="false" title="Carretera" type="java.lang.Object"/>
                     <Column editable="false" title="Kilometro" type="java.lang.Object"/>
-                    <Column editable="false" title="N&#xfa;m. Diligencias" type="java.lang.Object"/>
                     <Column editable="false" title="Patrulla" type="java.lang.Object"/>
+                    <Column editable="false" title="N&#xfa;m. Diligencias" type="java.lang.Object"/>
                     <Column editable="false" title="Zona Atestados" type="java.lang.Object"/>
                   </Table>
                 </Property>
@@ -508,37 +514,37 @@
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="100" minWidth="100" prefWidth="100" resizable="true">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="150" minWidth="150" prefWidth="150" resizable="true">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="100" minWidth="100" prefWidth="100" resizable="true">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="180" minWidth="180" prefWidth="180" resizable="true">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="150" minWidth="150" prefWidth="150" resizable="true">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="150" minWidth="150" prefWidth="150" resizable="true">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="150" minWidth="150" prefWidth="150" resizable="true">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>

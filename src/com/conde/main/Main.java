@@ -5,6 +5,8 @@ import com.conde.form.Form_2;
 import com.conde.form.Form_Home;
 
 import com.conde.model.ConexionAccess;
+import com.conde.swing.PanelAddAccidente;
+import com.conde.form.FormAddAccident;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import java.awt.Color;
 import java.util.logging.Level;
@@ -15,6 +17,7 @@ public class Main extends javax.swing.JFrame {
 
     private Form_Home home;
     private Form_ADD_Accidente form1;
+    private PanelAddAccidente frmAddAccidente;
     private Form_2 form2;
 
     public Main() {
@@ -42,15 +45,15 @@ public class Main extends javax.swing.JFrame {
                     setForm(home);
                     break;
                 case 2:
-                    
+
 //                    FlatIntelliJLaf.registerCustomDefaultsSource("com/conde/style");
 ////                    FlatIntelliJLaf.setup();
-                    
                     FlatMacDarkLaf.registerCustomDefaultsSource("com/conde/style");
                     FlatMacDarkLaf.setup();
-           
-                    form1 = new Form_ADD_Accidente();
-                    setForm(form1);
+//                    frmAddAccidente = new PanelAddAccidente();
+//                    setForm(frmAddAccidente);
+                    FormAddAccident p = new FormAddAccident();
+                    setForm(p);
                     break;
                 case 3:
                     setForm(form2);
@@ -78,9 +81,10 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void setForm(JComponent com) {
-
+        
         mainPanel.removeAll();
         mainPanel.add(com);
+        
         mainPanel.repaint();
         mainPanel.revalidate();
     }
@@ -91,6 +95,7 @@ public class Main extends javax.swing.JFrame {
 
         header1 = new com.conde.component.Header();
         jSeparator1 = new javax.swing.JSeparator();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         panelBorder1 = new com.conde.swing.PanelBorder();
         menu = new com.conde.component.Menu();
         mainPanel = new javax.swing.JPanel();
@@ -114,12 +119,12 @@ public class Main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5))
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -150,8 +155,7 @@ public class Main extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
 
@@ -161,6 +165,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private com.conde.component.Header header1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel mainPanel;
