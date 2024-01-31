@@ -1,6 +1,7 @@
 package com.conde.component;
 
 import com.conde.event.EventMenuSelected;
+import com.conde.event.EventToogleTheme;
 import com.conde.model.Model_Menu;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -18,6 +19,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class Menu extends javax.swing.JPanel {
+    
+    private boolean estado = true;
+    
+    private EventToogleTheme toogleTheme;
+    
+    public void addEventToogleTheme(EventToogleTheme event) {
+        this.toogleTheme = event;
+    }
 
     public void addEventMenuSelected(EventMenuSelected event) {
         listMenu1.addEventMenuSelected(event);
@@ -72,6 +81,8 @@ public class Menu extends javax.swing.JPanel {
         listMenu1 = new com.conde.swing.ListMenu<>();
         lblMailTo = new com.conde.swing.JLabelLink();
         lblLogo = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        btnToogleTheme = new javax.swing.JToggleButton();
 
         panelMoving.setOpaque(false);
 
@@ -87,14 +98,14 @@ public class Menu extends javax.swing.JPanel {
             .addGroup(panelMovingLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(5, 5, 5))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelMovingLayout.setVerticalGroup(
             panelMovingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMovingLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         lblMailTo.setForeground(new java.awt.Color(255, 255, 255));
@@ -116,27 +127,64 @@ public class Menu extends javax.swing.JPanel {
         lblLogo.setAutoscrolls(true);
         lblLogo.setIconTextGap(0);
 
+        jPanel1.setOpaque(false);
+
+        btnToogleTheme.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/luna.png"))); // NOI18N
+        btnToogleTheme.setToolTipText("");
+        btnToogleTheme.setBorder(null);
+        btnToogleTheme.setBorderPainted(false);
+        btnToogleTheme.setContentAreaFilled(false);
+        btnToogleTheme.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnToogleTheme.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnToogleThemeMousePressed(evt);
+            }
+        });
+        btnToogleTheme.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnToogleThemeActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnToogleTheme, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(btnToogleTheme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(listMenu1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblMailTo, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(listMenu1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelMoving, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(panelMoving, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(panelMoving, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(listMenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
+                .addComponent(listMenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lblLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblMailTo, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE))
@@ -151,6 +199,16 @@ public class Menu extends javax.swing.JPanel {
     private void lblMailToMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblMailToMouseExited
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_lblMailToMouseExited
+
+    private void btnToogleThemeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnToogleThemeMousePressed
+        
+    }//GEN-LAST:event_btnToogleThemeMousePressed
+
+    private void btnToogleThemeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToogleThemeActionPerformed
+
+        cambiarIcono();
+        
+    }//GEN-LAST:event_btnToogleThemeActionPerformed
 
     @Override
     protected void paintChildren(Graphics grphcs) {
@@ -182,10 +240,24 @@ public class Menu extends javax.swing.JPanel {
             }
         });
     }
+    
+    private void cambiarIcono() {
+        if (estado) {
+            btnToogleTheme.setIcon(new ImageIcon("src/com/conde/resources/icons/el-verano.png"));
+            btnToogleTheme.setToolTipText("Light Theme");
+        } else {
+            btnToogleTheme.setIcon(new ImageIcon("src/com/conde/resources/icons/luna.png"));
+            btnToogleTheme.setToolTipText("Dark Theme");
+        }
+        toogleTheme.toogleTheme(estado);
+        estado = !estado; // Cambiar el estado para el próximo clic
+    }
 
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton btnToogleTheme;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblLogo;
     private com.conde.swing.JLabelLink lblMailTo;
     private com.conde.swing.ListMenu<String> listMenu1;

@@ -1,18 +1,12 @@
 package com.conde.swing;
 
 import com.conde.event.EventRowSelected;
-import com.conde.model.Persona;
-import com.conde.model.StatusType;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JTable;

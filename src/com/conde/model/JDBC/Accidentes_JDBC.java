@@ -7,6 +7,9 @@ import com.conde.model.Vehiculo;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Accidentes_JDBC {
 
@@ -32,7 +35,7 @@ public class Accidentes_JDBC {
                 acc.setCarretera(rs.getString("Carretera"));
                 acc.setKilometro(rs.getString("Kilometro"));
                 acc.setPatrulla(rs.getString("Patrulla"));
-                acc.setNum_Diligencias(rs.getString("Num_Diligencias"));
+                acc.setNum_Diligencias(rs.getInt("Num_Diligencias"));
                 acc.setTipo_Siniestro(rs.getInt("Tipo_Accidente"));
                 acc.setZona_Atestados(rs.getString("Zona_Atestados"));
                 acc.setDescripcion(rs.getString("Descripcion"));
@@ -74,7 +77,7 @@ public class Accidentes_JDBC {
                 acc.setCarretera(rs.getString("Carretera"));
                 acc.setKilometro(rs.getString("Kilometro"));
                 acc.setPatrulla(rs.getString("Patrulla"));
-                acc.setNum_Diligencias(rs.getString("Num_Diligencias"));
+                acc.setNum_Diligencias(rs.getInt("Num_Diligencias"));
                 acc.setTipo_Siniestro(rs.getInt("Tipo_Accidente"));
                 acc.setZona_Atestados(rs.getString("Zona_Atestados"));
                 acc.setDescripcion(rs.getString("Descripcion"));
@@ -117,6 +120,33 @@ public class Accidentes_JDBC {
         return tipo_Accidente;
     }
 
+    public ArrayList<String> getTiposAccidentes() {
+        ArrayList<String> tipoAccidentes = new ArrayList<>();
+
+        String sql = "SELECT * FROM TIPO_SINIESTRO";
+
+        try {
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                tipoAccidentes.add(rs.getString("TIPO"));
+
+            }
+            rs.close();
+            st.close();
+
+            return tipoAccidentes;
+
+        } catch (Exception e) {
+            System.out.println("Error en la carga de vehículos." + e.getMessage());
+        }
+
+        return null;
+
+    }
+
     public ArrayList<Vehiculo> getVehiculoInAccidentById(int index) {
         ArrayList<Vehiculo> listVeh = new ArrayList<>();
         String sql = "SELECT * FROM Vehiculos WHERE Id=" + index;
@@ -149,6 +179,39 @@ public class Accidentes_JDBC {
         }
 
         return null;
+
+    }
+
+    public int getNumDiligencias(String equipo, String fecha) {
+            
+        
+        try {
+            
+                     
+             String sql = "SELECT Max(Num_Diligencias) AS NUM FROM Accidentes WHERE Zona_Atestados='" + equipo + "' AND YEAR(FECHA) = YEAR(#" + fecha + "#)";
+            int num_dilig = 1;
+            try {
+                st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                rs = st.executeQuery(sql);
+
+                if (rs.next()) {
+
+                    num_dilig = rs.getInt("NUM");
+                }
+
+                rs.close();
+                st.close();
+
+                return num_dilig;
+
+            } catch (Exception e) {
+                System.out.println("Error en la búsqueda del número de diligencias." + e.getMessage());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return 1;
 
     }
 
@@ -195,12 +258,11 @@ public class Accidentes_JDBC {
     }
 
     public String getMatriculaById(int Id_Vehiculo) throws SQLException {
-        String sql = "SELECT MATRICULA FROM Vehiculos WHERE Id ="+Id_Vehiculo;
+        String sql = "SELECT MATRICULA FROM Vehiculos WHERE Id =" + Id_Vehiculo;
         String matriculaStr = null;
 
-       st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-       rs = st.executeQuery(sql);
-       
+        st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        rs = st.executeQuery(sql);
 
         if (rs.next()) {
 
@@ -226,7 +288,7 @@ public class Accidentes_JDBC {
     }
 
     public void deletePersonasByIdAccidente(int Id_Accdient) throws SQLException {
-        
+
         String sql = "Delete FROM Personas WHERE Num_Accidente=?";
 
         ps = conexion.prepareStatement(sql);
@@ -237,30 +299,27 @@ public class Accidentes_JDBC {
 
     }
 
-    public void deleteAccidenteById(int Id_Accidente) throws SQLException  {
+    public void deleteAccidenteById(int Id_Accidente) throws SQLException {
         conexion.setAutoCommit(false);
         //iniciamos transacción de borrado de accidentes
         try {
-            
-            
+
             deleteVehiculosByIdAccidente(Id_Accidente);
             deletePersonasByIdAccidente(Id_Accidente);
-            
+
             String sql = "Delete FROM Accidentes WHERE Id=?";
             ps = conexion.prepareStatement(sql);
             ps.setInt(1, Id_Accidente);
             ps.executeUpdate();
             ps.close();
             st.close();
-            
+
             conexion.commit();
-            
+
         } catch (SQLException e) {
             conexion.rollback();
             System.out.println(e.getMessage());
         }
-        
-        
 
     }
 

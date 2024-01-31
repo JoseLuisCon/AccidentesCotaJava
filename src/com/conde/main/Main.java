@@ -1,36 +1,41 @@
 package com.conde.main;
 
-import com.conde.form.Form_ADD_Accidente;
+import com.conde.event.EventToogleTheme;
 import com.conde.form.Form_2;
 import com.conde.form.Form_Home;
 
 import com.conde.model.ConexionAccess;
-import com.conde.swing.PanelAddAccidente;
+
 import com.conde.form.FormAddAccident;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class Main extends javax.swing.JFrame {
 
     private Form_Home home;
-    private Form_ADD_Accidente form1;
-    private PanelAddAccidente frmAddAccidente;
+    private FormAddAccident frmAddAcc;
     private Form_2 form2;
+    
+    private int indexPanel=0;
+    
+    
+   
+    
 
     public Main() {
 
         initComponents();
-        // Obtener el tamaño de la pantalla
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//
-//        // Calcular el ancho y alto deseado para el JFrame (por ejemplo, el 80% del tamaño de la pantalla)
-//        int x=(int) (screenSize.width * 0.3) / 2;
-//        int y=(int) (screenSize.height*0.3) / 2;
-//        // Establecer el tamaño del JFrame
-//        setBounds(x, y,  (int) (screenSize.width * 0.7),  (int) (screenSize.height * 0.7));
 
         setBackground(new Color(0, 0, 0, 0));
         menu.initMoving(Main.this);
@@ -38,25 +43,34 @@ public class Main extends javax.swing.JFrame {
         home = new Form_Home();
 
         form2 = new Form_2();
+        
+        menu.addEventToogleTheme((Boolean toogleTheme)->{
+            
+            
+            toggleTema();
+        
+        });
+        
 
         menu.addEventMenuSelected((int index) -> {
             switch (index) {
                 case 1:
                     setForm(home);
+                    indexPanel=1;
                     break;
                 case 2:
 
-//                    FlatIntelliJLaf.registerCustomDefaultsSource("com/conde/style");
-////                    FlatIntelliJLaf.setup();
-                    FlatMacDarkLaf.registerCustomDefaultsSource("com/conde/style");
-                    FlatMacDarkLaf.setup();
-//                    frmAddAccidente = new PanelAddAccidente();
-//                    setForm(frmAddAccidente);
+                    FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
+                    FlatLightLaf.setup();
+
                     FormAddAccident p = new FormAddAccident();
+                    
                     setForm(p);
+                    indexPanel=2;
                     break;
                 case 3:
                     setForm(form2);
+                    indexPanel=3;
                     break;
                 case 5:
                     ConexionAccess.desConnection();
@@ -81,12 +95,57 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void setForm(JComponent com) {
-        
+
         mainPanel.removeAll();
+        CardLayout cl = new CardLayout();
+        cl.setVgap(5);
+        mainPanel.setLayout(cl);
+        if (com.getName() != null && com.getName().equals("frmAddAccidente")) {
+            
+            com.setSize(getWidth(), getHeight());
+        }
+
         mainPanel.add(com);
-        
+
         mainPanel.repaint();
         mainPanel.revalidate();
+    }
+    
+    private void toggleTema() {
+        
+        if (indexPanel ==2){
+        
+          try {
+            // Obtener el Look and Feel actual
+            UIManager.LookAndFeelInfo lookAndFeelInfo = UIManager.getInstalledLookAndFeels()[0];
+
+            // Cambiar entre el tema dark y light
+            if (FlatDarkLaf.class.getName().equals(UIManager.getLookAndFeel().getClass().getName())) {
+               FlatLightLaf.registerCustomDefaultsSource("com/conde/style");        
+                UIManager.setLookAndFeel(new FlatLightLaf());
+
+                mainPanel.setBackground(Color.WHITE);
+            } else {
+           
+                UIManager.setLookAndFeel(new FlatDarkLaf());
+               FlatDarkLaf.registerCustomDefaultsSource("com/conde/style");
+                mainPanel.setBackground(Color.BLACK);
+            }
+
+            // Actualizar el UI de la aplicación
+            SwingUtilities.updateComponentTreeUI(mainPanel);
+
+            // Repintar y actualizar los componentes
+            repaint();
+            revalidate();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+        
+        
+        }
+        
+      
     }
 
     @SuppressWarnings("unchecked")
@@ -103,29 +162,26 @@ public class Main extends javax.swing.JFrame {
         header1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1660, 968));
         setUndecorated(true);
 
-        panelBorder1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        panelBorder1.add(menu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 850));
+        panelBorder1.setOpaque(false);
+        panelBorder1.setLayout(new java.awt.BorderLayout());
+        panelBorder1.add(menu, java.awt.BorderLayout.WEST);
 
-        mainPanel.setOpaque(false);
+        mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.setLayout(new java.awt.BorderLayout());
-        panelBorder1.add(mainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 0, 1440, 850));
+        panelBorder1.add(mainPanel, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+            .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 1660, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 968, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -134,33 +190,13 @@ public class Main extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
+     
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
 
                 new Main().setVisible(true);
             }
+
         });
     }
 
@@ -172,4 +208,6 @@ public class Main extends javax.swing.JFrame {
     private com.conde.component.Menu menu;
     private com.conde.swing.PanelBorder panelBorder1;
     // End of variables declaration//GEN-END:variables
+
+
 }

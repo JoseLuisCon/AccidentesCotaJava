@@ -52,11 +52,11 @@ public class Model_Accident {
         this.Kilometro = Kilometro;
     }
 
-    public String getNum_Diligencias() {
+    public int getNum_Diligencias() {
         return Num_Diligencias;
     }
 
-    public void setNum_Diligencias(String Num_Diligencias) {
+    public void setNum_Diligencias(int Num_Diligencias) {
         this.Num_Diligencias = Num_Diligencias;
     }
 
@@ -116,7 +116,7 @@ public class Model_Accident {
         this.stattus = stattus;
     }
 
-    public Model_Accident(Icon icon, int Num_Accidente, String Fecha, String Hora, String Carretera, String Kilometro, String Num_Diligencias, String Patrulla, String Zona_Atestados, String Descripcion, int Tipo_Siniestro, StatusType status) {
+    public Model_Accident(Icon icon, int Num_Accidente, String Fecha, String Hora, String Carretera, String Kilometro, int Num_Diligencias, String Patrulla, String Zona_Atestados, String Descripcion, int Tipo_Siniestro, StatusType status) {
         this.icon = icon;
         this.Num_Accidente = Num_Accidente;
         this.Fecha = Fecha;
@@ -149,7 +149,7 @@ public class Model_Accident {
     private String Hora;
     private String Carretera;
     private String Kilometro;
-    private String Num_Diligencias;
+    private int Num_Diligencias;
     private String Patrulla;
     private String Zona_Atestados;
     private String Descripcion;
