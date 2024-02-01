@@ -12,8 +12,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import net.miginfocom.layout.PlatformDefaults;
 
 
 
@@ -29,7 +31,8 @@ public class Table_Accidentes extends JTable {
 
         setShowHorizontalLines(true);
         setGridColor(new Color(230, 230, 230));
-        setRowHeight(40);
+        setRowHeight(50);
+       
         
 
         getTableHeader().setReorderingAllowed(false);
@@ -50,10 +53,14 @@ public class Table_Accidentes extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int column) {
                 
+                setVerticalAlignment(SwingConstants.CENTER);
+                
                 switch (column) {
 
                     case 1:
+                        
                         PanelActionCell action = new PanelActionCell();
+                        
                         setBorder(noFocusBorder);
                         if (isSelected) {
                             action.setBackground(new Color(6, 72, 72));

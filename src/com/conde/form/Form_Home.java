@@ -30,26 +30,11 @@ public class Form_Home extends javax.swing.JPanel {
 
         initComponents();
 
-        
-//        spTable.getVerticalScrollBar().setBackground(Color.WHITE);
-//        spTable.getViewport().setBackground(Color.WHITE);
-
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         s.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-
-        table.addEventRowSelected((int index) -> {
-            Model_Accident accidenteOK = new Model_Accident();
-            //Rellenar datos card1
-            for (Model_Accident Accidente : listAccidents) {
-                if (Accidente.getNum_Accidente() == index) {
-                    accidenteOK = Accidente;
-                    break;
-                }
-
-            }
-
-            TableActionEvent event = new TableActionEvent() {
+        
+        TableActionEvent event = new TableActionEvent() {
                 @Override
                 public void onEdit(int row) {
                     System.out.println("Editando fila: " + row);
@@ -64,13 +49,12 @@ public class Form_Home extends javax.swing.JPanel {
                     int respDelete = JOptionPane.showConfirmDialog(null, "Atención: Se borraran todos los datos del accidente\n (Vehiculos y personas implicadas)\n¿Desea continuar?", "Atención", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 
                     if (respDelete == JOptionPane.OK_OPTION) {
-                        try{
+                        try {
                             int id_Accidente = (int) table.getValueAt(row, 0);
-                        datos_model.deleteAccidenteById(id_Accidente);
-                        }catch (SQLException e){
+                            datos_model.deleteAccidenteById(id_Accidente);
+                        } catch (SQLException e) {
                             System.out.println("Error en el borrado del accidente en la base de datos");
                         }
-                        
 
                         DefaultTableModel model = (DefaultTableModel) table.getModel();
                         model.removeRow(row);
@@ -83,8 +67,21 @@ public class Form_Home extends javax.swing.JPanel {
                 }
             };
 
-            table.getColumnModel().getColumn(1).setCellEditor(new TableActionCellEditor(event));
+        table.getColumnModel().getColumn(1).setCellEditor(new TableActionCellEditor(event));
 
+
+        table.addEventRowSelected((int index) -> {
+            Model_Accident accidenteOK = new Model_Accident();
+            //Rellenar datos card1
+            for (Model_Accident Accidente : listAccidents) {
+                if (Accidente.getNum_Accidente() == index) {
+                    accidenteOK = Accidente;
+                    break;
+                }
+
+            }
+
+            
             // Cargamos datos del accidente seleccionado en el card1
             ImageIcon image = new ImageIcon("src/com/conde/resources/icons/accidente.png");
             Icon icon = new ImageIcon(image.getImage());
@@ -93,6 +90,7 @@ public class Form_Home extends javax.swing.JPanel {
             data_Aux_Accidente.setData(accidenteOK, tipoAccidenteString);
 
             cargaVehiculosAccidente(index);
+            
             try {
                 cargaPersonasAccidente(index);
             } catch (SQLException ex) {
@@ -198,14 +196,14 @@ public class Form_Home extends javax.swing.JPanel {
         panelBorder1Layout.setHorizontalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelBorder1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(1194, 1194, 1194))
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel1))
                     .addGroup(panelBorder1Layout.createSequentialGroup()
-                        .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addContainerGap()
+                        .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 1388, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,7 +211,7 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -222,16 +220,13 @@ public class Form_Home extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 1406, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 1399, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 1406, Short.MAX_VALUE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,8 +236,8 @@ public class Form_Home extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -272,7 +267,7 @@ public class Form_Home extends javax.swing.JPanel {
 
         DefaultTableModel dtm = (DefaultTableModel) table.getModel();
         dtm.setRowCount(0);
-        
+
         //Lo mostramos en la tabla
         for (Model_Accident accidente : listAccidents) {
             table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});

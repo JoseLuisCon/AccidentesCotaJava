@@ -1,32 +1,111 @@
 package com.conde.form;
 
+import com.conde.cell.PanelActionCell;
+import com.conde.cell.TableActionEvent;
 import com.conde.datechooser.SelectedDate;
-import com.conde.event.EventToogleTheme;
+import com.conde.event.EventRowSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
-import java.awt.event.ActionEvent;
+import com.conde.swing.Table_Vehiculo_Form_Add;
+import java.awt.Color;
+import java.awt.Component;
+import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 public class FormAddAccident extends javax.swing.JPanel {
 
     Accidentes_JDBC modelAcc = new Accidentes_JDBC();
-    
-     
 
     public FormAddAccident() {
         initComponents();
 
         setDataFields();
+
+//        DefaultTableModel modelo = new DefaultTableModel(4, 5);
+//        
+//        modelo.setValueAt(1, 0, 0);
+//        modelo.setValueAt("1234asd", 0, 2);
+//        modelo.setValueAt("Renault", 0,3);
+//       modelo.setValueAt("Vectra", 0,4);
+//       
+//       modelo.setValueAt(2, 1, 0);
+//        modelo.setValueAt("1234asd",1, 2);
+//        modelo.setValueAt("Renault", 1,3);
+//       modelo.setValueAt("Vectra", 1,4);
+//       
+//       modelo.setValueAt(3, 2, 0);
+//        modelo.setValueAt("1234asd",2, 2);
+//        modelo.setValueAt("Renault", 2,3);
+//       modelo.setValueAt("Vectra", 2,4);
+//       
+//       modelo.setValueAt(4, 3, 0);
+//        modelo.setValueAt("1234asd", 3, 2);
+//        modelo.setValueAt("Renault", 3,3);
+//       modelo.setValueAt("Vectra", 3,4);
+//       
+//       table_Vehiculo_Form_Add.setModel(modelo);
+//        
+//       table_Vehiculo_Form_Add.addEventRowSelected((int e)->{
+//       
+//            System.out.println("Fila selecionada: "+e);
+//            
+//            
+//            
+//       
+//       });
+
+        TableActionEvent event = new TableActionEvent() {
+            
+            @Override
+            public void onEdit(int row) {
+                DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+                txtMatricula.setText((String) model.getValueAt(row, 2));
+                txtMarca.setText((String) model.getValueAt(row, 3));
+                txtModelo.setText((String) model.getValueAt(row, 4));
+                txtGestion.setText((String) model.getValueAt(row, 5));
+                txtAObservaciones.setText((String) model.getValueAt(row, 6));
+            }
+
+            @Override
+            public void onDelete(int row) {
+                if (table_Vehiculo_Form_Add.isEditing()) {
+                    table_Vehiculo_Form_Add.getCellEditor().stopCellEditing();
+                }
+
+                DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+                model.removeRow(row);
+
+            }
+        };
+
         
-        
+        table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(new JCheckBox()) {
+
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+
+                PanelActionCell action = new PanelActionCell();
+                action.initEvent(event, row);
+                
+                if (isSelected) {
+                    action.setBackground(new Color(148, 210, 95));
+                } else {
+                    action.setBackground(table.getBackground());
+                }
+
+                return action;
+
+            }
+
+        });
+
     }
-    
-    
-    
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -62,7 +141,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
-        txtMatricula2 = new javax.swing.JTextField();
+        txtMatricula = new javax.swing.JTextField();
         txtMarca = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -76,18 +155,18 @@ public class FormAddAccident extends javax.swing.JPanel {
         remAddVehiculo = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jtblVehiculosAdd = new javax.swing.JTable();
+        table_Vehiculo_Form_Add = new com.conde.swing.Table_Vehiculo_Form_Add();
         jPanel2 = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         txtDni = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
-        txtGestion1 = new javax.swing.JTextField();
+        txtLugarTraslado = new javax.swing.JTextField();
         jLabel19 = new javax.swing.JLabel();
         Observaciones1 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        txtAObservaciones1 = new javax.swing.JTextArea();
+        txtAObserv_Personas = new javax.swing.JTextArea();
         jComboBox1 = new javax.swing.JComboBox<>();
         jComboBox2 = new javax.swing.JComboBox<>();
         jCheckBox2 = new javax.swing.JCheckBox();
@@ -316,6 +395,11 @@ public class FormAddAccident extends javax.swing.JPanel {
         cmbAddVehiculo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/Double Right.png"))); // NOI18N
         cmbAddVehiculo.setToolTipText("Añadir vehículos a la lista");
         cmbAddVehiculo.setOpaque(true);
+        cmbAddVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbAddVehiculoActionPerformed(evt);
+            }
+        });
 
         remAddVehiculo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/Double Left.png"))); // NOI18N
         remAddVehiculo.setOpaque(true);
@@ -335,7 +419,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtMatricula2, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -360,7 +444,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(txtMatricula2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13)
                     .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14)
@@ -386,18 +470,49 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         jPanel6.setLayout(new java.awt.CardLayout(5, 5));
 
-        jtblVehiculosAdd.setModel(new javax.swing.table.DefaultTableModel(
+        table_Vehiculo_Form_Add.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Id", "Acciones", "Matricula", "Marca", "Modelo", "Gestiones", "Observaciones"
             }
-        ));
-        jScrollPane3.setViewportView(jtblVehiculosAdd);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        table_Vehiculo_Form_Add.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        table_Vehiculo_Form_Add.setRowHeight(40);
+        table_Vehiculo_Form_Add.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane3.setViewportView(table_Vehiculo_Form_Add);
+        if (table_Vehiculo_Form_Add.getColumnModel().getColumnCount() > 0) {
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(0).setMinWidth(0);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(0).setPreferredWidth(0);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(0).setMaxWidth(0);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setMinWidth(100);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setPreferredWidth(100);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setMaxWidth(100);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setMinWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setPreferredWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setMaxWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(3).setMinWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(3).setPreferredWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(3).setMaxWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(4).setMinWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(4).setPreferredWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(4).setMaxWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(5).setMinWidth(0);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(5).setPreferredWidth(0);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(5).setMaxWidth(0);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(6).setMinWidth(0);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(6).setPreferredWidth(0);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(6).setMaxWidth(0);
+        }
 
         jPanel6.add(jScrollPane3, "card2");
 
@@ -419,9 +534,9 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         Observaciones1.setText("Observaciones");
 
-        txtAObservaciones1.setColumns(20);
-        txtAObservaciones1.setRows(5);
-        jScrollPane5.setViewportView(txtAObservaciones1);
+        txtAObserv_Personas.setColumns(20);
+        txtAObserv_Personas.setRows(5);
+        jScrollPane5.setViewportView(txtAObserv_Personas);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -470,7 +585,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel19)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtGestion1, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtLugarTraslado, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
@@ -529,7 +644,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                         .addGap(13, 13, 13)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel19)
-                            .addComponent(txtGestion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtLugarTraslado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jCheckBox2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -577,7 +692,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void rbTudelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbTudelaActionPerformed
-        
+
         setNumeroDiligencias("TUDELA");
     }//GEN-LAST:event_rbTudelaActionPerformed
 
@@ -605,7 +720,6 @@ public class FormAddAccident extends javax.swing.JPanel {
         // Obtenemos el número de diligencias más alto del Equipo de Pamplona
 
         //Primero comparamos fecha seleccionada no sea posterior a la de hoy, no somos adivinos
-       
         setNumeroDiligencias("PAMPLONA");
 
     }//GEN-LAST:event_rbPamplonaActionPerformed
@@ -613,9 +727,32 @@ public class FormAddAccident extends javax.swing.JPanel {
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
         setNumeroDiligencias("PAMPLONA");
     }//GEN-LAST:event_formAncestorAdded
-    
-    private void setNumeroDiligencias(String equipo){
-     SelectedDate fecha = Fecha.getSelectedDate();
+
+    private void cmbAddVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAddVehiculoActionPerformed
+        DefaultTableModel tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+
+        //COMPROBACIONES
+        //Minimo matrícula y 6 caracteres
+        if (txtMatricula.getText().isEmpty() || txtMatricula.getText().length() < 7) {
+            JOptionPane.showMessageDialog(null, "Como mínimo poner una matrícula o nº serie\n y debe tener mínimo 6 caracteres");
+            return;
+        }
+
+        int num_vehiculos = tblModel.getRowCount() + 1;
+
+        Object[] rowData = {num_vehiculos, null, txtMatricula.getText().toUpperCase(), txtMarca.getText(), txtModelo.getText(), txtGestion.getText(), txtAObservaciones.getText()};
+        tblModel.addRow(rowData);
+        
+        txtMatricula.setText("");
+        txtMarca.setText("");
+        txtModelo.setText("");
+        txtGestion.setText("");
+        txtAObservaciones.setText("");
+
+    }//GEN-LAST:event_cmbAddVehiculoActionPerformed
+
+    private void setNumeroDiligencias(String equipo) {
+        SelectedDate fecha = Fecha.getSelectedDate();
 
         Calendar fechaSelecionada = Calendar.getInstance();
         fechaSelecionada.set(fecha.getYear(), fecha.getMonth() - 1, fecha.getDay());
@@ -630,11 +767,9 @@ public class FormAddAccident extends javax.swing.JPanel {
             int Num_Diligencias = modelAcc.getNumDiligencias(equipo, fechaFormateadaAccess);
             txtNumDiligencias.setText(String.valueOf(Num_Diligencias + 1));
         }
-    
+
     }
-    
-    
-    
+
     private void setDataFields() {
 
         Hora.set24HourView(true);
@@ -697,21 +832,21 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JTable jTblPersonasAdd;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTable jtblVehiculosAdd;
     private javax.swing.JRadioButton rbPamplona;
     private javax.swing.JRadioButton rbTudela;
     private javax.swing.JButton remAddVehiculo;
     private javax.swing.JButton remAddVehiculo1;
+    private com.conde.swing.Table_Vehiculo_Form_Add table_Vehiculo_Form_Add;
+    private javax.swing.JTextArea txtAObserv_Personas;
     private javax.swing.JTextArea txtAObservaciones;
-    private javax.swing.JTextArea txtAObservaciones1;
     private javax.swing.JTextField txtCarretera;
     private javax.swing.JTextField txtDni;
     private javax.swing.JTextField txtFecha;
     private javax.swing.JTextField txtGestion;
-    private javax.swing.JTextField txtGestion1;
     private javax.swing.JFormattedTextField txtHora;
+    private javax.swing.JTextField txtLugarTraslado;
     private javax.swing.JTextField txtMarca;
-    private javax.swing.JTextField txtMatricula2;
+    private javax.swing.JTextField txtMatricula;
     private javax.swing.JTextField txtModelo;
     private javax.swing.JTextField txtNumDiligencias;
     private javax.swing.JTextField txtPatrulla;
