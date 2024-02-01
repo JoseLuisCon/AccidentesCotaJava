@@ -64,10 +64,11 @@ public class Menu extends javax.swing.JPanel {
         
         
         lblLogo.setBounds(0,0,65, 86);
-        ImageIcon imagen = new ImageIcon("src/com/conde/resources/icons/logo_traf.png");
-        Icon  icon = new ImageIcon(imagen.getImage().getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT));
+        
+        Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/logo_traf.png")).getImage();
+        Icon icon = new ImageIcon(imagen.getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT));
         lblLogo.setIcon(icon);
-
+       
         
 
     }
@@ -243,11 +244,13 @@ public class Menu extends javax.swing.JPanel {
     
     private void cambiarIcono() {
         if (estado) {
-            btnToogleTheme.setIcon(new ImageIcon("src/com/conde/resources/icons/el-verano.png"));
-            btnToogleTheme.setToolTipText("Light Theme");
+            Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/el-verano.png")).getImage();
+            btnToogleTheme.setIcon(new ImageIcon(imagen));
+            btnToogleTheme.setToolTipText("Tema oscuro");
         } else {
-            btnToogleTheme.setIcon(new ImageIcon("src/com/conde/resources/icons/luna.png"));
-            btnToogleTheme.setToolTipText("Dark Theme");
+            Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/luna.png")).getImage();
+            btnToogleTheme.setIcon(new ImageIcon(imagen));
+            btnToogleTheme.setToolTipText("Tema claro");
         }
         toogleTheme.toogleTheme(estado);
         estado = !estado; // Cambiar el estado para el próximo clic
