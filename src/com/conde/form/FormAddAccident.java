@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
@@ -22,11 +23,15 @@ import javax.swing.table.DefaultTableModel;
 public class FormAddAccident extends javax.swing.JPanel {
 
     Accidentes_JDBC modelAcc = new Accidentes_JDBC();
+    private Boolean EditOnVehiculo = false;
+    private int rowVehiculoEditado;
+     private Boolean EditOnPersona = false;
+    private int rowPersonaEditada;
 
     public FormAddAccident() {
         initComponents();
-        
-        setPreferredSize(new Dimension(1920,968));
+
+        setPreferredSize(new Dimension(1920, 968));
         setDataFields();
 
         lblLugarTraslado.setVisible(false);
@@ -35,26 +40,72 @@ public class FormAddAccident extends javax.swing.JPanel {
         TableActionEvent event = new TableActionEvent() {
 
             @Override
-            public void onEdit(int row) {
-                DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
-                txtMatricula.setText((String) model.getValueAt(row, 2));
-                txtMarca.setText((String) model.getValueAt(row, 3));
-                txtModelo.setText((String) model.getValueAt(row, 4));
-                txtGestion.setText((String) model.getValueAt(row, 5));
-                txtAObservaciones.setText((String) model.getValueAt(row, 6));
+            public void onEdit(JTable table, int row) {
+
+                if (table.getName().equals("TableVehiculos")) {
+                    EditOnVehiculo = true;
+                    rowVehiculoEditado = row;
+                    DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+                    txtMatricula.setText((String) model.getValueAt(row, 2));
+                    txtMarca.setText((String) model.getValueAt(row, 3));
+                    txtModelo.setText((String) model.getValueAt(row, 4));
+                    txtGestion.setText((String) model.getValueAt(row, 5));
+                    txtAObservaciones.setText((String) model.getValueAt(row, 6));
+
+                }else{
+                    
+                     EditOnPersona = true;
+                    rowPersonaEditada = row;
+                    DefaultTableModel model = (DefaultTableModel) table_Persona_Form_Add.getModel();
+                     txtDni.setText((String) model.getValueAt(row, 2));
+                     cmbTipoPersona.setSelectedItem(model.getValueAt(row, 3));
+                     cmbVehiculoPer.setSelectedItem(model.getValueAt(row, 4));
+                     cmbResultadoPers.setSelectedItem(model.getValueAt(row, 5));
+                     if(model.getValueAt(row,6).equals("")){
+                         chkbTrasladado.setSelected(false);
+                         txtLugarTraslado.setText("");
+                     }else{
+                         chkbTrasladado.setSelected(true);
+                         txtLugarTraslado.setText((String) model.getValueAt(row,6));
+                     }
+
+                     chkbPAlcohol.setSelected((boolean) model.getValueAt(row, 7));
+                    chkbPAlcoholPos.setSelected((boolean) model.getValueAt(row, 8));
+                    chkbPDrogas.setSelected((boolean) model.getValueAt(row, 9));
+                    chkbPDrogasPos.setSelected((boolean) model.getValueAt(row, 10));
+                    txtAObserv_Personas.setText((String) model.getValueAt(row, 11));                    
+                
+                
+                }
+
             }
 
             @Override
-            public void onDelete(int row) {
-                if (table_Vehiculo_Form_Add.isEditing()) {
-                    table_Vehiculo_Form_Add.getCellEditor().stopCellEditing();
+            public void onDelete(JTable table, int row) {
+
+                if (table.getName().equals("TableVehiculos")) {
+                    if (table_Vehiculo_Form_Add.isEditing()) {
+                        table_Vehiculo_Form_Add.getCellEditor().stopCellEditing();
+                    }
+
+                    DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+
+                    int index = buscarValorEnComboBox(cmbVehiculoPer, (String) model.getValueAt(row, 2));
+                    cmbVehiculoPer.removeItemAt(index);
+                    model.removeRow(row);
+                    limpiarDatosVehiculo();
+
+                }else{
+                 if (table_Persona_Form_Add.isEditing()) {
+                        table_Persona_Form_Add.getCellEditor().stopCellEditing();
+                    }
+
+                    DefaultTableModel model = (DefaultTableModel) table_Persona_Form_Add.getModel();
+
+                    model.removeRow(row);
+                    limpiarDatosPersonas();
+                
                 }
-
-                DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
-
-                int index = buscarValorEnComboBox(cmbVehiculoPer, (String) model.getValueAt(row, 2));
-                cmbVehiculoPer.removeItemAt(index);
-                model.removeRow(row);
 
             }
         };
@@ -65,7 +116,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 
                 PanelActionCell action = new PanelActionCell();
-                action.initEvent(event, row);
+                action.initEvent(event, table, row);
 
                 if (isSelected) {
                     action.setBackground(new Color(148, 210, 95));
@@ -78,18 +129,37 @@ public class FormAddAccident extends javax.swing.JPanel {
             }
 
         });
-        
-        
-        panelDatos.setPreferredSize(new Dimension(getWidth(),200));
-        panelVehiculos.setPreferredSize(new Dimension(getWidth(),300));
-        panelPersonas.setPreferredSize(new Dimension(getWidth(),400));
-        
-        panelVeh1.setPreferredSize(new Dimension(900,300));
-        panelVeh1.setPreferredSize(new Dimension(500,300));
-        
-        panelPer1.setPreferredSize(new Dimension(900,400));
-        panelPer2.setPreferredSize(new Dimension(500,400));
-    
+
+        table_Persona_Form_Add.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(new JCheckBox()) {
+
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+
+                PanelActionCell action = new PanelActionCell();
+                action.initEvent(event, table, row);
+
+                if (isSelected) {
+                    action.setBackground(new Color(148, 210, 95));
+                } else {
+                    action.setBackground(table.getBackground());
+                }
+
+                return action;
+
+            }
+
+        });
+
+        panelDatos.setPreferredSize(new Dimension(getWidth(), 200));
+        panelVehiculos.setPreferredSize(new Dimension(getWidth(), 300));
+        panelPersonas.setPreferredSize(new Dimension(getWidth(), 400));
+
+        panelVeh1.setPreferredSize(new Dimension(900, 300));
+        panelVeh1.setPreferredSize(new Dimension(500, 300));
+
+        panelPer1.setPreferredSize(new Dimension(900, 400));
+        panelPer2.setPreferredSize(new Dimension(500, 400));
+
     }
 
     @SuppressWarnings("unchecked")
@@ -143,7 +213,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         txtAObservaciones = new javax.swing.JTextArea();
         cmbAddVehiculo = new javax.swing.JButton();
         panelVeh2 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        spWin = new com.conde.swing.ScrollPaneWin11();
         table_Vehiculo_Form_Add = new com.conde.swing.Table_Vehiculo_Form_Add();
         panelPersonas = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -160,17 +230,17 @@ public class FormAddAccident extends javax.swing.JPanel {
         txtAObserv_Personas = new javax.swing.JTextArea();
         cmbVehiculoPer = new javax.swing.JComboBox<>();
         cmbResultadoPers = new javax.swing.JComboBox<>();
-        cboxTrasladado = new javax.swing.JCheckBox();
-        cmbAddPersona = new javax.swing.JButton();
+        chkbTrasladado = new javax.swing.JCheckBox();
+        btnAddPersona = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         cmbTipoPersona = new javax.swing.JComboBox<>();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox5 = new javax.swing.JCheckBox();
+        chkbPAlcohol = new javax.swing.JCheckBox();
+        chkbPAlcoholPos = new javax.swing.JCheckBox();
+        chkbPDrogas = new javax.swing.JCheckBox();
+        chkbPDrogasPos = new javax.swing.JCheckBox();
         panelPer2 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTblPersonasAdd = new javax.swing.JTable();
+        spWinPer = new com.conde.swing.ScrollPaneWin11();
+        table_Persona_Form_Add = new com.conde.swing.Table_Persona_Form_Add();
 
         Hora.setEditor(txtHora);
 
@@ -479,31 +549,32 @@ public class FormAddAccident extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(Observaciones)
-                .addGap(23, 23, 23)
-                .addComponent(jScrollPane2)
-                .addGap(18, 18, 18)
-                .addComponent(cmbAddVehiculo)
-                .addGap(18, 18, 18))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel13)
+                        .addComponent(Observaciones)
+                        .addGap(23, 23, 23)
+                        .addComponent(jScrollPane2)
                         .addGap(18, 18, 18)
-                        .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel14)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtModelo, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
-                    .addComponent(txtGestion))
-                .addGap(90, 90, 90))
+                        .addComponent(cmbAddVehiculo)
+                        .addGap(18, 18, 18))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
+                                .addComponent(jLabel13)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(28, 28, 28)
+                                .addComponent(jLabel14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtModelo, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
+                            .addComponent(txtGestion))
+                        .addGap(90, 90, 90))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -540,11 +611,9 @@ public class FormAddAccident extends javax.swing.JPanel {
         panelVeh2.setPreferredSize(new java.awt.Dimension(550, 290));
         panelVeh2.setLayout(new java.awt.CardLayout());
 
-        jScrollPane3.setMaximumSize(new java.awt.Dimension(300, 300));
-        jScrollPane3.setMinimumSize(new java.awt.Dimension(300, 300));
-        jScrollPane3.setName(""); // NOI18N
-        jScrollPane3.setOpaque(false);
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(300, 300));
+        spWin.setBorder(null);
+        spWin.setAutoscrolls(true);
+        spWin.setViewportView(table_Vehiculo_Form_Add);
 
         table_Vehiculo_Form_Add.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -563,28 +632,22 @@ public class FormAddAccident extends javax.swing.JPanel {
             }
         });
         table_Vehiculo_Form_Add.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
+        table_Vehiculo_Form_Add.setMaximumSize(new java.awt.Dimension(2147483647, 500000));
         table_Vehiculo_Form_Add.setMinimumSize(new java.awt.Dimension(550, 0));
-        table_Vehiculo_Form_Add.setName(""); // NOI18N
-        table_Vehiculo_Form_Add.setPreferredSize(new java.awt.Dimension(550, 0));
-        table_Vehiculo_Form_Add.setRowHeight(40);
+        table_Vehiculo_Form_Add.setName("TableVehiculos"); // NOI18N
+        table_Vehiculo_Form_Add.setRowHeight(35);
         table_Vehiculo_Form_Add.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane3.setViewportView(table_Vehiculo_Form_Add);
+        spWin.setViewportView(table_Vehiculo_Form_Add);
         if (table_Vehiculo_Form_Add.getColumnModel().getColumnCount() > 0) {
             table_Vehiculo_Form_Add.getColumnModel().getColumn(0).setMinWidth(0);
             table_Vehiculo_Form_Add.getColumnModel().getColumn(0).setPreferredWidth(0);
             table_Vehiculo_Form_Add.getColumnModel().getColumn(0).setMaxWidth(0);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setMinWidth(100);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setPreferredWidth(100);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setMaxWidth(100);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setMinWidth(150);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setPreferredWidth(150);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setMaxWidth(150);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(3).setMinWidth(150);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(3).setPreferredWidth(150);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(3).setMaxWidth(150);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(4).setMinWidth(150);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(4).setPreferredWidth(150);
-            table_Vehiculo_Form_Add.getColumnModel().getColumn(4).setMaxWidth(150);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setMinWidth(80);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setPreferredWidth(80);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setMaxWidth(80);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setMinWidth(100);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setPreferredWidth(100);
+            table_Vehiculo_Form_Add.getColumnModel().getColumn(2).setMaxWidth(100);
             table_Vehiculo_Form_Add.getColumnModel().getColumn(5).setMinWidth(0);
             table_Vehiculo_Form_Add.getColumnModel().getColumn(5).setPreferredWidth(0);
             table_Vehiculo_Form_Add.getColumnModel().getColumn(5).setMaxWidth(0);
@@ -593,7 +656,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             table_Vehiculo_Form_Add.getColumnModel().getColumn(6).setMaxWidth(0);
         }
 
-        panelVeh2.add(jScrollPane3, "card2");
+        panelVeh2.add(spWin, "card2");
 
         jPanel3.add(panelVeh2);
 
@@ -631,38 +694,54 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         cmbResultadoPers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ileso", "Herido Leve", "Herido Grave", "Fallecido" }));
 
-        cboxTrasladado.setText("Trasladado");
-        cboxTrasladado.addActionListener(new java.awt.event.ActionListener() {
+        chkbTrasladado.setText("Trasladado");
+        chkbTrasladado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboxTrasladadoActionPerformed(evt);
+                chkbTrasladadoActionPerformed(evt);
             }
         });
 
-        cmbAddPersona.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/Double Right.png"))); // NOI18N
-        cmbAddPersona.setOpaque(true);
+        btnAddPersona.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/Double Right.png"))); // NOI18N
+        btnAddPersona.setOpaque(true);
+        btnAddPersona.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddPersonaActionPerformed(evt);
+            }
+        });
 
         jLabel20.setText("Tipo");
 
-        jCheckBox1.setText("Prueba de alcohol");
-
-        jCheckBox3.setText("Positivo en alcohol");
-        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+        cmbTipoPersona.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbTipoPersonaItemStateChanged(evt);
+            }
+        });
+        cmbTipoPersona.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox3ActionPerformed(evt);
+                cmbTipoPersonaActionPerformed(evt);
             }
         });
 
-        jCheckBox4.setText("Prueba de drogas");
-        jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
+        chkbPAlcohol.setText("Prueba de alcohol");
+
+        chkbPAlcoholPos.setText("Positivo en alcohol");
+        chkbPAlcoholPos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox4ActionPerformed(evt);
+                chkbPAlcoholPosActionPerformed(evt);
             }
         });
 
-        jCheckBox5.setText("Positivo en drogas");
-        jCheckBox5.addActionListener(new java.awt.event.ActionListener() {
+        chkbPDrogas.setText("Prueba de drogas");
+        chkbPDrogas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox5ActionPerformed(evt);
+                chkbPDrogasActionPerformed(evt);
+            }
+        });
+
+        chkbPDrogasPos.setText("Positivo en drogas");
+        chkbPDrogasPos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkbPDrogasPosActionPerformed(evt);
             }
         });
 
@@ -694,11 +773,11 @@ public class FormAddAccident extends javax.swing.JPanel {
                                         .addGap(18, 18, 18)
                                         .addComponent(cmbVehiculoPer, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel7Layout.createSequentialGroup()
-                                        .addComponent(jCheckBox1)
+                                        .addComponent(chkbPAlcohol)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(chkbPAlcoholPos, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cboxTrasladado, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(chkbTrasladado, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel7Layout.createSequentialGroup()
@@ -706,15 +785,15 @@ public class FormAddAccident extends javax.swing.JPanel {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(txtLugarTraslado))
                                     .addGroup(jPanel7Layout.createSequentialGroup()
-                                        .addComponent(jCheckBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(chkbPDrogas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(88, 88, 88)
-                                        .addComponent(jCheckBox5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addComponent(chkbPDrogasPos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
                                 .addComponent(Observaciones1)
                                 .addGap(18, 18, 18)
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 637, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
-                        .addComponent(cmbAddPersona)
+                        .addComponent(btnAddPersona)
                         .addGap(15, 15, 15)))
                 .addContainerGap(59, Short.MAX_VALUE))
         );
@@ -733,17 +812,17 @@ public class FormAddAccident extends javax.swing.JPanel {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbVehiculoPer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18)
-                    .addComponent(cboxTrasladado)
+                    .addComponent(chkbTrasladado)
                     .addComponent(lblLugarTraslado)
                     .addComponent(txtLugarTraslado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jCheckBox1)
-                        .addComponent(jCheckBox3))
+                        .addComponent(chkbPAlcohol)
+                        .addComponent(chkbPAlcoholPos))
                     .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jCheckBox5)
-                        .addComponent(jCheckBox4)))
+                        .addComponent(chkbPDrogasPos)
+                        .addComponent(chkbPDrogas)))
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(32, 32, 32)
@@ -752,7 +831,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(cmbAddPersona, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnAddPersona, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
@@ -765,23 +844,60 @@ public class FormAddAccident extends javax.swing.JPanel {
         panelPer2.setPreferredSize(new java.awt.Dimension(550, 400));
         panelPer2.setLayout(new java.awt.CardLayout());
 
-        jScrollPane4.setMaximumSize(null);
-        jScrollPane4.setMinimumSize(null);
-        jScrollPane4.setPreferredSize(new java.awt.Dimension(0, 0));
+        spWinPer.setBorder(null);
 
-        jTblPersonasAdd.setModel(new javax.swing.table.DefaultTableModel(
+        table_Persona_Form_Add.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Id", "Acciones", "Documento", "Tipo", "Vehículo", "Resultado", "Trasladado", "PAlcoh", "PAlcoh+", "PDrog", "PDrog+", "Observaciones"
             }
-        ));
-        jTblPersonasAdd.setMinimumSize(new java.awt.Dimension(200, 0));
-        jTblPersonasAdd.setPreferredSize(new java.awt.Dimension(250, 0));
-        jScrollPane4.setViewportView(jTblPersonasAdd);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false, false, false, false, false, false, false, false
+            };
 
-        panelPer2.add(jScrollPane4, "card2");
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        table_Persona_Form_Add.setRowHeight(40);
+        spWinPer.setViewportView(table_Persona_Form_Add);
+        if (table_Persona_Form_Add.getColumnModel().getColumnCount() > 0) {
+            table_Persona_Form_Add.getColumnModel().getColumn(0).setMinWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(0).setPreferredWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(0).setMaxWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(1).setMinWidth(80);
+            table_Persona_Form_Add.getColumnModel().getColumn(1).setPreferredWidth(80);
+            table_Persona_Form_Add.getColumnModel().getColumn(1).setMaxWidth(80);
+            table_Persona_Form_Add.getColumnModel().getColumn(2).setMinWidth(100);
+            table_Persona_Form_Add.getColumnModel().getColumn(2).setPreferredWidth(100);
+            table_Persona_Form_Add.getColumnModel().getColumn(2).setMaxWidth(100);
+            table_Persona_Form_Add.getColumnModel().getColumn(5).setMinWidth(80);
+            table_Persona_Form_Add.getColumnModel().getColumn(5).setPreferredWidth(80);
+            table_Persona_Form_Add.getColumnModel().getColumn(5).setMaxWidth(80);
+            table_Persona_Form_Add.getColumnModel().getColumn(6).setMinWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(6).setPreferredWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(6).setMaxWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(7).setMinWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(7).setPreferredWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(7).setMaxWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(8).setMinWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(8).setPreferredWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(8).setMaxWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(9).setMinWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(9).setPreferredWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(9).setMaxWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(10).setMinWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(10).setPreferredWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(10).setMaxWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(11).setMinWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(11).setPreferredWidth(0);
+            table_Persona_Form_Add.getColumnModel().getColumn(11).setMaxWidth(0);
+        }
+
+        panelPer2.add(spWinPer, "card2");
 
         jPanel4.add(panelPer2);
 
@@ -817,6 +933,15 @@ public class FormAddAccident extends javax.swing.JPanel {
 
     private void cmbAddVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAddVehiculoActionPerformed
         DefaultTableModel tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+        
+        int num_vehiculos = tblModel.getRowCount() + 1;
+
+        if (EditOnVehiculo && tblModel.getRowCount()>0) {
+
+            tblModel.removeRow(rowVehiculoEditado);
+            EditOnVehiculo = false;
+            num_vehiculos = (int) tblModel.getValueAt(rowVehiculoEditado, 0);
+        }
 
         //COMPROBACIONES
         //Minimo matrícula y 6 caracteres
@@ -831,36 +956,98 @@ public class FormAddAccident extends javax.swing.JPanel {
             return;
         }
 
-        int num_vehiculos = tblModel.getRowCount() + 1;
+        
+        
 
         Object[] rowData = {num_vehiculos, null, txtMatricula.getText().toUpperCase(), txtMarca.getText(), txtModelo.getText(), txtGestion.getText(), txtAObservaciones.getText()};
         tblModel.addRow(rowData);
 
-        cmbVehiculoPer.addItem(txtMatricula.getText().toUpperCase());
+        llenarComboMatriculaPersona();
 
-        txtMatricula.setText("");
-        txtMarca.setText("");
-        txtModelo.setText("");
-        txtGestion.setText("");
-        txtAObservaciones.setText("");
+        limpiarDatosVehiculo();
 
     }//GEN-LAST:event_cmbAddVehiculoActionPerformed
 
-    private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox3ActionPerformed
+    private void chkbPAlcoholPosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkbPAlcoholPosActionPerformed
 
-    private void jCheckBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox5ActionPerformed
+    }//GEN-LAST:event_chkbPAlcoholPosActionPerformed
 
-    private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox4ActionPerformed
+    private void chkbPDrogasPosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkbPDrogasPosActionPerformed
 
-    private void cboxTrasladadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboxTrasladadoActionPerformed
+    }//GEN-LAST:event_chkbPDrogasPosActionPerformed
 
-    }//GEN-LAST:event_cboxTrasladadoActionPerformed
+    private void chkbPDrogasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkbPDrogasActionPerformed
+
+    }//GEN-LAST:event_chkbPDrogasActionPerformed
+
+    private void chkbTrasladadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkbTrasladadoActionPerformed
+
+    }//GEN-LAST:event_chkbTrasladadoActionPerformed
+
+    private void btnAddPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPersonaActionPerformed
+        DefaultTableModel tblModel = (DefaultTableModel) table_Persona_Form_Add.getModel();
+        
+        if (EditOnPersona && tblModel.getRowCount()>0) {
+
+            tblModel.removeRow(rowPersonaEditada);
+            EditOnPersona = false;
+
+        }
+        
+        //Minimo matrícula y 6 caracteres
+        if (txtDni.getText().isEmpty() || txtDni.getText().length() < 7) {
+            JOptionPane.showMessageDialog(null, "Como mínimo poner un número de documento \n y debe tener mínimo 6 caracteres");
+            return;
+        }
+
+        // Comprobramos que no esté duplicada la matrícula
+        if (tieneDuplicado(tblModel, 2, (Object) txtDni.getText().toUpperCase())) {
+            JOptionPane.showMessageDialog(null, "Persona repetida,\n compruebe los datos");
+            return;
+        }
+
+        // Comprobamos que no se duplica el conductor para un mismo vehículo
+        if (conductorDuplicado(tblModel, (Object) cmbVehiculoPer.getSelectedItem())) {
+            JOptionPane.showMessageDialog(null, "Ya existe un conductor para el vehículo: " + cmbVehiculoPer.getSelectedItem() + "\n Compruebe los datos");
+            return;
+        }
+
+        int num_persona = tblModel.getRowCount() + 1;
+
+        Object[] rowData = {
+            num_persona,
+            null,
+            txtDni.getText().toUpperCase(),
+            cmbTipoPersona.getSelectedItem(),
+            cmbVehiculoPer.getSelectedItem(),
+            cmbResultadoPers.getSelectedItem(),
+            txtLugarTraslado.getText(),
+            chkbPAlcohol.isSelected(),
+            chkbPAlcoholPos.isSelected(),
+            chkbPDrogas.isSelected(),
+            chkbPDrogasPos.isSelected(),
+            txtAObserv_Personas.getText()
+
+        };
+
+        tblModel.addRow(rowData);
+
+        limpiarDatosPersonas();
+
+    }//GEN-LAST:event_btnAddPersonaActionPerformed
+
+    private void cmbTipoPersonaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTipoPersonaItemStateChanged
+
+    }//GEN-LAST:event_cmbTipoPersonaItemStateChanged
+
+    private void cmbTipoPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTipoPersonaActionPerformed
+        String elementoSeleccionado = (String) cmbTipoPersona.getSelectedItem();
+        if (elementoSeleccionado.equals("PEATÓN")) {
+            cmbVehiculoPer.setEnabled(false);
+        } else {
+            cmbVehiculoPer.setEnabled(true);
+        }
+    }//GEN-LAST:event_cmbTipoPersonaActionPerformed
 
     private void setNumeroDiligencias(String equipo) {
         SelectedDate fecha = Fecha.getSelectedDate();
@@ -881,6 +1068,32 @@ public class FormAddAccident extends javax.swing.JPanel {
 
     }
 
+    private void limpiarDatosVehiculo() {
+        txtMatricula.setText("");
+        txtMarca.setText("");
+        txtModelo.setText("");
+        txtGestion.setText("");
+        txtAObservaciones.setText("");
+
+    }
+
+    private void limpiarDatosPersonas() {
+        txtDni.setText("");
+        cmbTipoPersona.setSelectedIndex(0);
+        if (cmbVehiculoPer.getItemCount() > 0) {
+            cmbVehiculoPer.setSelectedIndex(0);
+        }
+        cmbResultadoPers.setSelectedIndex(0);
+        chkbTrasladado.setSelected(false);
+        txtLugarTraslado.setText("");
+        chkbPAlcohol.setSelected(false);
+        chkbPAlcoholPos.setSelected(false);
+        chkbPDrogas.setSelected(false);
+        chkbPDrogasPos.setSelected(false);
+        txtAObserv_Personas.setText("");
+
+    }
+
     private void setDataFields() {
 
         Hora.set24HourView(true);
@@ -889,11 +1102,11 @@ public class FormAddAccident extends javax.swing.JPanel {
         Hora.setEditor(txtHora);
 
         cmbBoxTipoAccid.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getTiposAccidentes().toArray(new String[0])));
-        
+
         cmbTipoPersona.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getTiposPersonas().toArray(new String[0])));
 
         // Listener para detectar cambios en checkbox traslado
-        cboxTrasladado.addItemListener(new ItemListener() {
+        chkbTrasladado.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -921,6 +1134,23 @@ public class FormAddAccident extends javax.swing.JPanel {
         return false;
     }
 
+    private boolean conductorDuplicado(DefaultTableModel model, Object matricula) {
+        for (int fila = 0; fila < model.getRowCount(); fila++) {
+            Object valorEnFila = model.getValueAt(fila, 4);
+
+            // Si ya existe la matricula
+            if (matricula.equals(valorEnFila)) {
+                // Si ya tiene un conductor selecccionado como tipo persona
+                if (model.getValueAt(fila, 3).equals(cmbTipoPersona.getSelectedItem())) {
+                    return true;
+                }
+            }
+        }
+
+        // No tiene conductor duplicado.
+        return false;
+    }
+
     private int buscarValorEnComboBox(JComboBox<String> comboBox, String valorABuscar) {
         int itemCount = comboBox.getItemCount();
 
@@ -937,6 +1167,18 @@ public class FormAddAccident extends javax.swing.JPanel {
         // Si el valor no se encuentra
         return -1;
     }
+    
+    private void llenarComboMatriculaPersona() {
+     
+        cmbVehiculoPer.removeAllItems();
+        
+        DefaultTableModel tblModel = new DefaultTableModel();
+        tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+         for (int i = 0; i < tblModel.getRowCount(); i++) {
+             cmbVehiculoPer.addItem((String) tblModel.getValueAt(i, 2));
+        }
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.conde.datechooser.DateChooser Fecha;
@@ -944,20 +1186,20 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JLabel Observaciones;
     private javax.swing.JLabel Observaciones1;
     private javax.swing.ButtonGroup bntGroupLibroDiligencias;
+    private javax.swing.JButton btnAddPersona;
     private javax.swing.JButton btnAnyadir;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnSelectFecha;
-    private javax.swing.JCheckBox cboxTrasladado;
-    private javax.swing.JButton cmbAddPersona;
+    private javax.swing.JCheckBox chkbPAlcohol;
+    private javax.swing.JCheckBox chkbPAlcoholPos;
+    private javax.swing.JCheckBox chkbPDrogas;
+    private javax.swing.JCheckBox chkbPDrogasPos;
+    private javax.swing.JCheckBox chkbTrasladado;
     private javax.swing.JButton cmbAddVehiculo;
     private javax.swing.JComboBox<String> cmbBoxTipoAccid;
     private javax.swing.JComboBox<String> cmbResultadoPers;
     private javax.swing.JComboBox<String> cmbTipoPersona;
     private javax.swing.JComboBox<String> cmbVehiculoPer;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
@@ -984,10 +1226,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTable jTblPersonasAdd;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lblLugarTraslado;
@@ -1000,6 +1239,9 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JPanel panelVehiculos;
     private javax.swing.JRadioButton rbPamplona;
     private javax.swing.JRadioButton rbTudela;
+    private com.conde.swing.ScrollPaneWin11 spWin;
+    private com.conde.swing.ScrollPaneWin11 spWinPer;
+    private com.conde.swing.Table_Persona_Form_Add table_Persona_Form_Add;
     private com.conde.swing.Table_Vehiculo_Form_Add table_Vehiculo_Form_Add;
     private javax.swing.JTextArea txtAObserv_Personas;
     private javax.swing.JTextArea txtAObservaciones;
@@ -1015,5 +1257,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JTextField txtNumDiligencias;
     private javax.swing.JTextField txtPatrulla;
     // End of variables declaration//GEN-END:variables
+
+    
 
 }

@@ -19,7 +19,9 @@ public class TableActionCellEditor extends DefaultCellEditor {
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 
         PanelActionCell action = new PanelActionCell();
-        action.initEvent(event, row);
+      
+        action.initEvent(event, table, row);
+        
         action.setBackground(new Color(6, 72, 72));
 
         return action;

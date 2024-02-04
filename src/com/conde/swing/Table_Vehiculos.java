@@ -49,20 +49,20 @@ public class Table_Vehiculos extends JTable {
         setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int column) {
-                if (column != 1) {
+                if (column != 2) {
                     Component com = super.getTableCellRendererComponent(table, o, isSelected, hasFocus, row, column);
                     com.setBackground(Color.white);
 
                     setBorder(noFocusBorder);
                     if (isSelected) {
-                        com.setForeground(new Color(240, 238, 102));
+                        
                         com.setBackground(new Color(6, 72, 72));
                     } else {
                         com.setForeground(new Color(53, 54, 53));
                     }
 
                     setHorizontalAlignment(JLabel.CENTER);
-                    setFont(new Font("sansserif", Font.PLAIN, 12));
+                 
                     return com;
                 } else {
                     Component com = super.getTableCellRendererComponent(table, o, isSelected, hasFocus, row, column);
@@ -70,14 +70,14 @@ public class Table_Vehiculos extends JTable {
 
                     setBorder(noFocusBorder);
                     if (isSelected) {
-                        com.setForeground(new Color(240, 238, 102));
+                       
                         com.setBackground(new Color(6, 72, 72));
                     } else {
-                        com.setForeground(Color.RED);
+                        com.setBackground(new Color(6, 72, 72));
                     }
 
                     setHorizontalAlignment(JLabel.CENTER);
-                    setFont(new Font("sansserif", Font.BOLD, 12));
+              
                     return com;
 
                 }

@@ -2,11 +2,13 @@ package com.conde.form;
 
 import com.conde.cell.TableActionCellEditor;
 import com.conde.cell.TableActionEvent;
+import com.conde.event.EventRowSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Model_Accident;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.lang.Object;
@@ -17,12 +19,15 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class Form_Home extends javax.swing.JPanel {
 
     private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
+
+    
 
     public Form_Home() {
 
@@ -35,12 +40,12 @@ public class Form_Home extends javax.swing.JPanel {
         
         TableActionEvent event = new TableActionEvent() {
                 @Override
-                public void onEdit(int row) {
+                public void onEdit(JTable t,int row) {
                     System.out.println("Editando fila: " + row);
                 }
 
                 @Override
-                public void onDelete(int row) {
+                public void onDelete(JTable t,int row) {
                     if (table.isEditing()) {
                         table.getCellEditor().stopCellEditing();
                     }
@@ -192,11 +197,12 @@ public class Form_Home extends javax.swing.JPanel {
             }
         });
         table.setMaximumSize(null);
-        table.setMinimumSize(null);
         table.setName(""); // NOI18N
-        table.setPreferredScrollableViewportSize(null);
-        table.setPreferredSize(null);
-        table.setRequestFocusEnabled(false);
+        table.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tableKeyPressed(evt);
+            }
+        });
         s.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(0).setMinWidth(0);
@@ -258,6 +264,10 @@ public class Form_Home extends javax.swing.JPanel {
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
         cargarAccidentes();
     }//GEN-LAST:event_formAncestorAdded
+
+    private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
+
+    }//GEN-LAST:event_tableKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

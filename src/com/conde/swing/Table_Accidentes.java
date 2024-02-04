@@ -31,7 +31,7 @@ public class Table_Accidentes extends JTable {
 
         setShowHorizontalLines(true);
         setGridColor(new Color(230, 230, 230));
-        setRowHeight(50);
+        setRowHeight(35);
        
         
 
@@ -53,17 +53,18 @@ public class Table_Accidentes extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int column) {
                 
-                setVerticalAlignment(SwingConstants.CENTER);
+                
                 
                 switch (column) {
 
                     case 1:
                         
+                                                
                         PanelActionCell action = new PanelActionCell();
-                        
                         setBorder(noFocusBorder);
                         if (isSelected) {
                             action.setBackground(new Color(6, 72, 72));
+                          
                         } else {
                             action.setBackground(Color.white);
                         }
@@ -113,7 +114,9 @@ public class Table_Accidentes extends JTable {
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
+                System.out.println("Tecla Pulsada: "+e.getKeyCode());
             }
+            
 
             @Override
             public void keyPressed(KeyEvent e) {
