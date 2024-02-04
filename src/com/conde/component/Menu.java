@@ -10,6 +10,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -69,7 +71,22 @@ public class Menu extends javax.swing.JPanel {
         Icon icon = new ImageIcon(imagen.getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT));
         lblLogo.setIcon(icon);
        
-        
+        btnToogleTheme.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (estado) {
+                    Image imagen = new ImageIcon(Menu.this.getClass().getResource("/com/conde/resources/icons/el-verano.png")).getImage();
+                    btnToogleTheme.setIcon(new ImageIcon(imagen));
+                    btnToogleTheme.setToolTipText("Tema oscuro");
+                } else {
+                    Image imagen = new ImageIcon(Menu.this.getClass().getResource("/com/conde/resources/icons/luna.png")).getImage();
+                    btnToogleTheme.setIcon(new ImageIcon(imagen));
+                    btnToogleTheme.setToolTipText("Tema claro");
+                }
+                toogleTheme.toogleTheme(estado);
+                estado = !estado; // Cambiar el estado para el próximo clic
+            }
+        });
 
     }
 
@@ -207,7 +224,7 @@ public class Menu extends javax.swing.JPanel {
 
     private void btnToogleThemeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToogleThemeActionPerformed
 
-        cambiarIcono();
+//        cambiarIcono();
         
     }//GEN-LAST:event_btnToogleThemeActionPerformed
 
@@ -242,19 +259,21 @@ public class Menu extends javax.swing.JPanel {
         });
     }
     
-    private void cambiarIcono() {
-        if (estado) {
-            Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/el-verano.png")).getImage();
-            btnToogleTheme.setIcon(new ImageIcon(imagen));
-            btnToogleTheme.setToolTipText("Tema oscuro");
-        } else {
-            Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/luna.png")).getImage();
-            btnToogleTheme.setIcon(new ImageIcon(imagen));
-            btnToogleTheme.setToolTipText("Tema claro");
-        }
-        toogleTheme.toogleTheme(estado);
-        estado = !estado; // Cambiar el estado para el próximo clic
-    }
+//    private void cambiarIcono() {
+//        if (estado) {
+//            Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/el-verano.png")).getImage();
+//            btnToogleTheme.setIcon(new ImageIcon(imagen));
+//            btnToogleTheme.setToolTipText("Tema oscuro");
+//        } else {
+//            Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/luna.png")).getImage();
+//            btnToogleTheme.setIcon(new ImageIcon(imagen));
+//            btnToogleTheme.setToolTipText("Tema claro");
+//        }
+//        toogleTheme.toogleTheme(estado);
+//        estado = !estado; // Cambiar el estado para el próximo clic
+//    }
+    
+    
 
  
     // Variables declaration - do not modify//GEN-BEGIN:variables

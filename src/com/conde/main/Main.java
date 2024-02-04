@@ -1,6 +1,5 @@
 package com.conde.main;
 
-import com.conde.event.EventToogleTheme;
 import com.conde.form.Form_2;
 import com.conde.form.Form_Home;
 
@@ -9,11 +8,8 @@ import com.conde.model.ConexionAccess;
 import com.conde.form.FormAddAccident;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -24,7 +20,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class Main extends javax.swing.JFrame {
 
     private Form_Home home;
-    private FormAddAccident frmAddAcc;
     private Form_2 form2;
     
     private int indexPanel=0;
@@ -98,17 +93,16 @@ public class Main extends javax.swing.JFrame {
 
         mainPanel.removeAll();
         CardLayout cl = new CardLayout();
+        cl.setHgap(5);
         cl.setVgap(5);
         mainPanel.setLayout(cl);
-        if (com.getName() != null && com.getName().equals("frmAddAccidente")) {
-            
-            com.setSize(getWidth(), getHeight());
-        }
-
+        
         mainPanel.add(com);
 
         mainPanel.repaint();
         mainPanel.revalidate();
+        System.out.println("Ancho "+mainPanel.getWidth());
+        System.out.println("Alto "+mainPanel.getHeight());
     }
     
     private void toggleTema() {
@@ -154,7 +148,6 @@ public class Main extends javax.swing.JFrame {
 
         header1 = new com.conde.component.Header();
         jSeparator1 = new javax.swing.JSeparator();
-        buttonGroup1 = new javax.swing.ButtonGroup();
         panelBorder1 = new com.conde.swing.PanelBorder();
         menu = new com.conde.component.Menu();
         mainPanel = new javax.swing.JPanel();
@@ -170,7 +163,7 @@ public class Main extends javax.swing.JFrame {
         panelBorder1.add(menu, java.awt.BorderLayout.WEST);
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
-        mainPanel.setLayout(new java.awt.BorderLayout());
+        mainPanel.setLayout(new java.awt.CardLayout(20, 20));
         panelBorder1.add(mainPanel, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -193,15 +186,45 @@ public class Main extends javax.swing.JFrame {
      
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-
+                
                 new Main().setVisible(true);
+
+//            JFrame frame = new Main();
+//                
+//            
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//            // Obtener el entorno gráfico
+//            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//            GraphicsDevice[] gd = ge.getScreenDevices();
+//
+//            // Obtener la resolución de la pantalla principal
+//            DisplayMode displayMode = gd[0].getDisplayMode();
+//            int screenWidth = displayMode.getWidth();
+//            int screenHeight = displayMode.getHeight();
+//
+//            // Establecer las proporciones deseadas
+//            double proporcionAncho = 0.8; // Porcentaje del ancho de la pantalla
+//            double proporcionAlto = 0.6;  // Porcentaje del alto de la pantalla
+//
+//            // Calcular el tamaño del JFrame
+//            int nuevoAncho = (int) (screenWidth * proporcionAncho);
+//            int nuevoAlto = (int) (screenHeight * proporcionAlto);
+//
+//            // Configurar el tamaño y la posición del JFrame
+//            
+//            frame.setSize(nuevoAncho, nuevoAlto);
+//            frame.setLocationRelativeTo(null); // Centrar en la pantalla
+//
+//            frame.setVisible(true);
+//                
+                
             }
 
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
     private com.conde.component.Header header1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel mainPanel;

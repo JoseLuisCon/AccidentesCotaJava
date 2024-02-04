@@ -18,7 +18,7 @@ public class Accidentes_JDBC {
     }
 
     public ArrayList<Model_Accident> getListAccidents() {
-        String sql = "SELECT * FROM Accidentes ORDER BY Fecha";
+        String sql = "SELECT TOP 100 * FROM Accidentes ORDER BY Fecha";
         try {
             st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(sql);
@@ -274,6 +274,33 @@ public class Accidentes_JDBC {
 
         return matriculaStr;
     }
+    
+   public ArrayList<String> getTiposPersonas() {
+       
+       ArrayList<String> tipoPersonas = new ArrayList<>();
+       
+       String sql = "SELECT TIPO_PERSONA FROM TIPO_PERSONA";
+         try {
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                tipoPersonas.add(rs.getString("TIPO_PERSONA"));
+
+            }
+            rs.close();
+            st.close();
+
+            return tipoPersonas;
+
+        } catch (Exception e) {
+            System.out.println("Error en la carga del tipo de personas." + e.getMessage());
+        }
+
+        return null;
+        
+    }
 
     public void deleteVehiculosByIdAccidente(int Id_Accdient) throws SQLException {
 
@@ -328,5 +355,7 @@ public class Accidentes_JDBC {
     private Statement st;
     private PreparedStatement ps;
     private ResultSet rs;
+
+
 
 }

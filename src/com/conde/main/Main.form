@@ -11,8 +11,6 @@
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator1">
     </Component>
-    <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
-    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
@@ -76,7 +74,10 @@
             </Constraint>
           </Constraints>
 
-          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout">
+            <Property name="horizontalGap" type="int" value="20"/>
+            <Property name="verticalGap" type="int" value="20"/>
+          </Layout>
         </Container>
       </SubComponents>
     </Container>

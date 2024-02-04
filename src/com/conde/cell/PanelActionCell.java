@@ -17,6 +17,7 @@ public class PanelActionCell extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                event.onEdit(row);
+               
         }
     });
         cmdDelete.addActionListener(new ActionListener() {
