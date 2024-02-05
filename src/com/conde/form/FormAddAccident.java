@@ -3,21 +3,29 @@ package com.conde.form;
 import com.conde.cell.PanelActionCell;
 import com.conde.cell.TableActionEvent;
 import com.conde.datechooser.SelectedDate;
+import com.conde.event.EventMenuSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
+import com.conde.swing.AddCarretera;
+import com.conde.swing.AddMotivoDiligencias;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 public class FormAddAccident extends javax.swing.JPanel {
@@ -25,14 +33,16 @@ public class FormAddAccident extends javax.swing.JPanel {
     Accidentes_JDBC modelAcc = new Accidentes_JDBC();
     private Boolean EditOnVehiculo = false;
     private int rowVehiculoEditado;
-     private Boolean EditOnPersona = false;
+    private Boolean EditOnPersona = false;
     private int rowPersonaEditada;
+    
 
     public FormAddAccident() {
         initComponents();
 
         setPreferredSize(new Dimension(1920, 968));
         setDataFields();
+        setListenersDocument();
 
         lblLugarTraslado.setVisible(false);
         txtLugarTraslado.setVisible(false);
@@ -52,30 +62,29 @@ public class FormAddAccident extends javax.swing.JPanel {
                     txtGestion.setText((String) model.getValueAt(row, 5));
                     txtAObservaciones.setText((String) model.getValueAt(row, 6));
 
-                }else{
-                    
-                     EditOnPersona = true;
+                } else {
+
+                    EditOnPersona = true;
                     rowPersonaEditada = row;
                     DefaultTableModel model = (DefaultTableModel) table_Persona_Form_Add.getModel();
-                     txtDni.setText((String) model.getValueAt(row, 2));
-                     cmbTipoPersona.setSelectedItem(model.getValueAt(row, 3));
-                     cmbVehiculoPer.setSelectedItem(model.getValueAt(row, 4));
-                     cmbResultadoPers.setSelectedItem(model.getValueAt(row, 5));
-                     if(model.getValueAt(row,6).equals("")){
-                         chkbTrasladado.setSelected(false);
-                         txtLugarTraslado.setText("");
-                     }else{
-                         chkbTrasladado.setSelected(true);
-                         txtLugarTraslado.setText((String) model.getValueAt(row,6));
-                     }
+                    txtDni.setText((String) model.getValueAt(row, 2));
+                    cmbTipoPersona.setSelectedItem(model.getValueAt(row, 3));
+                    cmbVehiculoPer.setSelectedItem(model.getValueAt(row, 4));
+                    cmbResultadoPers.setSelectedItem(model.getValueAt(row, 5));
+                    if (model.getValueAt(row, 6).equals("")) {
+                        chkbTrasladado.setSelected(false);
+                        txtLugarTraslado.setText("");
+                    } else {
+                        chkbTrasladado.setSelected(true);
+                        txtLugarTraslado.setText((String) model.getValueAt(row, 6));
+                    }
 
-                     chkbPAlcohol.setSelected((boolean) model.getValueAt(row, 7));
+                    chkbPAlcohol.setSelected((boolean) model.getValueAt(row, 7));
                     chkbPAlcoholPos.setSelected((boolean) model.getValueAt(row, 8));
                     chkbPDrogas.setSelected((boolean) model.getValueAt(row, 9));
                     chkbPDrogasPos.setSelected((boolean) model.getValueAt(row, 10));
-                    txtAObserv_Personas.setText((String) model.getValueAt(row, 11));                    
-                
-                
+                    txtAObserv_Personas.setText((String) model.getValueAt(row, 11));
+
                 }
 
             }
@@ -95,8 +104,8 @@ public class FormAddAccident extends javax.swing.JPanel {
                     model.removeRow(row);
                     limpiarDatosVehiculo();
 
-                }else{
-                 if (table_Persona_Form_Add.isEditing()) {
+                } else {
+                    if (table_Persona_Form_Add.isEditing()) {
                         table_Persona_Form_Add.getCellEditor().stopCellEditing();
                     }
 
@@ -104,7 +113,7 @@ public class FormAddAccident extends javax.swing.JPanel {
 
                     model.removeRow(row);
                     limpiarDatosPersonas();
-                
+
                 }
 
             }
@@ -161,6 +170,55 @@ public class FormAddAccident extends javax.swing.JPanel {
         panelPer2.setPreferredSize(new Dimension(500, 400));
 
     }
+    
+    private void setListenersDocument(){
+    
+        txtKilometro.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                checkCampos();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                checkCampos();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+               checkCampos();
+            }
+        });
+        
+          txtPatrulla.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                checkCampos();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                checkCampos();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+               checkCampos();
+            }
+        });
+        
+    
+    
+    }
+    
+    private void checkCampos(){
+        String texto1 = txtKilometro.getText();
+        String texto2 = txtPatrulla.getText();
+
+            // Habilitar el botón si ambos campos tienen contenido
+            btnAnyadir.setEnabled(!texto1.isEmpty() && !texto2.isEmpty());
+    
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -175,8 +233,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        txtCarretera = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        txtKilometro = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel8 = new javax.swing.JLabel();
@@ -193,6 +250,9 @@ public class FormAddAccident extends javax.swing.JPanel {
         txtHora = new javax.swing.JFormattedTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        cmbCarretera = new javax.swing.JComboBox<>();
+        btnAddCarretera = new javax.swing.JButton();
+        btnAddMotivoDiligencias = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         btnAnyadir = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
@@ -275,9 +335,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel9.setText("Descripción");
 
-        txtCarretera.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtKilometro.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
@@ -337,6 +395,24 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         jLabel2.setText("Fecha");
 
+        btnAddCarretera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/boton-agregar.png"))); // NOI18N
+        btnAddCarretera.setToolTipText("\"Añadir lugar que no sea una carretera...\"");
+        btnAddCarretera.setContentAreaFilled(false);
+        btnAddCarretera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddCarreteraActionPerformed(evt);
+            }
+        });
+
+        btnAddMotivoDiligencias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/boton-agregar.png"))); // NOI18N
+        btnAddMotivoDiligencias.setToolTipText("\"Añadir lugar que no sea una carretera...\"");
+        btnAddMotivoDiligencias.setContentAreaFilled(false);
+        btnAddMotivoDiligencias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddMotivoDiligenciasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -359,17 +435,19 @@ public class FormAddAccident extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(btnSelectFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtHora))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCarretera, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtKilometro, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                            .addComponent(cmbCarretera, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAddCarretera, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(118, 118, 118)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
@@ -386,10 +464,11 @@ public class FormAddAccident extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(cmbBoxTipoAccid, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addGap(18, 18, Short.MAX_VALUE)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 718, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddMotivoDiligencias, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -398,7 +477,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
+                .addGap(8, 8, 8)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -413,11 +492,11 @@ public class FormAddAccident extends javax.swing.JPanel {
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel4)
-                                .addComponent(txtCarretera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(cmbCarretera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGap(41, 41, 41)
                                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtKilometro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel5)))
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -425,11 +504,13 @@ public class FormAddAccident extends javax.swing.JPanel {
                                     .addComponent(jLabel10)
                                     .addComponent(rbPamplona)
                                     .addComponent(rbTudela)
-                                    .addComponent(txtNumDiligencias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtNumDiligencias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnAddCarretera, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                     .addComponent(jLabel8)
-                                    .addComponent(cmbBoxTipoAccid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(cmbBoxTipoAccid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnAddMotivoDiligencias, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -443,9 +524,17 @@ public class FormAddAccident extends javax.swing.JPanel {
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
+        btnAnyadir.setFont(new java.awt.Font("Roboto Light", 1, 14)); // NOI18N
+        btnAnyadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/boton-agregar.png"))); // NOI18N
         btnAnyadir.setText("Añadir");
         btnAnyadir.setEnabled(false);
+        btnAnyadir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAnyadirActionPerformed(evt);
+            }
+        });
 
+        btnCancelar.setFont(new java.awt.Font("Roboto Medium", 1, 14)); // NOI18N
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -469,39 +558,35 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(64, Short.MAX_VALUE)
-                .addComponent(btnAnyadir)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(btnAnyadir, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
-                .addComponent(btnCancelar)
-                .addGap(38, 38, 38))
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
+
+        jPanel8Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnAnyadir, btnCancelar});
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(1196, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(330, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         panelDatos.add(jPanel2, "card2");
@@ -839,10 +924,11 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         jPanel4.add(panelPer1);
 
-        panelPer2.setMaximumSize(new java.awt.Dimension(550, 400));
-        panelPer2.setMinimumSize(new java.awt.Dimension(550, 400));
-        panelPer2.setPreferredSize(new java.awt.Dimension(550, 400));
-        panelPer2.setLayout(new java.awt.CardLayout());
+        panelPer2.setMaximumSize(new java.awt.Dimension(550, 380));
+        panelPer2.setMinimumSize(new java.awt.Dimension(550, 380));
+        panelPer2.setName(""); // NOI18N
+        panelPer2.setPreferredSize(new java.awt.Dimension(550, 380));
+        panelPer2.setLayout(new java.awt.CardLayout(0, 10));
 
         spWinPer.setBorder(null);
 
@@ -912,7 +998,8 @@ public class FormAddAccident extends javax.swing.JPanel {
     }//GEN-LAST:event_rbTudelaActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        
+        
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSelectFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectFechaActionPerformed
@@ -933,10 +1020,10 @@ public class FormAddAccident extends javax.swing.JPanel {
 
     private void cmbAddVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAddVehiculoActionPerformed
         DefaultTableModel tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
-        
+
         int num_vehiculos = tblModel.getRowCount() + 1;
 
-        if (EditOnVehiculo && tblModel.getRowCount()>0) {
+        if (EditOnVehiculo && tblModel.getRowCount() > 0) {
 
             tblModel.removeRow(rowVehiculoEditado);
             EditOnVehiculo = false;
@@ -955,9 +1042,6 @@ public class FormAddAccident extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Matrícula repetida,\n compruebe los datos");
             return;
         }
-
-        
-        
 
         Object[] rowData = {num_vehiculos, null, txtMatricula.getText().toUpperCase(), txtMarca.getText(), txtModelo.getText(), txtGestion.getText(), txtAObservaciones.getText()};
         tblModel.addRow(rowData);
@@ -986,14 +1070,14 @@ public class FormAddAccident extends javax.swing.JPanel {
 
     private void btnAddPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPersonaActionPerformed
         DefaultTableModel tblModel = (DefaultTableModel) table_Persona_Form_Add.getModel();
-        
-        if (EditOnPersona && tblModel.getRowCount()>0) {
+
+        if (EditOnPersona && tblModel.getRowCount() > 0) {
 
             tblModel.removeRow(rowPersonaEditada);
             EditOnPersona = false;
 
         }
-        
+
         //Minimo matrícula y 6 caracteres
         if (txtDni.getText().isEmpty() || txtDni.getText().length() < 7) {
             JOptionPane.showMessageDialog(null, "Como mínimo poner un número de documento \n y debe tener mínimo 6 caracteres");
@@ -1006,10 +1090,21 @@ public class FormAddAccident extends javax.swing.JPanel {
             return;
         }
 
+        if (cmbVehiculoPer.getSelectedItem() == null) {
+            if ((cmbTipoPersona.getSelectedItem().equals("CONDUCTOR") || cmbTipoPersona.getSelectedItem().equals("OCUPANTE"))) {
+                JOptionPane.showMessageDialog(null, "Tiene que asignarle un vehículo por el tipo de persona elegido: \n Compruebe los datos");
+                return;
+
+            }
+        }
+
         // Comprobamos que no se duplica el conductor para un mismo vehículo
-        if (conductorDuplicado(tblModel, (Object) cmbVehiculoPer.getSelectedItem())) {
-            JOptionPane.showMessageDialog(null, "Ya existe un conductor para el vehículo: " + cmbVehiculoPer.getSelectedItem() + "\n Compruebe los datos");
-            return;
+        if (cmbVehiculoPer.getSelectedItem() != null) {
+            if (conductorDuplicado(tblModel, (Object) cmbVehiculoPer.getSelectedItem())) {
+                JOptionPane.showMessageDialog(null, "Ya existe un conductor para el vehículo: " + cmbVehiculoPer.getSelectedItem() + "\n Compruebe los datos");
+                return;
+            }
+
         }
 
         int num_persona = tblModel.getRowCount() + 1;
@@ -1048,6 +1143,53 @@ public class FormAddAccident extends javax.swing.JPanel {
             cmbVehiculoPer.setEnabled(true);
         }
     }//GEN-LAST:event_cmbTipoPersonaActionPerformed
+
+    private void btnAddCarreteraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCarreteraActionPerformed
+        
+        if ( FlatLaf.isLafDark()){
+            FlatDarkLaf.registerCustomDefaultsSource("com/conde/style");
+            FlatDarkLaf.setup();
+            btnAddCarretera.setIcon(new ImageIcon("src/com/conde/resources/icons/boton-agregar_white.png"));
+        }else{
+            FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
+            FlatLightLaf.setup();
+        }
+        
+        
+        AddCarretera modalDialog = new AddCarretera(null, true);
+        modalDialog.setSize(400,300);
+        modalDialog.setLocationRelativeTo(this);
+        modalDialog.setVisible(true);
+        
+         cmbCarretera.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getCarreteras().toArray(new String[0])));
+    }//GEN-LAST:event_btnAddCarreteraActionPerformed
+
+    private void btnAnyadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnyadirActionPerformed
+        // Datos accidente
+        
+        //Listado vehículos
+        
+        //Listado personas
+    }//GEN-LAST:event_btnAnyadirActionPerformed
+
+    private void btnAddMotivoDiligenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMotivoDiligenciasActionPerformed
+         if ( FlatLaf.isLafDark()){
+            FlatDarkLaf.registerCustomDefaultsSource("com/conde/style");
+            FlatDarkLaf.setup();
+            btnAddMotivoDiligencias.setIcon(new ImageIcon("src/com/conde/resources/icons/boton-agregar_white.png"));
+        }else{
+            FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
+            FlatLightLaf.setup();
+        }
+        
+        
+        AddMotivoDiligencias modalDialog = new AddMotivoDiligencias(null, true);
+        modalDialog.setSize(400,300);
+        modalDialog.setLocationRelativeTo(this);
+        modalDialog.setVisible(true);
+        
+         cmbBoxTipoAccid.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getTiposAccidentes().toArray(new String[0])));
+    }//GEN-LAST:event_btnAddMotivoDiligenciasActionPerformed
 
     private void setNumeroDiligencias(String equipo) {
         SelectedDate fecha = Fecha.getSelectedDate();
@@ -1095,11 +1237,14 @@ public class FormAddAccident extends javax.swing.JPanel {
     }
 
     private void setDataFields() {
+        
 
         Hora.set24HourView(true);
         Hora.now();
         Hora.setOrientation(SwingConstants.HORIZONTAL);
         Hora.setEditor(txtHora);
+
+        cmbCarretera.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getCarreteras().toArray(new String[0])));
 
         cmbBoxTipoAccid.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getTiposAccidentes().toArray(new String[0])));
 
@@ -1118,6 +1263,9 @@ public class FormAddAccident extends javax.swing.JPanel {
                 }
             }
         });
+        
+      
+        
     }
 
     private static boolean tieneDuplicado(DefaultTableModel model, int columnaABuscar, Object nuevoValor) {
@@ -1167,15 +1315,15 @@ public class FormAddAccident extends javax.swing.JPanel {
         // Si el valor no se encuentra
         return -1;
     }
-    
+
     private void llenarComboMatriculaPersona() {
-     
+
         cmbVehiculoPer.removeAllItems();
-        
+        cmbVehiculoPer.addItem("");
         DefaultTableModel tblModel = new DefaultTableModel();
         tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
-         for (int i = 0; i < tblModel.getRowCount(); i++) {
-             cmbVehiculoPer.addItem((String) tblModel.getValueAt(i, 2));
+        for (int i = 0; i < tblModel.getRowCount(); i++) {
+            cmbVehiculoPer.addItem((String) tblModel.getValueAt(i, 2));
         }
 
     }
@@ -1186,6 +1334,8 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JLabel Observaciones;
     private javax.swing.JLabel Observaciones1;
     private javax.swing.ButtonGroup bntGroupLibroDiligencias;
+    private javax.swing.JButton btnAddCarretera;
+    private javax.swing.JButton btnAddMotivoDiligencias;
     private javax.swing.JButton btnAddPersona;
     private javax.swing.JButton btnAnyadir;
     private javax.swing.JButton btnCancelar;
@@ -1197,6 +1347,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JCheckBox chkbTrasladado;
     private javax.swing.JButton cmbAddVehiculo;
     private javax.swing.JComboBox<String> cmbBoxTipoAccid;
+    private javax.swing.JComboBox<String> cmbCarretera;
     private javax.swing.JComboBox<String> cmbResultadoPers;
     private javax.swing.JComboBox<String> cmbTipoPersona;
     private javax.swing.JComboBox<String> cmbVehiculoPer;
@@ -1228,7 +1379,6 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lblLugarTraslado;
     private javax.swing.JPanel panelDatos;
     private javax.swing.JPanel panelPer1;
@@ -1245,11 +1395,11 @@ public class FormAddAccident extends javax.swing.JPanel {
     private com.conde.swing.Table_Vehiculo_Form_Add table_Vehiculo_Form_Add;
     private javax.swing.JTextArea txtAObserv_Personas;
     private javax.swing.JTextArea txtAObservaciones;
-    private javax.swing.JTextField txtCarretera;
     private javax.swing.JTextField txtDni;
     private javax.swing.JTextField txtFecha;
     private javax.swing.JTextField txtGestion;
     private javax.swing.JFormattedTextField txtHora;
+    private javax.swing.JTextField txtKilometro;
     private javax.swing.JTextField txtLugarTraslado;
     private javax.swing.JTextField txtMarca;
     private javax.swing.JTextField txtMatricula;
@@ -1257,7 +1407,5 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JTextField txtNumDiligencias;
     private javax.swing.JTextField txtPatrulla;
     // End of variables declaration//GEN-END:variables
-
-    
 
 }

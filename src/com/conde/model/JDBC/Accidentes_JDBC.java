@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Accidentes_JDBC {
 
@@ -275,6 +277,31 @@ public class Accidentes_JDBC {
         return matriculaStr;
     }
     
+    public ArrayList<String> getCarreteras() {
+        ArrayList<String> listadoCarreteras = new ArrayList<>();
+       
+       String sql = "SELECT DENOMINACION FROM CARRETERAS ORDER BY DENOMINACION";
+         try {
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                listadoCarreteras.add(rs.getString("DENOMINACION"));
+
+            }
+            rs.close();
+            st.close();
+
+            return listadoCarreteras;
+
+        } catch (Exception e) {
+            System.out.println("Error en la carga del tipo de personas." + e.getMessage());
+        }
+
+        return null;
+    }
+    
    public ArrayList<String> getTiposPersonas() {
        
        ArrayList<String> tipoPersonas = new ArrayList<>();
@@ -301,6 +328,36 @@ public class Accidentes_JDBC {
         return null;
         
     }
+   
+     public void AddNuevoLugarAccidente(String nuevoLugar)  {
+         String sql = "INSERT INTO CARRETERAS (DENOMINACION) VALUES (?)";
+   
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, nuevoLugar);
+            int numRows = ps.executeUpdate();
+            
+            ps.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+
+    }
+     
+        public void AddNuevoTipoDelictivo(String nuevoTipo) {
+         String sql = "INSERT INTO TIPO_SINIESTRO (TIPO) VALUES (?)";
+   
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, nuevoTipo);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+   
 
     public void deleteVehiculosByIdAccidente(int Id_Accdient) throws SQLException {
 
@@ -310,7 +367,7 @@ public class Accidentes_JDBC {
         ps.setInt(1, Id_Accdient);
         ps.executeUpdate();
         ps.close();
-        st.close();
+        
 
     }
 
@@ -355,6 +412,12 @@ public class Accidentes_JDBC {
     private Statement st;
     private PreparedStatement ps;
     private ResultSet rs;
+
+ 
+
+  
+
+    
 
 
 

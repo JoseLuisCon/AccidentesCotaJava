@@ -163,7 +163,7 @@ public class Main extends javax.swing.JFrame {
         panelBorder1.add(menu, java.awt.BorderLayout.WEST);
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
-        mainPanel.setLayout(new java.awt.CardLayout(20, 20));
+        mainPanel.setLayout(new java.awt.CardLayout());
         panelBorder1.add(mainPanel, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

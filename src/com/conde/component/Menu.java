@@ -18,7 +18,6 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 public class Menu extends javax.swing.JPanel {
     

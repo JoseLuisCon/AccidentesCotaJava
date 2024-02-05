@@ -74,10 +74,7 @@
             </Constraint>
           </Constraints>
 
-          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout">
-            <Property name="horizontalGap" type="int" value="20"/>
-            <Property name="verticalGap" type="int" value="20"/>
-          </Layout>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
         </Container>
       </SubComponents>
     </Container>
