@@ -1,6 +1,6 @@
 package com.conde.component;
 
-import com.conde.model.Model_Accident;
+import com.conde.model.Accidente;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -41,7 +41,7 @@ public class Card_Accident extends javax.swing.JPanel {
         
     }
 
-    public void setData(Model_Accident data, String tipo_Accidente) {
+    public void setData(Accidente data, String tipo_Accidente) {
 
         lblIcon.setIcon(data.getIcon());
      

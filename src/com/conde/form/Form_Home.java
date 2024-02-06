@@ -4,7 +4,7 @@ import com.conde.cell.TableActionCellEditor;
 import com.conde.cell.TableActionEvent;
 import com.conde.event.EventRowSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
-import com.conde.model.Model_Accident;
+import com.conde.model.Accidente;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class Form_Home extends javax.swing.JPanel {
 
-    private ArrayList<Model_Accident> listAccidents = new ArrayList<>();
+    private ArrayList<Accidente> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
 
     
@@ -36,7 +36,7 @@ public class Form_Home extends javax.swing.JPanel {
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         s.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-        
+        s.getViewport().setBackground(Color.WHITE);
         
         TableActionEvent event = new TableActionEvent() {
                 @Override
@@ -75,9 +75,9 @@ public class Form_Home extends javax.swing.JPanel {
 
 
         table.addEventRowSelected((int index) -> {
-            Model_Accident accidenteOK = new Model_Accident();
+            Accidente accidenteOK = new Accidente();
             //Rellenar datos card1
-            for (Model_Accident Accidente : listAccidents) {
+            for (Accidente Accidente : listAccidents) {
                 if (Accidente.getNum_Accidente() == index) {
                     accidenteOK = Accidente;
                     break;
@@ -185,7 +185,7 @@ public class Form_Home extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Id", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Patrulla", "Núm. Diligencias", "Zona Atestados"
+                "Id", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Núm. Diligencias", "Patrulla", "Zona Atestados"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -294,7 +294,7 @@ public class Form_Home extends javax.swing.JPanel {
         dtm.setRowCount(0);
 
         //Lo mostramos en la tabla
-        for (Model_Accident accidente : listAccidents) {
+        for (Accidente accidente : listAccidents) {
             table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
         }
     }

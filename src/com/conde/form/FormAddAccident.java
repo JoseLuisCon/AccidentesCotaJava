@@ -3,8 +3,9 @@ package com.conde.form;
 import com.conde.cell.PanelActionCell;
 import com.conde.cell.TableActionEvent;
 import com.conde.datechooser.SelectedDate;
-import com.conde.event.EventMenuSelected;
+import com.conde.model.Accidente;
 import com.conde.model.JDBC.Accidentes_JDBC;
+import com.conde.model.Vehiculo;
 import com.conde.swing.AddCarretera;
 import com.conde.swing.AddMotivoDiligencias;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -15,7 +16,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Calendar;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -35,7 +37,6 @@ public class FormAddAccident extends javax.swing.JPanel {
     private int rowVehiculoEditado;
     private Boolean EditOnPersona = false;
     private int rowPersonaEditada;
-    
 
     public FormAddAccident() {
         initComponents();
@@ -170,9 +171,9 @@ public class FormAddAccident extends javax.swing.JPanel {
         panelPer2.setPreferredSize(new Dimension(500, 400));
 
     }
-    
-    private void setListenersDocument(){
-    
+
+    private void setListenersDocument() {
+
         txtKilometro.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -186,11 +187,11 @@ public class FormAddAccident extends javax.swing.JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-               checkCampos();
+                checkCampos();
             }
         });
-        
-          txtPatrulla.getDocument().addDocumentListener(new DocumentListener() {
+
+        txtPatrulla.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 checkCampos();
@@ -203,21 +204,19 @@ public class FormAddAccident extends javax.swing.JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-               checkCampos();
+                checkCampos();
             }
         });
-        
-    
-    
+
     }
-    
-    private void checkCampos(){
+
+    private void checkCampos() {
         String texto1 = txtKilometro.getText();
         String texto2 = txtPatrulla.getText();
 
-            // Habilitar el botón si ambos campos tienen contenido
-            btnAnyadir.setEnabled(!texto1.isEmpty() && !texto2.isEmpty());
-    
+        // Habilitar el botón si ambos campos tienen contenido
+        btnAnyadir.setEnabled(!texto1.isEmpty() && !texto2.isEmpty());
+
     }
 
     @SuppressWarnings("unchecked")
@@ -235,7 +234,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         jLabel9 = new javax.swing.JLabel();
         txtKilometro = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtADescripcion = new javax.swing.JTextArea();
         jLabel8 = new javax.swing.JLabel();
         cmbBoxTipoAccid = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
@@ -337,14 +336,14 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         txtKilometro.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        txtADescripcion.setColumns(20);
+        txtADescripcion.setLineWrap(true);
+        txtADescripcion.setRows(5);
+        jScrollPane1.setViewportView(txtADescripcion);
 
         jLabel8.setText("Tipo accidente");
 
-        cmbBoxTipoAccid.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbBoxTipoAccid.setMaximumRowCount(10);
 
         jLabel7.setText("Núm. Diligencias");
 
@@ -928,7 +927,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         panelPer2.setMinimumSize(new java.awt.Dimension(550, 380));
         panelPer2.setName(""); // NOI18N
         panelPer2.setPreferredSize(new java.awt.Dimension(550, 380));
-        panelPer2.setLayout(new java.awt.CardLayout(0, 10));
+        panelPer2.setLayout(new java.awt.CardLayout());
 
         spWinPer.setBorder(null);
 
@@ -998,8 +997,8 @@ public class FormAddAccident extends javax.swing.JPanel {
     }//GEN-LAST:event_rbTudelaActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        
-        
+
+
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSelectFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectFechaActionPerformed
@@ -1009,8 +1008,8 @@ public class FormAddAccident extends javax.swing.JPanel {
     private void rbPamplonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbPamplonaActionPerformed
         // Obtenemos el número de diligencias más alto del Equipo de Pamplona
 
-        //Primero comparamos fecha seleccionada no sea posterior a la de hoy, no somos adivinos
         setNumeroDiligencias("PAMPLONA");
+
 
     }//GEN-LAST:event_rbPamplonaActionPerformed
 
@@ -1145,68 +1144,95 @@ public class FormAddAccident extends javax.swing.JPanel {
     }//GEN-LAST:event_cmbTipoPersonaActionPerformed
 
     private void btnAddCarreteraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCarreteraActionPerformed
-        
-        if ( FlatLaf.isLafDark()){
+
+        if (FlatLaf.isLafDark()) {
             FlatDarkLaf.registerCustomDefaultsSource("com/conde/style");
             FlatDarkLaf.setup();
             btnAddCarretera.setIcon(new ImageIcon("src/com/conde/resources/icons/boton-agregar_white.png"));
-        }else{
+        } else {
             FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
             FlatLightLaf.setup();
         }
-        
-        
+
         AddCarretera modalDialog = new AddCarretera(null, true);
-        modalDialog.setSize(400,300);
+        modalDialog.setSize(400, 300);
         modalDialog.setLocationRelativeTo(this);
         modalDialog.setVisible(true);
-        
-         cmbCarretera.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getCarreteras().toArray(new String[0])));
+
+        cmbCarretera.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getCarreteras().toArray(new String[0])));
     }//GEN-LAST:event_btnAddCarreteraActionPerformed
 
     private void btnAnyadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnyadirActionPerformed
         // Datos accidente
-        
+        Accidente newAccidente = new Accidente();
+
+        SelectedDate d = Fecha.getSelectedDate();
+        newAccidente.setFecha(d.getDay() + "/" + d.getMonth() + "/" + d.getYear());
+
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("HH:mm");
+        newAccidente.setHora(Hora.getSelectedTime().format(df));
+
+        newAccidente.setCarretera(cmbCarretera.getSelectedItem().toString().toUpperCase());
+        newAccidente.setKilometro(txtKilometro.getText());
+        newAccidente.setPatrulla(txtPatrulla.getText().toUpperCase());
+        newAccidente.setNum_Diligencias(Integer.parseInt(txtNumDiligencias.getText()));
+
+        newAccidente.setTipo_Siniestro(modelAcc.getTipoAccidenteByTYPE(cmbBoxTipoAccid.getSelectedItem()));
+        newAccidente.setZona_Atestados((rbPamplona.isSelected() ? "Pamplona" : "Tudela"));
+        newAccidente.setDescripcion(txtADescripcion.getText());
+
+       modelAcc.AddNuevoAccidente(newAccidente);
+
         //Listado vehículos
+        DefaultTableModel modelVehiculos = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
         
+        ArrayList<Vehiculo> listaVehiculos = new ArrayList<>();
+        
+        for (int row = 0; row < modelVehiculos.getRowCount(); row++) {
+            Vehiculo veh = new Vehiculo();
+            veh.setNum_Accidente(modelAcc.getNumAccidenteByNumDiligencias(Integer.parseInt(txtNumDiligencias.getText())));
+            veh.setMatricula((String) modelVehiculos.getValueAt(row, 2));
+            veh.setMarca((String) modelVehiculos.getValueAt(row, 3));
+            veh.setModelo((String) modelVehiculos.getValueAt(row, 4));
+            veh.setGestion((String) modelVehiculos.getValueAt(row, 5));
+            veh.setObservaciones((String) modelVehiculos.getValueAt(row, 6));
+            listaVehiculos.add(veh);            
+        }
+        
+        if (!listaVehiculos.isEmpty()){
+            
+            modelAcc.addListadoVehiculos(listaVehiculos);
+        
+        }
+
         //Listado personas
     }//GEN-LAST:event_btnAnyadirActionPerformed
 
     private void btnAddMotivoDiligenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMotivoDiligenciasActionPerformed
-         if ( FlatLaf.isLafDark()){
+        if (FlatLaf.isLafDark()) {
             FlatDarkLaf.registerCustomDefaultsSource("com/conde/style");
             FlatDarkLaf.setup();
             btnAddMotivoDiligencias.setIcon(new ImageIcon("src/com/conde/resources/icons/boton-agregar_white.png"));
-        }else{
+        } else {
             FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
             FlatLightLaf.setup();
         }
-        
-        
+
         AddMotivoDiligencias modalDialog = new AddMotivoDiligencias(null, true);
-        modalDialog.setSize(400,300);
+        modalDialog.setSize(400, 300);
         modalDialog.setLocationRelativeTo(this);
         modalDialog.setVisible(true);
-        
-         cmbBoxTipoAccid.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getTiposAccidentes().toArray(new String[0])));
+
+        cmbBoxTipoAccid.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getTiposAccidentes().toArray(new String[0])));
     }//GEN-LAST:event_btnAddMotivoDiligenciasActionPerformed
 
     private void setNumeroDiligencias(String equipo) {
+
         SelectedDate fecha = Fecha.getSelectedDate();
 
-        Calendar fechaSelecionada = Calendar.getInstance();
-        fechaSelecionada.set(fecha.getYear(), fecha.getMonth() - 1, fecha.getDay());
-
-        Calendar hoy = Calendar.getInstance();
-
-        if (fechaSelecionada.after(hoy)) {
-            System.out.println("Se ha selecionado una fecha posterior a la actual");
-
-        } else {
-            String fechaFormateadaAccess = fecha.getMonth() + "/" + fecha.getDay() + "/" + fecha.getYear();
-            int Num_Diligencias = modelAcc.getNumDiligencias(equipo, fechaFormateadaAccess);
-            txtNumDiligencias.setText(String.valueOf(Num_Diligencias + 1));
-        }
+        String fechaFormateadaAccess = fecha.getMonth() + "/" + fecha.getDay() + "/" + fecha.getYear();
+        int Num_Diligencias = modelAcc.getNumDiligencias(equipo, fechaFormateadaAccess);
+        txtNumDiligencias.setText(String.valueOf(Num_Diligencias + 1));
 
     }
 
@@ -1237,7 +1263,6 @@ public class FormAddAccident extends javax.swing.JPanel {
     }
 
     private void setDataFields() {
-        
 
         Hora.set24HourView(true);
         Hora.now();
@@ -1263,9 +1288,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                 }
             }
         });
-        
-      
-        
+
     }
 
     private static boolean tieneDuplicado(DefaultTableModel model, int columnaABuscar, Object nuevoValor) {
@@ -1378,7 +1401,6 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel lblLugarTraslado;
     private javax.swing.JPanel panelDatos;
     private javax.swing.JPanel panelPer1;
@@ -1393,6 +1415,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     private com.conde.swing.ScrollPaneWin11 spWinPer;
     private com.conde.swing.Table_Persona_Form_Add table_Persona_Form_Add;
     private com.conde.swing.Table_Vehiculo_Form_Add table_Vehiculo_Form_Add;
+    private javax.swing.JTextArea txtADescripcion;
     private javax.swing.JTextArea txtAObserv_Personas;
     private javax.swing.JTextArea txtAObservaciones;
     private javax.swing.JTextField txtDni;

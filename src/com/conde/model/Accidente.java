@@ -2,7 +2,7 @@ package com.conde.model;
 
 import javax.swing.Icon;
 
-public class Model_Accident {
+public class Accidente {
 
     public Icon getIcon() {
         return icon;
@@ -116,7 +116,7 @@ public class Model_Accident {
         this.stattus = stattus;
     }
 
-    public Model_Accident(Icon icon, int Num_Accidente, String Fecha, String Hora, String Carretera, String Kilometro, int Num_Diligencias, String Patrulla, String Zona_Atestados, String Descripcion, int Tipo_Siniestro, StatusType status) {
+    public Accidente(Icon icon, int Num_Accidente, String Fecha, String Hora, String Carretera, String Kilometro, int Num_Diligencias, String Patrulla, String Zona_Atestados, String Descripcion, int Tipo_Siniestro, StatusType status) {
         this.icon = icon;
         this.Num_Accidente = Num_Accidente;
         this.Fecha = Fecha;
@@ -132,7 +132,7 @@ public class Model_Accident {
 
     }
 
-    public Model_Accident(Icon icon, int Num_Accidente, String Zona_Atestados, String Descripcion, int Tipo_Siniestro) {
+    public Accidente(Icon icon, int Num_Accidente, String Zona_Atestados, String Descripcion, int Tipo_Siniestro) {
         this.icon = icon;
         this.Num_Accidente = Num_Accidente;
         this.Zona_Atestados = Zona_Atestados;
@@ -140,7 +140,7 @@ public class Model_Accident {
         this.Tipo_Siniestro = Tipo_Siniestro;
     }
 
-    public Model_Accident() {
+    public Accidente() {
     }
 
     private Icon icon;
