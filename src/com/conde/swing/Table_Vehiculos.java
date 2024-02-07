@@ -16,13 +16,13 @@ import javax.swing.table.DefaultTableModel;
 public class Table_Vehiculos extends JTable {
 
     private EventRowSelected event;
-    
+
     private ArrayList<Vehiculo> listaVehiculos = new ArrayList<>();
-    
-      public void setListaVehículos(ArrayList<Vehiculo> listaVehiculos) {
+
+    public void setListaVehículos(ArrayList<Vehiculo> listaVehiculos) {
         this.listaVehiculos = listaVehiculos;
     }
-    
+
     public void addEventRowSelected(EventRowSelected event) {
         this.event = event;
     }
@@ -41,52 +41,41 @@ public class Table_Vehiculos extends JTable {
 
                 TableHeader header = new TableHeader(o + "");
                 header.setHorizontalAlignment(JLabel.CENTER);
-                header.setFont(new Font("sansserif", 1, 12));
+                header.setFont(new Font("Roboto", 1, 12));
                 return header;
             }
         });
 
         setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int column) {
-                if (column != 2) {
-                    Component com = super.getTableCellRendererComponent(table, o, isSelected, hasFocus, row, column);
-                    com.setBackground(Color.white);
+                Component com = super.getTableCellRendererComponent(table, o, isSelected, hasFocus, row, column);
 
-                    setBorder(noFocusBorder);
-                    if (isSelected) {
-                        
-                        com.setBackground(new Color(6, 72, 72));
-                    } else {
-                        com.setForeground(new Color(53, 54, 53));
-                    }
+                if (column == 1) {
 
-                    setHorizontalAlignment(JLabel.CENTER);
-                 
-                    return com;
-                } else {
-                    Component com = super.getTableCellRendererComponent(table, o, isSelected, hasFocus, row, column);
-                    com.setBackground(Color.white);
-
-                    setBorder(noFocusBorder);
-                    if (isSelected) {
-                       
-                        com.setBackground(new Color(6, 72, 72));
-                    } else {
-                        com.setBackground(new Color(6, 72, 72));
-                    }
-
-                    setHorizontalAlignment(JLabel.CENTER);
-              
-                    return com;
+                    com.setFont(new Font("Roboto", Font.BOLD, 14));
 
                 }
 
+                setBorder(noFocusBorder);
+                if (isSelected) {
+
+                    com.setBackground(new Color(6, 72, 72));
+                    com.setForeground(new Color(240, 238, 102));
+                } else {
+                    com.setBackground(Color.white);
+                    com.setForeground(new Color(53, 54, 53));
+                }
+
+                setHorizontalAlignment(JLabel.CENTER);
+
+                return com;
+
             }
         });
-        
-        
-    // Agregar un MouseMotionListener a la tabla para manejar eventos de movimiento del ratón
+
+        // Agregar un MouseMotionListener a la tabla para manejar eventos de movimiento del ratón
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -101,10 +90,10 @@ public class Table_Vehiculos extends JTable {
                     Object num_Vehiculo = getValueAt(fila, 0);
                     Vehiculo vehiculo = buscaNumVehiculo((int) num_Vehiculo);
                     String toolTip = "";
-                    if (!vehiculo.getObservaciones().isEmpty()){
+                    if (!vehiculo.getObservaciones().isEmpty()) {
                         toolTip = vehiculo.getObservaciones();
                     }
-                    
+
                     setToolTipText(toolTip);
 
                 } else {
@@ -124,15 +113,8 @@ public class Table_Vehiculos extends JTable {
                 return null;
             }
         });
-        
-        
 
     }
-
-   
-
-   
-    
 
     public void addRow(Object[] row) {
         DefaultTableModel model = (DefaultTableModel) getModel();

@@ -5,6 +5,7 @@ import com.conde.cell.TableActionEvent;
 import com.conde.datechooser.SelectedDate;
 import com.conde.model.Accidente;
 import com.conde.model.JDBC.Accidentes_JDBC;
+import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import com.conde.swing.AddCarretera;
 import com.conde.swing.AddMotivoDiligencias;
@@ -53,7 +54,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             @Override
             public void onEdit(JTable table, int row) {
 
-                if (table.getName().equals("TableVehiculos")) {
+                if (table == table_Vehiculo_Form_Add) {
                     EditOnVehiculo = true;
                     rowVehiculoEditado = row;
                     DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
@@ -79,7 +80,6 @@ public class FormAddAccident extends javax.swing.JPanel {
                         chkbTrasladado.setSelected(true);
                         txtLugarTraslado.setText((String) model.getValueAt(row, 6));
                     }
-
                     chkbPAlcohol.setSelected((boolean) model.getValueAt(row, 7));
                     chkbPAlcoholPos.setSelected((boolean) model.getValueAt(row, 8));
                     chkbPDrogas.setSelected((boolean) model.getValueAt(row, 9));
@@ -92,18 +92,34 @@ public class FormAddAccident extends javax.swing.JPanel {
 
             @Override
             public void onDelete(JTable table, int row) {
-
-                if (table.getName().equals("TableVehiculos")) {
+                
+                if (table == table_Vehiculo_Form_Add) {
                     if (table_Vehiculo_Form_Add.isEditing()) {
                         table_Vehiculo_Form_Add.getCellEditor().stopCellEditing();
                     }
 
                     DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
-
+                    String matricula = (String) model.getValueAt(row, 2);
                     int index = buscarValorEnComboBox(cmbVehiculoPer, (String) model.getValueAt(row, 2));
                     cmbVehiculoPer.removeItemAt(index);
+                    //Borramos las personas relacionadas con el vehículo
+                    DefaultTableModel modelPer = (DefaultTableModel) table_Persona_Form_Add.getModel();
+                    
+                    for (int cont= modelPer.getRowCount()-1; cont >=0;cont--){
+                            
+                        if (modelPer.getValueAt(cont, 4)==matricula){
+                            modelPer.removeRow(cont);
+                        }
+                        
+                    
+                    }
+                    
+                    
+                    
+                    
                     model.removeRow(row);
                     limpiarDatosVehiculo();
+                    
 
                 } else {
                     if (table_Persona_Form_Add.isEditing()) {
@@ -114,6 +130,8 @@ public class FormAddAccident extends javax.swing.JPanel {
 
                     model.removeRow(row);
                     limpiarDatosPersonas();
+                    
+                    
 
                 }
 
@@ -126,7 +144,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 
                 PanelActionCell action = new PanelActionCell();
-                action.initEvent(event, table, row);
+                action.initEvent(event, table_Vehiculo_Form_Add, row);
 
                 if (isSelected) {
                     action.setBackground(new Color(148, 210, 95));
@@ -146,7 +164,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 
                 PanelActionCell action = new PanelActionCell();
-                action.initEvent(event, table, row);
+                action.initEvent(event, table_Persona_Form_Add, row);
 
                 if (isSelected) {
                     action.setBackground(new Color(148, 210, 95));
@@ -207,6 +225,8 @@ public class FormAddAccident extends javax.swing.JPanel {
                 checkCampos();
             }
         });
+        
+        
 
     }
 
@@ -835,7 +855,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(14, 14, 14)
@@ -846,7 +866,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                         .addComponent(cmbTipoPersona, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmbResultadoPers, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -863,7 +883,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(chkbTrasladado, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel7Layout.createSequentialGroup()
                                         .addComponent(lblLugarTraslado)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -877,9 +897,8 @@ public class FormAddAccident extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 637, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
-                        .addComponent(btnAddPersona)
-                        .addGap(15, 15, 15)))
-                .addContainerGap(59, Short.MAX_VALUE))
+                        .addComponent(btnAddPersona)))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -930,6 +949,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         panelPer2.setLayout(new java.awt.CardLayout());
 
         spWinPer.setBorder(null);
+        spWinPer.setName("TablePersonas"); // NOI18N
 
         table_Persona_Form_Add.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1090,12 +1110,18 @@ public class FormAddAccident extends javax.swing.JPanel {
         }
 
         if (cmbVehiculoPer.getSelectedItem() == null) {
-            if ((cmbTipoPersona.getSelectedItem().equals("CONDUCTOR") || cmbTipoPersona.getSelectedItem().equals("OCUPANTE"))) {
+            if ((cmbTipoPersona.getSelectedItem().equals("CONDUCTOR") || cmbTipoPersona.getSelectedItem().equals("OCUPANTE") || cmbTipoPersona.getSelectedItem().equals("TITULAR"))) {
                 JOptionPane.showMessageDialog(null, "Tiene que asignarle un vehículo por el tipo de persona elegido: \n Compruebe los datos");
                 return;
 
             }
+            
         }
+        if (cmbVehiculoPer.getSelectedIndex()==0 && (cmbTipoPersona.getSelectedItem().equals("CONDUCTOR") || cmbTipoPersona.getSelectedItem().equals("OCUPANTE") || cmbTipoPersona.getSelectedItem().equals("TITULAR") ) ){
+                 JOptionPane.showMessageDialog(null, "Tiene que asignarle un vehículo por el tipo de persona elegido: \n Compruebe los datos");
+                return;
+        }
+        
 
         // Comprobamos que no se duplica el conductor para un mismo vehículo
         if (cmbVehiculoPer.getSelectedItem() != null) {
@@ -1181,7 +1207,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         newAccidente.setZona_Atestados((rbPamplona.isSelected() ? "Pamplona" : "Tudela"));
         newAccidente.setDescripcion(txtADescripcion.getText());
 
-       modelAcc.AddNuevoAccidente(newAccidente);
+        int idAccidente=modelAcc.AddNuevoAccidente(newAccidente);
 
         //Listado vehículos
         DefaultTableModel modelVehiculos = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
@@ -1190,7 +1216,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         
         for (int row = 0; row < modelVehiculos.getRowCount(); row++) {
             Vehiculo veh = new Vehiculo();
-            veh.setNum_Accidente(modelAcc.getNumAccidenteByNumDiligencias(Integer.parseInt(txtNumDiligencias.getText())));
+            veh.setNum_Accidente(idAccidente);
             veh.setMatricula((String) modelVehiculos.getValueAt(row, 2));
             veh.setMarca((String) modelVehiculos.getValueAt(row, 3));
             veh.setModelo((String) modelVehiculos.getValueAt(row, 4));
@@ -1206,6 +1232,41 @@ public class FormAddAccident extends javax.swing.JPanel {
         }
 
         //Listado personas
+        
+        DefaultTableModel modelPersonas = (DefaultTableModel) table_Persona_Form_Add.getModel();
+        
+        ArrayList<Persona> listaPersonas = new ArrayList<>();
+        
+         for (int row = 0; row < modelPersonas.getRowCount(); row++) {
+            Persona per = new Persona();
+            
+           per.setId_Accidente(idAccidente);
+            
+           per.setDocumento((String) modelPersonas.getValueAt(row, 2));
+           per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row,4),idAccidente));
+           per.setTipo_persona((String) modelPersonas.getValueAt(row, 3));
+           per.setResultado((String) modelPersonas.getValueAt(row,5));
+           String lugarTrasladado= (String) modelPersonas.getValueAt(row, 6);
+           if (lugarTrasladado.isEmpty()){
+            per.setTrasladado(false);
+            per.setLugar_traslado("");
+           }else{
+            per.setTrasladado(true);
+            per.setLugar_traslado(lugarTrasladado);
+           }
+           per.setPrueba_alcoholemia((Boolean) modelPersonas.getValueAt(row, 7));
+           per.setAlcoholemia_positiva((Boolean) modelPersonas.getValueAt(row, 8));
+           per.setPrueba_drogas((Boolean) modelPersonas.getValueAt(row, 9));
+           per.setDrogas_positiva((Boolean) modelPersonas.getValueAt(row, 10));
+           per.setObservaciones((String) modelPersonas.getValueAt(row, 11));
+                       
+            listaPersonas.add(per);            
+        }
+        
+        if (!listaPersonas.isEmpty()){
+            modelAcc.addListadoPersonas(listaPersonas);
+        }
+                
     }//GEN-LAST:event_btnAnyadirActionPerformed
 
     private void btnAddMotivoDiligenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMotivoDiligenciasActionPerformed

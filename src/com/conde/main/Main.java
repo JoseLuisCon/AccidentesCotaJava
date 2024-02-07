@@ -85,7 +85,7 @@ public class Main extends javax.swing.JFrame {
 
         setForm(home);
 
-        ConexionAccess.conectar();
+
 
     }
 

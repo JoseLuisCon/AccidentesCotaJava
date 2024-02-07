@@ -36,7 +36,7 @@ public class Table_Personas extends JTable {
 
                 TableHeader header = new TableHeader(o + "");
                 header.setHorizontalAlignment(JLabel.CENTER);
-                header.setFont(new Font("sansserif", 1, 12));
+                header.setFont(new Font("Roboto", 1, 12));
                 return header;
             }
         });
@@ -57,7 +57,7 @@ public class Table_Personas extends JTable {
                     }
 
                     setHorizontalAlignment(JLabel.CENTER);
-                    setFont(new Font("sansserif", Font.PLAIN, 12));
+                    setFont(new Font("Roboto", Font.PLAIN, 12));
                     return com;
 
                 } else {

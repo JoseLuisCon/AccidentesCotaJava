@@ -10,9 +10,7 @@ public class PanelActionCell extends javax.swing.JPanel {
 
     public PanelActionCell() {
         initComponents();
-        
-  
-        
+
    }
     
    public void initEvent(TableActionEvent event, JTable table, int row){

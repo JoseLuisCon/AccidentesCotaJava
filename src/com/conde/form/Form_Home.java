@@ -80,6 +80,7 @@ public class Form_Home extends javax.swing.JPanel {
             for (Accidente Accidente : listAccidents) {
                 if (Accidente.getNum_Accidente() == index) {
                     accidenteOK = Accidente;
+                    System.out.println("Index "+index);
                     break;
                 }
 
