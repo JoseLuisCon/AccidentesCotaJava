@@ -269,7 +269,7 @@ public class Accidentes_JDBC {
 
         try {
             conexion = ConexionAccess.conectar();
-            st = conexion.createStatement();
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(sql);
 
             while (rs.next()) {
@@ -474,7 +474,7 @@ public class Accidentes_JDBC {
         return numAccidente;
 
     }
-
+    
     public void addListadoVehiculos(ArrayList<Vehiculo> listaVehiculos) {
 
         String sql = "INSERT INTO Vehiculos (Id,NUM_ACCI,MATRICULA,MARCA,MODELO,GESTION,OBSERVACIONES) VALUES (?,?,?,?,?,?,?)";

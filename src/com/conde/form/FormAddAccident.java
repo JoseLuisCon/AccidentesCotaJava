@@ -2,6 +2,7 @@ package com.conde.form;
 
 import com.conde.cell.PanelActionCell;
 import com.conde.cell.TableActionEvent;
+import com.conde.component.Menu;
 import com.conde.datechooser.SelectedDate;
 import com.conde.model.Accidente;
 import com.conde.model.JDBC.Accidentes_JDBC;
@@ -38,6 +39,11 @@ public class FormAddAccident extends javax.swing.JPanel {
     private int rowVehiculoEditado;
     private Boolean EditOnPersona = false;
     private int rowPersonaEditada;
+    private Menu menu;
+    
+
+    
+    
 
     public FormAddAccident() {
         initComponents();
@@ -177,8 +183,8 @@ public class FormAddAccident extends javax.swing.JPanel {
             }
 
         });
-
-        panelDatos.setPreferredSize(new Dimension(getWidth(), 200));
+        
+       panelDatos.setPreferredSize(new Dimension(getWidth(), 200));
         panelVehiculos.setPreferredSize(new Dimension(getWidth(), 300));
         panelPersonas.setPreferredSize(new Dimension(getWidth(), 400));
 
@@ -187,6 +193,9 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         panelPer1.setPreferredSize(new Dimension(900, 400));
         panelPer2.setPreferredSize(new Dimension(500, 400));
+        
+        
+        
 
     }
 
@@ -274,7 +283,6 @@ public class FormAddAccident extends javax.swing.JPanel {
         btnAddMotivoDiligencias = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         btnAnyadir = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
         panelVehiculos = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         panelVeh1 = new javax.swing.JPanel();
@@ -448,12 +456,12 @@ public class FormAddAccident extends javax.swing.JPanel {
                         .addComponent(jLabel6)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtPatrulla, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnSelectFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtHora))
+                    .addComponent(txtHora)
+                    .addComponent(txtPatrulla, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
@@ -547,17 +555,17 @@ public class FormAddAccident extends javax.swing.JPanel {
         btnAnyadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/boton-agregar.png"))); // NOI18N
         btnAnyadir.setText("Añadir");
         btnAnyadir.setEnabled(false);
+        btnAnyadir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAnyadirMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnAnyadirMousePressed(evt);
+            }
+        });
         btnAnyadir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAnyadirActionPerformed(evt);
-            }
-        });
-
-        btnCancelar.setFont(new java.awt.Font("Roboto Medium", 1, 14)); // NOI18N
-        btnCancelar.setText("Cancelar");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
             }
         });
 
@@ -566,26 +574,17 @@ public class FormAddAccident extends javax.swing.JPanel {
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAnyadir, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26))
+                .addContainerGap(35, Short.MAX_VALUE)
+                .addComponent(btnAnyadir)
+                .addGap(24, 24, 24))
         );
-
-        jPanel8Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAnyadir, btnCancelar});
-
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(btnAnyadir, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
-                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(64, Short.MAX_VALUE)
+                .addComponent(btnAnyadir, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46))
         );
-
-        jPanel8Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnAnyadir, btnCancelar});
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -1016,11 +1015,6 @@ public class FormAddAccident extends javax.swing.JPanel {
         setNumeroDiligencias("TUDELA");
     }//GEN-LAST:event_rbTudelaActionPerformed
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-
-
-    }//GEN-LAST:event_btnCancelarActionPerformed
-
     private void btnSelectFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectFechaActionPerformed
         Fecha.showPopup();
     }//GEN-LAST:event_btnSelectFechaActionPerformed
@@ -1266,7 +1260,11 @@ public class FormAddAccident extends javax.swing.JPanel {
         if (!listaPersonas.isEmpty()){
             modelAcc.addListadoPersonas(listaPersonas);
         }
-                
+        
+       
+        resetFormulario();
+        
+
     }//GEN-LAST:event_btnAnyadirActionPerformed
 
     private void btnAddMotivoDiligenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMotivoDiligenciasActionPerformed
@@ -1286,6 +1284,14 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         cmbBoxTipoAccid.setModel(new DefaultComboBoxModel<>((String[]) modelAcc.getTiposAccidentes().toArray(new String[0])));
     }//GEN-LAST:event_btnAddMotivoDiligenciasActionPerformed
+
+    private void btnAnyadirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAnyadirMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAnyadirMousePressed
+
+    private void btnAnyadirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAnyadirMouseClicked
+      
+    }//GEN-LAST:event_btnAnyadirMouseClicked
 
     private void setNumeroDiligencias(String equipo) {
 
@@ -1422,7 +1428,6 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JButton btnAddMotivoDiligencias;
     private javax.swing.JButton btnAddPersona;
     private javax.swing.JButton btnAnyadir;
-    private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnSelectFecha;
     private javax.swing.JCheckBox chkbPAlcohol;
     private javax.swing.JCheckBox chkbPAlcoholPos;
@@ -1491,5 +1496,26 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JTextField txtNumDiligencias;
     private javax.swing.JTextField txtPatrulla;
     // End of variables declaration//GEN-END:variables
+
+    private void resetFormulario() {
+        
+        txtPatrulla.setText("");
+        txtKilometro.setText("");
+        cmbCarretera.setSelectedIndex(0);
+        cmbBoxTipoAccid.setSelectedIndex(0);
+        txtADescripcion.setText("");
+        rbPamplona.setSelected(true);
+        
+        DefaultTableModel  model =  (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+        model.setRowCount(0);
+        DefaultTableModel  modelP =  (DefaultTableModel) table_Persona_Form_Add.getModel();
+        modelP.setRowCount(0);
+        
+        limpiarDatosVehiculo();
+        limpiarDatosPersonas();
+        
+        
+    }
+
 
 }

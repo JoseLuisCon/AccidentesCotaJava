@@ -258,21 +258,7 @@ public class Menu extends javax.swing.JPanel {
         });
     }
     
-//    private void cambiarIcono() {
-//        if (estado) {
-//            Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/el-verano.png")).getImage();
-//            btnToogleTheme.setIcon(new ImageIcon(imagen));
-//            btnToogleTheme.setToolTipText("Tema oscuro");
-//        } else {
-//            Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/luna.png")).getImage();
-//            btnToogleTheme.setIcon(new ImageIcon(imagen));
-//            btnToogleTheme.setToolTipText("Tema claro");
-//        }
-//        toogleTheme.toogleTheme(estado);
-//        estado = !estado; // Cambiar el estado para el próximo clic
-//    }
-    
-    
+  
 
  
     // Variables declaration - do not modify//GEN-BEGIN:variables

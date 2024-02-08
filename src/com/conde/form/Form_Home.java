@@ -134,6 +134,11 @@ public class Form_Home extends javax.swing.JPanel {
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
         setLayout(new java.awt.CardLayout());
 
         jPanel1.setMaximumSize(new java.awt.Dimension(1424, 968));
@@ -270,6 +275,10 @@ public class Form_Home extends javax.swing.JPanel {
 
     }//GEN-LAST:event_tableKeyPressed
 
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+//        cargarAccidentes();
+    }//GEN-LAST:event_formFocusGained
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.conde.component.Card_Accident data_Aux_Accidente;
@@ -284,7 +293,7 @@ public class Form_Home extends javax.swing.JPanel {
     private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarAccidentes() {
+    public void cargarAccidentes() {
 
         //Rellenamos el Arraylist
         listAccidents.clear();

@@ -36,12 +36,12 @@ public class Main extends javax.swing.JFrame {
         menu.initMoving(Main.this);
 
         home = new Form_Home();
+        home.cargarAccidentes();
 
         form2 = new Form_2();
         
         menu.addEventToogleTheme((Boolean toogleTheme)->{
-            
-            
+
             toggleTema();
         
         });
@@ -50,9 +50,11 @@ public class Main extends javax.swing.JFrame {
         menu.addEventMenuSelected((int index) -> {
             switch (index) {
                 case 1:
+                    
                     setForm(home);
                     indexPanel=1;
                     break;
+
                 case 2:
 
                     FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
