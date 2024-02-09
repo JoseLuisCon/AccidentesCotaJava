@@ -19,8 +19,8 @@ public class Accidentes_JDBC {
     public Accidentes_JDBC() {
     }
 
-    public ArrayList<Accidente> getListAccidents() {
-        String sql = "SELECT TOP 100 * FROM Accidentes ORDER BY Fecha";
+    public ArrayList<Accidente> getListAccidents(String sql) {
+//        String sql = "SELECT TOP 100 * FROM Accidentes ORDER BY Fecha";
         try {
             conexion = ConexionAccess.conectar();
             st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);

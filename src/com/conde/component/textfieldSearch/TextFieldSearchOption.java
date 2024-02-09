@@ -67,7 +67,7 @@ public class TextFieldSearchOption extends JTextField {
     private int pressedIndex = -1;
     private Color colorOverlay1 = new Color(40, 170, 240);
     private Color colorOverlay2 = new Color(138, 39, 232);
-    private String hint = "Search...";
+    private String hint = "Buscar...";
 
     public TextFieldSearchOption() {
         setBorder(new EmptyBorder(10, 10, 10, 40));

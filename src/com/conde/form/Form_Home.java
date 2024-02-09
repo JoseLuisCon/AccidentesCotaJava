@@ -2,17 +2,19 @@ package com.conde.form;
 
 import com.conde.cell.TableActionCellEditor;
 import com.conde.cell.TableActionEvent;
-import com.conde.event.EventRowSelected;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Accidente;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.lang.Object;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -21,13 +23,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import textfield.SearchOptinEvent;
+import textfield.SearchOption;
 
 public class Form_Home extends javax.swing.JPanel {
 
     private ArrayList<Accidente> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
-
-    
+    private String cadenaBusqueda = "";
 
     public Form_Home() {
 
@@ -37,42 +40,41 @@ public class Form_Home extends javax.swing.JPanel {
         p.setBackground(Color.WHITE);
         s.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
         s.getViewport().setBackground(Color.WHITE);
-        
+
         TableActionEvent event = new TableActionEvent() {
-                @Override
-                public void onEdit(JTable t,int row) {
-                    System.out.println("Editando fila: " + row);
+            @Override
+            public void onEdit(JTable t, int row) {
+                System.out.println("Editando fila: " + row);
+            }
+
+            @Override
+            public void onDelete(JTable t, int row) {
+                if (table.isEditing()) {
+                    table.getCellEditor().stopCellEditing();
                 }
 
-                @Override
-                public void onDelete(JTable t,int row) {
-                    if (table.isEditing()) {
-                        table.getCellEditor().stopCellEditing();
+                int respDelete = JOptionPane.showConfirmDialog(null, "Atención: Se borraran todos los datos del accidente\n (Vehiculos y personas implicadas)\n¿Desea continuar?", "Atención", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                if (respDelete == JOptionPane.OK_OPTION) {
+                    try {
+                        int id_Accidente = (int) table.getValueAt(row, 0);
+                        datos_model.deleteAccidenteById(id_Accidente);
+                    } catch (SQLException e) {
+                        System.out.println("Error en el borrado del accidente en la base de datos");
                     }
 
-                    int respDelete = JOptionPane.showConfirmDialog(null, "Atención: Se borraran todos los datos del accidente\n (Vehiculos y personas implicadas)\n¿Desea continuar?", "Atención", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-
-                    if (respDelete == JOptionPane.OK_OPTION) {
-                        try {
-                            int id_Accidente = (int) table.getValueAt(row, 0);
-                            datos_model.deleteAccidenteById(id_Accidente);
-                        } catch (SQLException e) {
-                            System.out.println("Error en el borrado del accidente en la base de datos");
-                        }
-
-                        DefaultTableModel model = (DefaultTableModel) table.getModel();
-                        model.removeRow(row);
-                        vehiculos.clearRows();
-                        personas.clearRows();
-                        data_Aux_Accidente.deleteData();
-
-                    }
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.removeRow(row);
+                    vehiculos.clearRows();
+                    personas.clearRows();
+                    data_Aux_Accidente.deleteData();
 
                 }
-            };
+
+            }
+        };
 
         table.getColumnModel().getColumn(1).setCellEditor(new TableActionCellEditor(event));
-
 
         table.addEventRowSelected((int index) -> {
             Accidente accidenteOK = new Accidente();
@@ -80,13 +82,12 @@ public class Form_Home extends javax.swing.JPanel {
             for (Accidente Accidente : listAccidents) {
                 if (Accidente.getNum_Accidente() == index) {
                     accidenteOK = Accidente;
-                    System.out.println("Index "+index);
+                    System.out.println("Index " + index);
                     break;
                 }
 
             }
 
-            
             // Cargamos datos del accidente seleccionado en el card1
             ImageIcon image = new ImageIcon("src/com/conde/resources/icons/accidente.png");
             Icon icon = new ImageIcon(image.getImage());
@@ -95,7 +96,7 @@ public class Form_Home extends javax.swing.JPanel {
             data_Aux_Accidente.setData(accidenteOK, tipoAccidenteString);
 
             cargaVehiculosAccidente(index);
-            
+
             try {
                 cargaPersonasAccidente(index);
             } catch (SQLException ex) {
@@ -103,6 +104,25 @@ public class Form_Home extends javax.swing.JPanel {
             }
 
         });
+
+        initSearchTextField();
+
+    }
+
+    private void initSearchTextField() {
+        txtSearchFiled.addEventOptionSelected(new SearchOptinEvent() {
+            @Override
+            public void optionSelected(SearchOption option, int index) {
+                txtSearchFiled.setHint("Búsqueda por " + option.getName() + "...");
+            }
+        });
+
+        txtSearchFiled.addOption(new SearchOption("Fecha", new ImageIcon(getClass().getResource("/com/conde/resources/icons/fecha.png"))));
+        txtSearchFiled.addOption(new SearchOption("Equipo", new ImageIcon(getClass().getResource("/com/conde/resources/icons/horizonte.png"))));
+        txtSearchFiled.addOption(new SearchOption("Carretera", new ImageIcon(getClass().getResource("/com/conde/resources/icons/carretera.png"))));
+        txtSearchFiled.addOption(new SearchOption("Diligencias", new ImageIcon(getClass().getResource("/com/conde/resources/icons/diligencias.png"))));
+        txtSearchFiled.addOption(new SearchOption("Patrulla", new ImageIcon(getClass().getResource("/com/conde/resources/icons/patrulla.png"))));
+        txtSearchFiled.setSelectionEnd(0);
 
     }
 
@@ -112,7 +132,6 @@ public class Form_Home extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jPanel1 = new javax.swing.JPanel();
-        header1 = new com.conde.component.Header();
         panel = new javax.swing.JLayeredPane();
         data_Aux_Accidente = new com.conde.component.Card_Accident();
         vehiculos = new com.conde.component.Card_Vehiculos();
@@ -121,6 +140,10 @@ public class Form_Home extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         s = new com.conde.swing.ScrollPaneWin11();
         table = new com.conde.swing.Table_Accidentes();
+        header = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        txtSearchFiled = new textfield.TextFieldSearchOption();
+        jLabel3 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setOpaque(false);
@@ -223,7 +246,7 @@ public class Form_Home extends javax.swing.JPanel {
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(jLabel1)
-                .addGap(1069, 1194, Short.MAX_VALUE))
+                .addGap(1069, 1197, Short.MAX_VALUE))
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -239,25 +262,60 @@ public class Form_Home extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        header.setOpaque(false);
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/search.png"))); // NOI18N
+
+        txtSearchFiled.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchFiledKeyReleased(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("LISTADO DE ACCIDENTES");
+
+        javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
+        header.setLayout(headerLayout);
+        headerLayout.setHorizontalGroup(
+            headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 1023, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        headerLayout.setVerticalGroup(
+            headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(panel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1425, Short.MAX_VALUE)
-                    .addComponent(header1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 1425, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(header1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -268,7 +326,8 @@ public class Form_Home extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-        cargarAccidentes();
+//        cargarAccidentes();
+
     }//GEN-LAST:event_formAncestorAdded
 
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
@@ -279,36 +338,137 @@ public class Form_Home extends javax.swing.JPanel {
 //        cargarAccidentes();
     }//GEN-LAST:event_formFocusGained
 
+    private void txtSearchFiledKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchFiledKeyReleased
+        if (txtSearchFiled.isSelected()) {
+            int option = txtSearchFiled.getSelectedIndex();
+            String text = txtSearchFiled.getText().trim();
+            if (option == 0) {
+                //Busqueda por fecha
+                cadenaBusqueda = text;
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.conde.component.Card_Accident data_Aux_Accidente;
-    private com.conde.component.Header header1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JLayeredPane panel;
-    private com.conde.swing.PanelBorder panelBorder1;
-    private com.conde.component.Card_Persona personas;
-    private com.conde.swing.ScrollPaneWin11 s;
-    private com.conde.swing.Table_Accidentes table;
-    private com.conde.component.Card_Vehiculos vehiculos;
-    // End of variables declaration//GEN-END:variables
+                if (cadenaBusqueda.length() == 10) {
+                    if (verificarFecha(cadenaBusqueda)) {
+                        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                        Date fecha = new Date();
+                        try {
+                            fecha = formato.parse(cadenaBusqueda);
+                            Calendar fec = Calendar.getInstance();
+                            fec.setTime(fecha);
+                            cargarAccidentes("where Fecha =" + "#" + (fec.get(Calendar.MONTH) + 1) + "/" + fec.get(Calendar.DAY_OF_MONTH) + "/" + fec.get(Calendar.YEAR) + "#", "");
+                        } catch (ParseException ex) {
+                            Logger.getLogger(Form_Home.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
-    public void cargarAccidentes() {
+                    } else {
+                        JOptionPane.showMessageDialog(this, "La fecha no es correcta, formato dd/mm/yyyy");
+//                        txtSearchFiled.setText("");
+                        txtSearchFiled.requestFocus();
+                    }
 
-        //Rellenamos el Arraylist
+                } else if (cadenaBusqueda.length() == 0) {
+                    cargarAccidentes("");
+                }
+
+            } else if (option == 1) {
+                //Busqueda por equipo
+                cadenaBusqueda = text;
+
+                if (cadenaBusqueda.length() >= 3) {
+                    cargarAccidentes("where Zona_Atestados like '%" + cadenaBusqueda + "%'", "");
+                } else if (cadenaBusqueda.length() == 0) {
+                    cargarAccidentes("");
+                }
+
+            } else if (option == 2) {
+                // Busqueda por carretera
+                cadenaBusqueda = text;
+
+                if (cadenaBusqueda.length() >= 3) {
+                    cargarAccidentes("where Carretera like '%" + cadenaBusqueda + "%'", "");
+                } else if (cadenaBusqueda.length() == 0) {
+                    cargarAccidentes("");
+                }
+
+            } else if (option == 3) {
+                // Busqueda por diligencias
+                cadenaBusqueda = text;
+                try {
+                    
+                    if (cadenaBusqueda.length() > 0 ) {
+                        Integer numDiligencias = Integer.valueOf(cadenaBusqueda);
+                        cargarAccidentes("where Num_Diligencias =" + numDiligencias, "");
+                    } else if (cadenaBusqueda.length() == 0) {
+                        cargarAccidentes("");
+                    }
+                } catch (NumberFormatException e) {
+
+                    JOptionPane.showMessageDialog(this, "Debe introducir un número de diligencias");
+                    
+                    txtSearchFiled.requestFocus();
+
+                }
+
+            } else if (option == 4) {
+                // Busdqueda por patrulla
+                cadenaBusqueda=text;
+                if (cadenaBusqueda.length() >= 3) {
+                    cargarAccidentes("where Patrulla like '%" + cadenaBusqueda + "%'", "");
+                } else if (cadenaBusqueda.length() == 0) {
+                    cargarAccidentes("");
+                }
+
+            }
+
+        }
+    }//GEN-LAST:event_txtSearchFiledKeyReleased
+
+    private boolean verificarFecha(String texto) {
+        String textoFecha = texto;
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        formatoFecha.setLenient(false); // Hace que SimpleDateFormat sea estricto en cuanto al formato de fecha
+
+        try {
+            formatoFecha.parse(textoFecha);
+            return true;
+        } catch (ParseException ex) {
+            return false;
+        }
+
+    }
+
+    ;
+    
+    public void cargarAccidentes(String where, Object... search) {
+
         listAccidents.clear();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
 
-        listAccidents = datos_model.getListAccidents();
-
-        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-        dtm.setRowCount(0);
+        String SqlQuery = "SELECT * FROM Accidentes " + where;
+        listAccidents = datos_model.getListAccidents(SqlQuery);
 
         //Lo mostramos en la tabla
         for (Accidente accidente : listAccidents) {
             table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
         }
+
     }
 
+//    public void cargarAccidentes() {
+//
+//        //Rellenamos el Arraylist
+//        listAccidents.clear();
+//
+//        listAccidents = datos_model.getListAccidents();
+//
+//        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+//        dtm.setRowCount(0);
+//
+//        //Lo mostramos en la tabla
+//        for (Accidente accidente : listAccidents) {
+//            table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
+//        }
+//    }
     private void cargaVehiculosAccidente(int index) {
 
         ArrayList<Vehiculo> vehiculosAccidente = new ArrayList<>();
@@ -335,4 +495,21 @@ public class Form_Home extends javax.swing.JPanel {
         }
 
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.conde.component.Card_Accident data_Aux_Accidente;
+    private javax.swing.JPanel header;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLayeredPane panel;
+    private com.conde.swing.PanelBorder panelBorder1;
+    private com.conde.component.Card_Persona personas;
+    private com.conde.swing.ScrollPaneWin11 s;
+    private com.conde.swing.Table_Accidentes table;
+    private textfield.TextFieldSearchOption txtSearchFiled;
+    private com.conde.component.Card_Vehiculos vehiculos;
+    // End of variables declaration//GEN-END:variables
+
 }

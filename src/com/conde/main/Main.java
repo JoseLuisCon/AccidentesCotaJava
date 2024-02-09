@@ -36,7 +36,7 @@ public class Main extends javax.swing.JFrame {
         menu.initMoving(Main.this);
 
         home = new Form_Home();
-        home.cargarAccidentes();
+        home.cargarAccidentes("");
 
         form2 = new Form_2();
         
