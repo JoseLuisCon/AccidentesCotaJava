@@ -1,4 +1,4 @@
-package textfield;
+package com.conde.component.textfieldSearch;
 
 import javax.swing.Icon;
 

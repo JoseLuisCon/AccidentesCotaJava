@@ -26,8 +26,8 @@
               <Component id="jLabel2" pref="356" max="32767" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" pref="27" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="txtSearchFiled" min="-2" pref="336" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="txtSearchFiled" min="-2" pref="330" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -35,9 +35,9 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jLabel1" max="32767" attributes="0"/>
           <Component id="jLabel2" alignment="0" max="32767" attributes="0"/>
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
               <Component id="txtSearchFiled" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -59,10 +59,7 @@
         <Property name="text" type="java.lang.String" value="LISTADO DE ACCIDENTES"/>
       </Properties>
     </Component>
-    <Component class="textfield.TextFieldSearchOption" name="txtSearchFiled">
-      <Events>
-        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSearchFiledKeyReleased"/>
-      </Events>
+    <Component class="com.conde.component.textfieldSearch.TextFieldSearchOption" name="txtSearchFiled">
     </Component>
   </SubComponents>
 </Form>

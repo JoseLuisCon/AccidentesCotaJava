@@ -20,11 +20,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class Menu extends javax.swing.JPanel {
-    
+
     private boolean estado = true;
-    
+
     private EventToogleTheme toogleTheme;
-    
+
     public void addEventToogleTheme(EventToogleTheme event) {
         this.toogleTheme = event;
     }
@@ -40,7 +40,6 @@ public class Menu extends javax.swing.JPanel {
 
         init();
 
-        
         lblMailTo.InitLink("By Conde", "mailto:condepa45@gmail.com");
     }
 
@@ -50,40 +49,42 @@ public class Menu extends javax.swing.JPanel {
         listMenu1.addItem(new Model_Menu("1", "Listado", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("2", "Alta", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("3", "Informes", Model_Menu.MenuType.MENU));
-//        listMenu1.addItem(new Model_Menu("4", "Forms Stuff", Model_Menu.MenuType.MENU));
-//        listMenu1.addItem(new Model_Menu("5", "Data Table", Model_Menu.MenuType.MENU));
-//        listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
-//
-//        listMenu1.addItem(new Model_Menu("", "My DAta", Model_Menu.MenuType.TITLE));
-//        listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
-//        listMenu1.addItem(new Model_Menu("6", "Icons", Model_Menu.MenuType.MENU));
-//        listMenu1.addItem(new Model_Menu("7", "Sample Page", Model_Menu.MenuType.MENU));
-//        listMenu1.addItem(new Model_Menu("8", "Extra", Model_Menu.MenuType.MENU));
+////        listMenu1.addItem(new Model_Menu("4", "Forms Stuff", Model_Menu.MenuType.MENU));
+////        listMenu1.addItem(new Model_Menu("5", "Data Table", Model_Menu.MenuType.MENU));
+////        listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
+////
+////        listMenu1.addItem(new Model_Menu("", "My DAta", Model_Menu.MenuType.TITLE));
+////        listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
+////        listMenu1.addItem(new Model_Menu("6", "Icons", Model_Menu.MenuType.MENU));
+////        listMenu1.addItem(new Model_Menu("7", "Sample Page", Model_Menu.MenuType.MENU));
+////        listMenu1.addItem(new Model_Menu("8", "Extra", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
         listMenu1.addItem(new Model_Menu("5", "Salir", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
-        
-        
-        lblLogo.setBounds(0,0,65, 86);
-        
+
+        lblLogo.setBounds(0, 0, 65, 86);
+
         Image imagen = new ImageIcon(this.getClass().getResource("/com/conde/resources/icons/logo_traf.png")).getImage();
         Icon icon = new ImageIcon(imagen.getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT));
         lblLogo.setIcon(icon);
-       
+
         btnToogleTheme.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                estado = !estado; // Cambiar el estado para el próximo clic
+
                 if (estado) {
-                    Image imagen = new ImageIcon(Menu.this.getClass().getResource("/com/conde/resources/icons/el-verano.png")).getImage();
-                    btnToogleTheme.setIcon(new ImageIcon(imagen));
-                    btnToogleTheme.setToolTipText("Tema oscuro");
-                } else {
                     Image imagen = new ImageIcon(Menu.this.getClass().getResource("/com/conde/resources/icons/luna.png")).getImage();
                     btnToogleTheme.setIcon(new ImageIcon(imagen));
                     btnToogleTheme.setToolTipText("Tema claro");
+                } else {
+
+                    Image imagen = new ImageIcon(Menu.this.getClass().getResource("/com/conde/resources/icons/el-verano.png")).getImage();
+                    btnToogleTheme.setIcon(new ImageIcon(imagen));
+                    btnToogleTheme.setToolTipText("Tema oscuro");
                 }
                 toogleTheme.toogleTheme(estado);
-                estado = !estado; // Cambiar el estado para el próximo clic
+
             }
         });
 
@@ -218,13 +219,13 @@ public class Menu extends javax.swing.JPanel {
     }//GEN-LAST:event_lblMailToMouseExited
 
     private void btnToogleThemeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnToogleThemeMousePressed
-        
+
     }//GEN-LAST:event_btnToogleThemeMousePressed
 
     private void btnToogleThemeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToogleThemeActionPerformed
 
 //        cambiarIcono();
-        
+
     }//GEN-LAST:event_btnToogleThemeActionPerformed
 
     @Override
@@ -257,10 +258,8 @@ public class Menu extends javax.swing.JPanel {
             }
         });
     }
-    
-  
 
- 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnToogleTheme;
     private javax.swing.JLabel jLabel1;

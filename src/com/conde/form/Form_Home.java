@@ -2,6 +2,8 @@ package com.conde.form;
 
 import com.conde.cell.TableActionCellEditor;
 import com.conde.cell.TableActionEvent;
+import com.conde.component.textfieldSearch.SearchOptinEvent;
+import com.conde.component.textfieldSearch.SearchOption;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Accidente;
 import com.conde.model.Persona;
@@ -23,8 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import textfield.SearchOptinEvent;
-import textfield.SearchOption;
+
 
 public class Form_Home extends javax.swing.JPanel {
 
@@ -142,8 +143,8 @@ public class Form_Home extends javax.swing.JPanel {
         table = new com.conde.swing.Table_Accidentes();
         header = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        txtSearchFiled = new textfield.TextFieldSearchOption();
         jLabel3 = new javax.swing.JLabel();
+        txtSearchFiled = new com.conde.component.textfieldSearch.TextFieldSearchOption();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setOpaque(false);
@@ -246,7 +247,7 @@ public class Form_Home extends javax.swing.JPanel {
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(jLabel1)
-                .addGap(1069, 1197, Short.MAX_VALUE))
+                .addGap(1069, 1198, Short.MAX_VALUE))
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -258,19 +259,13 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+                .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         header.setOpaque(false);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/search.png"))); // NOI18N
-
-        txtSearchFiled.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtSearchFiledKeyReleased(evt);
-            }
-        });
 
         jLabel3.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -282,11 +277,12 @@ public class Form_Home extends javax.swing.JPanel {
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(headerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 1023, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 1024, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -337,90 +333,6 @@ public class Form_Home extends javax.swing.JPanel {
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
 //        cargarAccidentes();
     }//GEN-LAST:event_formFocusGained
-
-    private void txtSearchFiledKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchFiledKeyReleased
-        if (txtSearchFiled.isSelected()) {
-            int option = txtSearchFiled.getSelectedIndex();
-            String text = txtSearchFiled.getText().trim();
-            if (option == 0) {
-                //Busqueda por fecha
-                cadenaBusqueda = text;
-
-                if (cadenaBusqueda.length() == 10) {
-                    if (verificarFecha(cadenaBusqueda)) {
-                        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-                        Date fecha = new Date();
-                        try {
-                            fecha = formato.parse(cadenaBusqueda);
-                            Calendar fec = Calendar.getInstance();
-                            fec.setTime(fecha);
-                            cargarAccidentes("where Fecha =" + "#" + (fec.get(Calendar.MONTH) + 1) + "/" + fec.get(Calendar.DAY_OF_MONTH) + "/" + fec.get(Calendar.YEAR) + "#", "");
-                        } catch (ParseException ex) {
-                            Logger.getLogger(Form_Home.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    } else {
-                        JOptionPane.showMessageDialog(this, "La fecha no es correcta, formato dd/mm/yyyy");
-//                        txtSearchFiled.setText("");
-                        txtSearchFiled.requestFocus();
-                    }
-
-                } else if (cadenaBusqueda.length() == 0) {
-                    cargarAccidentes("");
-                }
-
-            } else if (option == 1) {
-                //Busqueda por equipo
-                cadenaBusqueda = text;
-
-                if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Zona_Atestados like '%" + cadenaBusqueda + "%'", "");
-                } else if (cadenaBusqueda.length() == 0) {
-                    cargarAccidentes("");
-                }
-
-            } else if (option == 2) {
-                // Busqueda por carretera
-                cadenaBusqueda = text;
-
-                if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Carretera like '%" + cadenaBusqueda + "%'", "");
-                } else if (cadenaBusqueda.length() == 0) {
-                    cargarAccidentes("");
-                }
-
-            } else if (option == 3) {
-                // Busqueda por diligencias
-                cadenaBusqueda = text;
-                try {
-                    
-                    if (cadenaBusqueda.length() > 0 ) {
-                        Integer numDiligencias = Integer.valueOf(cadenaBusqueda);
-                        cargarAccidentes("where Num_Diligencias =" + numDiligencias, "");
-                    } else if (cadenaBusqueda.length() == 0) {
-                        cargarAccidentes("");
-                    }
-                } catch (NumberFormatException e) {
-
-                    JOptionPane.showMessageDialog(this, "Debe introducir un número de diligencias");
-                    
-                    txtSearchFiled.requestFocus();
-
-                }
-
-            } else if (option == 4) {
-                // Busdqueda por patrulla
-                cadenaBusqueda=text;
-                if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Patrulla like '%" + cadenaBusqueda + "%'", "");
-                } else if (cadenaBusqueda.length() == 0) {
-                    cargarAccidentes("");
-                }
-
-            }
-
-        }
-    }//GEN-LAST:event_txtSearchFiledKeyReleased
 
     private boolean verificarFecha(String texto) {
         String textoFecha = texto;
@@ -508,7 +420,7 @@ public class Form_Home extends javax.swing.JPanel {
     private com.conde.component.Card_Persona personas;
     private com.conde.swing.ScrollPaneWin11 s;
     private com.conde.swing.Table_Accidentes table;
-    private textfield.TextFieldSearchOption txtSearchFiled;
+    private com.conde.component.textfieldSearch.TextFieldSearchOption txtSearchFiled;
     private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
 

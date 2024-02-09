@@ -21,12 +21,11 @@ public class Main extends javax.swing.JFrame {
 
     private Form_Home home;
     private Form_2 form2;
-    
-    private int indexPanel=0;
-    
-    
-   
-    
+    private FormAddAccident frmAddAcci;
+
+    private int indexPanel = 0;
+
+    private boolean themeLight = true;
 
     public Main() {
 
@@ -35,45 +34,48 @@ public class Main extends javax.swing.JFrame {
         setBackground(new Color(0, 0, 0, 0));
         menu.initMoving(Main.this);
 
-        home = new Form_Home();
-        home.cargarAccidentes("");
+//        home = new Form_Home();
+//        home.cargarAccidentes("");
+//        
+//        frmAddAcci= new FormAddAccident();
+//
+//        form2 = new Form_2();
+//        
+        menu.addEventToogleTheme((Boolean toogleTheme) -> {
+            themeLight=toogleTheme;
+            toggleTema(themeLight);
 
-        form2 = new Form_2();
-        
-        menu.addEventToogleTheme((Boolean toogleTheme)->{
-
-            toggleTema();
-        
         });
-        
 
         menu.addEventMenuSelected((int index) -> {
             switch (index) {
                 case 1:
-                    
+                    setTheme();
+                    home = new Form_Home();
+                    home.cargarAccidentes("");
                     setForm(home);
-                    indexPanel=1;
+                    indexPanel = 1;
                     break;
 
                 case 2:
 
-                    FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
-                    FlatLightLaf.setup();
+                    setTheme();
+                    frmAddAcci = new FormAddAccident();
 
-                    FormAddAccident p = new FormAddAccident();
-                    
-                    setForm(p);
-                    indexPanel=2;
+                    setForm(frmAddAcci);
+                    indexPanel = 2;
                     break;
                 case 3:
+                    setTheme();
+                    form2 = new Form_2();
                     setForm(form2);
-                    indexPanel=3;
+                    indexPanel = 3;
                     break;
                 case 5:
                     ConexionAccess.desConnection();
                      {
                         try {
-                            Thread.sleep(400);
+                            Thread.sleep(300);
                             System.exit(0);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -85,9 +87,11 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        setTheme();
+        home = new Form_Home();
+        home.cargarAccidentes("");
+
         setForm(home);
-
-
 
     }
 
@@ -95,36 +99,54 @@ public class Main extends javax.swing.JFrame {
 
         mainPanel.removeAll();
         CardLayout cl = new CardLayout();
-        cl.setHgap(5);
-        cl.setVgap(5);
+
         mainPanel.setLayout(cl);
-        
+
         mainPanel.add(com);
 
         mainPanel.repaint();
         mainPanel.revalidate();
-        System.out.println("Ancho "+mainPanel.getWidth());
-        System.out.println("Alto "+mainPanel.getHeight());
-    }
-    
-    private void toggleTema() {
-        
-        if (indexPanel ==2){
-        
-          try {
-            // Obtener el Look and Feel actual
-            UIManager.LookAndFeelInfo lookAndFeelInfo = UIManager.getInstalledLookAndFeels()[0];
 
-            // Cambiar entre el tema dark y light
-            if (FlatDarkLaf.class.getName().equals(UIManager.getLookAndFeel().getClass().getName())) {
-               FlatLightLaf.registerCustomDefaultsSource("com/conde/style");        
+    }
+
+    private void setTheme() {
+
+        try {
+            if (themeLight) {
+                FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
                 UIManager.setLookAndFeel(new FlatLightLaf());
 
                 mainPanel.setBackground(Color.WHITE);
             } else {
-           
+
                 UIManager.setLookAndFeel(new FlatDarkLaf());
-               FlatDarkLaf.registerCustomDefaultsSource("com/conde/style");
+
+                FlatDarkLaf.registerCustomDefaultsSource("com/conde/style");
+                mainPanel.setBackground(Color.BLACK);
+            }
+        } catch (UnsupportedLookAndFeelException e) {
+            System.out.println("Error al cargar los temas" + e.getMessage());
+        }
+
+    }
+
+    private void toggleTema(boolean theme) {
+
+//        if (indexPanel ==2){
+        try {
+            // Obtener el Look and Feel actual
+//            UIManager.LookAndFeelInfo lookAndFeelInfo = UIManager.getInstalledLookAndFeels()[0];
+
+            // Cambiar entre el tema dark y light
+            if (theme) {
+                FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
+                UIManager.setLookAndFeel(new FlatLightLaf());
+
+                mainPanel.setBackground(Color.WHITE);
+            } else {
+
+                UIManager.setLookAndFeel(new FlatDarkLaf());
+                FlatDarkLaf.registerCustomDefaultsSource("com/conde/style");
                 mainPanel.setBackground(Color.BLACK);
             }
 
@@ -134,14 +156,14 @@ public class Main extends javax.swing.JFrame {
             // Repintar y actualizar los componentes
             repaint();
             revalidate();
+
+            themeLight = theme;
+
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        
-        
-        }
-        
-      
+
+//        }
     }
 
     @SuppressWarnings("unchecked")
@@ -185,10 +207,13 @@ public class Main extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-     
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                
+
+                FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
+                FlatLightLaf.setup();
+
                 new Main().setVisible(true);
 
 //            JFrame frame = new Main();
@@ -220,7 +245,6 @@ public class Main extends javax.swing.JFrame {
 //
 //            frame.setVisible(true);
 //                
-                
             }
 
         });
@@ -233,6 +257,5 @@ public class Main extends javax.swing.JFrame {
     private com.conde.component.Menu menu;
     private com.conde.swing.PanelBorder panelBorder1;
     // End of variables declaration//GEN-END:variables
-
 
 }
