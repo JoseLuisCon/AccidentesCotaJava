@@ -7,9 +7,10 @@ import com.conde.model.StatusType;
 public class CellStatus extends javax.swing.JPanel {
 
 
-    public CellStatus(StatusType type) {
+    public CellStatus(StatusType type, boolean isSelected) {
         initComponents();
        status.setType(type);
+       status.selectedTypeOn(isSelected);
     }
 
 

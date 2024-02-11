@@ -4,6 +4,7 @@ import com.conde.cell.TableActionCellEditor;
 import com.conde.cell.TableActionEvent;
 import com.conde.component.textfieldSearch.SearchOptinEvent;
 import com.conde.component.textfieldSearch.SearchOption;
+import com.conde.main.Main;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Accidente;
 import com.conde.model.Persona;
@@ -26,26 +27,38 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-
-public class Form_Home extends javax.swing.JPanel {
+public class Form_Home extends javax.swing.JPanel{
 
     private ArrayList<Accidente> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
     private String cadenaBusqueda = "";
 
-    public Form_Home() {
+    
+    public Form_Home(Main m) {
 
         initComponents();
 
         JPanel p = new JPanel();
-        p.setBackground(Color.WHITE);
+//        p.setBackground(Color.WHITE);
         s.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
         s.getViewport().setBackground(Color.WHITE);
-
+        
+        
+        
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(JTable t, int row) {
                 System.out.println("Editando fila: " + row);
+                
+               int respEdit = JOptionPane.showConfirmDialog(null, "¿Quiere modificar los datos del accidente?", "Atención", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+               
+               if (respEdit == JOptionPane.OK_OPTION){
+                   DefaultTableModel model = (DefaultTableModel) table.getModel();
+                   int indexAccident= (int) model.getValueAt(row, 0);
+                   m.setForm(2,indexAccident);
+     
+              }
+
             }
 
             @Override
@@ -86,9 +99,8 @@ public class Form_Home extends javax.swing.JPanel {
                     System.out.println("Index " + index);
                     break;
                 }
-
             }
-
+       
             // Cargamos datos del accidente seleccionado en el card1
             ImageIcon image = new ImageIcon("src/com/conde/resources/icons/accidente.png");
             Icon icon = new ImageIcon(image.getImage());
@@ -105,7 +117,7 @@ public class Form_Home extends javax.swing.JPanel {
             }
 
         });
-
+            
         initSearchTextField();
 
     }
@@ -178,16 +190,16 @@ public class Form_Home extends javax.swing.JPanel {
         panelLayout.rowWeights = new double[] {0.0};
         panel.setLayout(panelLayout);
 
-        data_Aux_Accidente.setColor1(new java.awt.Color(191, 78, 116));
-        data_Aux_Accidente.setColor2(new java.awt.Color(184, 113, 137));
+        data_Aux_Accidente.setColor1(new java.awt.Color(131, 96, 195));
+        data_Aux_Accidente.setColor2(new java.awt.Color(46, 191, 145));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         panel.add(data_Aux_Accidente, gridBagConstraints);
 
-        vehiculos.setColor1(new java.awt.Color(101, 157, 15));
-        vehiculos.setColor2(new java.awt.Color(191, 226, 137));
+        vehiculos.setColor1(new java.awt.Color(31, 64, 55));
+        vehiculos.setColor2(new java.awt.Color(153, 242, 200));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -228,6 +240,12 @@ public class Form_Home extends javax.swing.JPanel {
         });
         table.setMaximumSize(null);
         table.setName(""); // NOI18N
+        table.setShowHorizontalLines(false);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableMousePressed(evt);
+            }
+        });
         table.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tableKeyPressed(evt);
@@ -270,6 +288,12 @@ public class Form_Home extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("LISTADO DE ACCIDENTES");
+
+        txtSearchFiled.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchFiledKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
         header.setLayout(headerLayout);
@@ -334,6 +358,94 @@ public class Form_Home extends javax.swing.JPanel {
 //        cargarAccidentes();
     }//GEN-LAST:event_formFocusGained
 
+    private void txtSearchFiledKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchFiledKeyReleased
+        if (txtSearchFiled.isSelected()) {
+            int option = txtSearchFiled.getSelectedIndex();
+            String text = txtSearchFiled.getText().trim();
+            if (option == 0) {
+                //Busqueda por fecha
+                cadenaBusqueda = text;
+
+                if (cadenaBusqueda.length() == 10) {
+                    if (verificarFecha(cadenaBusqueda)) {
+                        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                        Date fecha = new Date();
+                        try {
+                            fecha = formato.parse(cadenaBusqueda);
+                            Calendar fec = Calendar.getInstance();
+                            fec.setTime(fecha);
+                            cargarAccidentes("where Fecha =" + "#" + (fec.get(Calendar.MONTH) + 1) + "/" + fec.get(Calendar.DAY_OF_MONTH) + "/" + fec.get(Calendar.YEAR) + "#", "");
+                        } catch (ParseException ex) {
+                            Logger.getLogger(Form_Home.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    } else {
+                        JOptionPane.showMessageDialog(this, "La fecha no es correcta, formato dd/mm/yyyy");
+//                        txtSearchFiled.setText("");
+                        txtSearchFiled.requestFocus();
+                    }
+
+                } else if (cadenaBusqueda.length() == 0) {
+                    cargarAccidentes("");
+                }
+
+            } else if (option == 1) {
+                //Busqueda por equipo
+                cadenaBusqueda = text;
+
+                if (cadenaBusqueda.length() >= 3) {
+                    cargarAccidentes("where Zona_Atestados like '%" + cadenaBusqueda + "%'", "");
+                } else if (cadenaBusqueda.length() == 0) {
+                    cargarAccidentes("");
+                }
+
+            } else if (option == 2) {
+                // Busqueda por carretera
+                cadenaBusqueda = text;
+
+                if (cadenaBusqueda.length() >= 3) {
+                    cargarAccidentes("where Carretera like '%" + cadenaBusqueda + "%'", "");
+                } else if (cadenaBusqueda.length() == 0) {
+                    cargarAccidentes("");
+                }
+
+            } else if (option == 3) {
+                // Busqueda por diligencias
+                cadenaBusqueda = text;
+                try {
+
+                    if (cadenaBusqueda.length() > 0) {
+                        Integer numDiligencias = Integer.valueOf(cadenaBusqueda);
+                        cargarAccidentes("where Num_Diligencias =" + numDiligencias, "");
+                    } else if (cadenaBusqueda.length() == 0) {
+                        cargarAccidentes("");
+                    }
+                } catch (NumberFormatException e) {
+
+                    JOptionPane.showMessageDialog(this, "Debe introducir un número de diligencias");
+
+                    txtSearchFiled.requestFocus();
+
+                }
+
+            } else if (option == 4) {
+                // Busdqueda por patrulla
+                cadenaBusqueda = text;
+                if (cadenaBusqueda.length() >= 3) {
+                    cargarAccidentes("where Patrulla like '%" + cadenaBusqueda + "%'", "");
+                } else if (cadenaBusqueda.length() == 0) {
+                    cargarAccidentes("");
+                }
+
+            }
+
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchFiledKeyReleased
+
+    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
+       
+    }//GEN-LAST:event_tableMousePressed
+
     private boolean verificarFecha(String texto) {
         String textoFecha = texto;
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
@@ -348,8 +460,6 @@ public class Form_Home extends javax.swing.JPanel {
 
     }
 
-    ;
-    
     public void cargarAccidentes(String where, Object... search) {
 
         listAccidents.clear();
@@ -366,21 +476,6 @@ public class Form_Home extends javax.swing.JPanel {
 
     }
 
-//    public void cargarAccidentes() {
-//
-//        //Rellenamos el Arraylist
-//        listAccidents.clear();
-//
-//        listAccidents = datos_model.getListAccidents();
-//
-//        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-//        dtm.setRowCount(0);
-//
-//        //Lo mostramos en la tabla
-//        for (Accidente accidente : listAccidents) {
-//            table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
-//        }
-//    }
     private void cargaVehiculosAccidente(int index) {
 
         ArrayList<Vehiculo> vehiculosAccidente = new ArrayList<>();
@@ -424,4 +519,5 @@ public class Form_Home extends javax.swing.JPanel {
     private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
 
+  
 }

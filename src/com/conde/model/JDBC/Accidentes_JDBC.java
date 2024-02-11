@@ -8,9 +8,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -383,36 +381,74 @@ public class Accidentes_JDBC {
     }
 
     public int getVehiculoByMatriculaAndNumAccidente(Object matricula, int num_accidente) {
-        
-         String sql = "SELECT * FROM Vehiculos WHERE MATRICULA=? AND NUM_ACCI=?";
-         
-         int IdVehiculo=-1;
-                 
-         try {
-             conexion = ConexionAccess.conectar();
-             ps = conexion.prepareStatement(sql);
-             ps.setString(1, (String) matricula);
-             ps.setInt(2, num_accidente);
-             
+
+        String sql = "SELECT * FROM Vehiculos WHERE MATRICULA=? AND NUM_ACCI=?";
+
+        int IdVehiculo = -1;
+
+        try {
+            conexion = ConexionAccess.conectar();
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, (String) matricula);
+            ps.setInt(2, num_accidente);
+
             rs = ps.executeQuery();
-            
-            if (rs.next()){
-                
-                IdVehiculo=rs.getInt("Id");
-                
-            
+
+            if (rs.next()) {
+
+                IdVehiculo = rs.getInt("Id");
+
             }
-             rs.close();
-             ps.close();
-             conexion=null;
-             ConexionAccess.desConnection();
-            
+            rs.close();
+            ps.close();
+            conexion = null;
+            ConexionAccess.desConnection();
+
         } catch (SQLException e) {
-             Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, e);
         }
-        
-         return IdVehiculo;
-      
+
+        return IdVehiculo;
+
+    }
+    
+     public ArrayList<Vehiculo> getVehiculosInAccident(int idAccidente) {
+            
+         ArrayList<Vehiculo> listVehiculos = new ArrayList<>();
+         
+         String sql= "SELECT * FROM Vehiculos WHERE NUM_ACCI=?";
+         
+         try {
+            conexion = ConexionAccess.conectar();
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, idAccidente);
+            
+            rs=ps.executeQuery();
+            
+            while (rs.next()){
+                Vehiculo veh = new Vehiculo();
+                
+                veh.setNum_Accidente(idAccidente);
+                veh.setMatricula((String) rs.getObject("MATRICULA"));
+                veh.setMarca((String) rs.getObject("MARCA"));
+                veh.setModelo((String) rs.getObject("MODELO"));
+                veh.setGestion((String) rs.getObject("GESTION"));
+                veh.setObservaciones((String) rs.getObject("OBSERVACIONES"));
+                
+                listVehiculos.add(veh);
+            }
+            rs.close();
+            ps.close();
+            conexion=null;
+            ConexionAccess.desConnection();
+            return listVehiculos;
+             
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         
+         return listVehiculos;
+         
     }
 
     public int AddNuevoAccidente(Accidente newAccidente) {
@@ -446,23 +482,23 @@ public class Accidentes_JDBC {
             numAccidente = ps.executeUpdate();
 
             ps.close();
-            
+
             sql = "SELECT * FROM Accidentes WHERE Fecha=? AND Hora=? AND Zona_Atestados=?";
-            
-            ps=conexion.prepareStatement(sql);
-            
+
+            ps = conexion.prepareStatement(sql);
+
             ps.setDate(1, fechaSql);
             ps.setTime(2, horaSql);
             ps.setString(3, newAccidente.getZona_Atestados());
-            
+
             rs = ps.executeQuery();
-            
-            if (rs.next()){
+
+            if (rs.next()) {
                 numAccidente = rs.getInt("Id");
             }
-            
+
             ps.close();
- 
+
             conexion.close();
             ConexionAccess.desConnection();
             return numAccidente;
@@ -474,7 +510,87 @@ public class Accidentes_JDBC {
         return numAccidente;
 
     }
-    
+
+    public int modificarAccidenteById(Accidente newAccidente) {
+        String sql = "UPDATE Accidentes SET Fecha=?,Hora=?,Carretera=?,Kilometro=?,Patrulla=?, Tipo_Accidente=?, Descripcion=? WHERE Id=?";
+
+        Integer numAccidente = 0;
+
+        try {
+            conexion = ConexionAccess.conectar();
+            ps = conexion.prepareStatement(sql);
+
+            // Fecha
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            java.util.Date fechaUtil = sdf.parse(newAccidente.getFecha());
+            java.sql.Date fechaSql = new java.sql.Date(fechaUtil.getTime());
+            ps.setDate(1, fechaSql);
+            //Hora
+            SimpleDateFormat stf = new SimpleDateFormat("HH:mm");
+            java.util.Date horaUtil = stf.parse(newAccidente.getHora());
+            java.sql.Time horaSql = new java.sql.Time(horaUtil.getTime());
+            ps.setTime(2, horaSql);
+
+            ps.setString(3, newAccidente.getCarretera());
+            ps.setString(4, newAccidente.getKilometro());
+            ps.setString(5, newAccidente.getPatrulla());
+            ps.setInt(6, newAccidente.getTipo_Siniestro());
+            ps.setString(7, newAccidente.getDescripcion());
+            ps.setInt(8, newAccidente.getNum_Accidente());
+
+            numAccidente = ps.executeUpdate();
+
+            ps.close();
+
+            conexion.close();
+            ConexionAccess.desConnection();
+            return numAccidente;
+
+        } catch (SQLException | ParseException ex) {
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return numAccidente;
+
+    }
+
+    public void addModificaListaVehiculos(ArrayList<Vehiculo> listaVehiculos) {
+        
+        String sql = "DELETE FROM Vehiculos WHERE Id=?";
+        
+        try {
+            conexion = ConexionAccess.conectar();
+            conexion.setAutoCommit(false);
+            ps = conexion.prepareStatement(sql);
+            listaVehiculos.forEach((veh)->{
+                try {
+                    ps.setInt(1, veh.getId_Vehiculo());
+                    ps.addBatch();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            
+            });
+            
+            ps.executeBatch();
+            ps.close();
+            conexion=null;
+            ConexionAccess.desConnection();
+   
+            addListadoVehiculos(listaVehiculos);
+        } catch (SQLException e) {
+            
+            try {
+                conexion.rollback();
+            } catch (SQLException ex) {
+                Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        
+        
+    }
+
     public void addListadoVehiculos(ArrayList<Vehiculo> listaVehiculos) {
 
         String sql = "INSERT INTO Vehiculos (Id,NUM_ACCI,MATRICULA,MARCA,MODELO,GESTION,OBSERVACIONES) VALUES (?,?,?,?,?,?,?)";
@@ -500,7 +616,7 @@ public class Accidentes_JDBC {
             });
             ps.executeBatch();
             ps.close();
-            conexion=null;
+            conexion = null;
             ConexionAccess.desConnection();
 
         } catch (SQLException ex) {
@@ -508,10 +624,10 @@ public class Accidentes_JDBC {
         }
 
     }
-    
-       public void addListadoPersonas(ArrayList<Persona> listaPersonas) {
-           
-            String sql = "INSERT INTO Personas (Id,Num_Accidente,Num_Vehiculo,Documento,Tipo_Persona,Resultado,Trasladado,Lugar_Traslado,Alcoholemia,Alcoholemia_Positiva,Drogas,Drogas_Positiva,Observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    public void addListadoPersonas(ArrayList<Persona> listaPersonas) {
+
+        String sql = "INSERT INTO Personas (Id,Num_Accidente,Num_Vehiculo,Documento,Tipo_Persona,Resultado,Trasladado,Lugar_Traslado,Alcoholemia,Alcoholemia_Positiva,Drogas,Drogas_Positiva,Observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         conexion = ConexionAccess.conectar();
         try {
@@ -530,7 +646,7 @@ public class Accidentes_JDBC {
                     ps.setBoolean(10, per.getAlcoholemia_positiva());
                     ps.setBoolean(11, per.getPrueba_drogas());
                     ps.setBoolean(12, per.getDrogas_positiva());
-                    ps.setString(13, per.getObservaciones() );
+                    ps.setString(13, per.getObservaciones());
                     ps.addBatch();
 
                 } catch (SQLException ex) {
@@ -540,13 +656,13 @@ public class Accidentes_JDBC {
             });
             ps.executeBatch();
             ps.close();
-            conexion=null;
+            conexion = null;
             ConexionAccess.desConnection();
 
         } catch (SQLException ex) {
             Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     public void AddNuevoLugarAccidente(String nuevoLugar) {
@@ -645,8 +761,8 @@ public class Accidentes_JDBC {
     private PreparedStatement ps;
     private ResultSet rs;
 
- 
 
 
+   
 
 }

@@ -14,6 +14,8 @@ public class TableActionCellEditor extends DefaultCellEditor {
         super(new JCheckBox());
         this.event = event;
     }
+    
+    
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -23,7 +25,7 @@ public class TableActionCellEditor extends DefaultCellEditor {
         action.initEvent(event, table, row);
         
         action.setBackground(new Color(6, 72, 72));
-
+       
         return action;
 
     }

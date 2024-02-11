@@ -10,6 +10,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -27,6 +28,36 @@ public class Main extends javax.swing.JFrame {
 
     private boolean themeLight = true;
 
+    public void setForm(int NumForm, int accidente)  {
+        //Método para seleccionar paneles desde otros componentes o formularios
+        if (NumForm==1){
+                 setTheme();
+                    home = new Form_Home(this);
+                    home.cargarAccidentes("");
+                    setForm(home);
+                    indexPanel = 1;
+        }    
+        else if (NumForm==2){
+            if (accidente==0){
+                System.out.println("Accidente: " + accidente);
+            setTheme();
+            frmAddAcci = new FormAddAccident(this);
+
+            setForm(frmAddAcci);
+            indexPanel = 2;
+            
+            }else{
+            System.out.println("Accidente: " + accidente);
+            setTheme();
+            frmAddAcci = new FormAddAccident(this, accidente);
+
+            setForm(frmAddAcci);
+            indexPanel = 2;
+            
+            }       
+        }
+    }
+
     public Main() {
 
         initComponents();
@@ -34,15 +65,8 @@ public class Main extends javax.swing.JFrame {
         setBackground(new Color(0, 0, 0, 0));
         menu.initMoving(Main.this);
 
-//        home = new Form_Home();
-//        home.cargarAccidentes("");
-//        
-//        frmAddAcci= new FormAddAccident();
-//
-//        form2 = new Form_2();
-//        
         menu.addEventToogleTheme((Boolean toogleTheme) -> {
-            themeLight=toogleTheme;
+            themeLight = toogleTheme;
             toggleTema(themeLight);
 
         });
@@ -51,7 +75,7 @@ public class Main extends javax.swing.JFrame {
             switch (index) {
                 case 1:
                     setTheme();
-                    home = new Form_Home();
+                    home = new Form_Home(this);
                     home.cargarAccidentes("");
                     setForm(home);
                     indexPanel = 1;
@@ -60,7 +84,7 @@ public class Main extends javax.swing.JFrame {
                 case 2:
 
                     setTheme();
-                    frmAddAcci = new FormAddAccident();
+                    frmAddAcci = new FormAddAccident(this);
 
                     setForm(frmAddAcci);
                     indexPanel = 2;
@@ -88,7 +112,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         setTheme();
-        home = new Form_Home();
+        home = new Form_Home(this);
         home.cargarAccidentes("");
 
         setForm(home);
@@ -181,6 +205,11 @@ public class Main extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1660, 968));
         setUndecorated(true);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         panelBorder1.setOpaque(false);
         panelBorder1.setLayout(new java.awt.BorderLayout());
@@ -205,6 +234,10 @@ public class Main extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowOpened
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
 
@@ -216,35 +249,6 @@ public class Main extends javax.swing.JFrame {
 
                 new Main().setVisible(true);
 
-//            JFrame frame = new Main();
-//                
-//            
-//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//
-//            // Obtener el entorno gráfico
-//            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//            GraphicsDevice[] gd = ge.getScreenDevices();
-//
-//            // Obtener la resolución de la pantalla principal
-//            DisplayMode displayMode = gd[0].getDisplayMode();
-//            int screenWidth = displayMode.getWidth();
-//            int screenHeight = displayMode.getHeight();
-//
-//            // Establecer las proporciones deseadas
-//            double proporcionAncho = 0.8; // Porcentaje del ancho de la pantalla
-//            double proporcionAlto = 0.6;  // Porcentaje del alto de la pantalla
-//
-//            // Calcular el tamaño del JFrame
-//            int nuevoAncho = (int) (screenWidth * proporcionAncho);
-//            int nuevoAlto = (int) (screenHeight * proporcionAlto);
-//
-//            // Configurar el tamaño y la posición del JFrame
-//            
-//            frame.setSize(nuevoAncho, nuevoAlto);
-//            frame.setLocationRelativeTo(null); // Centrar en la pantalla
-//
-//            frame.setVisible(true);
-//                
             }
 
         });

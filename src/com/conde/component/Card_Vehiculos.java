@@ -113,7 +113,7 @@ public class Card_Vehiculos extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Id_Vehiculo", "Matricula", "Marca", "Modelo", "Gestiones"
+                "Id_Vehiculo", "Matrícula", "Marca", "Modelo", "Gestiones"
             }
         ) {
             boolean[] canEdit = new boolean [] {

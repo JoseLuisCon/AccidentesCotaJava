@@ -16,6 +16,7 @@ public class ActionButton extends JButton{
     
     private boolean mousePress;
 
+    
     public ActionButton() {
         setContentAreaFilled(false);
         setBorder(new EmptyBorder(3,3,3,3));
@@ -23,7 +24,7 @@ public class ActionButton extends JButton{
             @Override
             public void mouseReleased(MouseEvent e) {
                 mousePress = true;
-             
+              
             }
 
             @Override

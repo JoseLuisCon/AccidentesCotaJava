@@ -85,10 +85,10 @@
             <Component class="com.conde.component.Card_Accident" name="data_Aux_Accidente">
               <Properties>
                 <Property name="color1" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="74" green="4e" red="bf" type="rgb"/>
+                  <Color blue="c3" green="60" red="83" type="rgb"/>
                 </Property>
                 <Property name="color2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="89" green="71" red="b8" type="rgb"/>
+                  <Color blue="91" green="bf" red="2e" type="rgb"/>
                 </Property>
               </Properties>
               <Constraints>
@@ -100,10 +100,10 @@
             <Component class="com.conde.component.Card_Vehiculos" name="vehiculos">
               <Properties>
                 <Property name="color1" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="f" green="9d" red="65" type="rgb"/>
+                  <Color blue="37" green="40" red="1f" type="rgb"/>
                 </Property>
                 <Property name="color2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="89" green="e2" red="bf" type="rgb"/>
+                  <Color blue="c8" green="f2" red="99" type="rgb"/>
                 </Property>
               </Properties>
               <Constraints>
@@ -575,11 +575,13 @@
                       <Dimension value="null"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="" noResource="true"/>
+                    <Property name="showHorizontalLines" type="boolean" value="false"/>
                     <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                       <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                     </Property>
                   </Properties>
                   <Events>
+                    <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tableMousePressed"/>
                     <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tableKeyPressed"/>
                   </Events>
                 </Component>
@@ -635,6 +637,9 @@
               </Properties>
             </Component>
             <Component class="com.conde.component.textfieldSearch.TextFieldSearchOption" name="txtSearchFiled">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSearchFiledKeyReleased"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

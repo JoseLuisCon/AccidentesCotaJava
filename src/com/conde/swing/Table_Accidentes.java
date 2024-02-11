@@ -12,12 +12,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import net.miginfocom.layout.PlatformDefaults;
-
-
 
 public class Table_Accidentes extends JTable {
 
@@ -27,13 +23,12 @@ public class Table_Accidentes extends JTable {
         this.event = event;
     }
 
+
     public Table_Accidentes() {
 
         setShowHorizontalLines(true);
         setGridColor(new Color(230, 230, 230));
         setRowHeight(35);
-       
-        
 
         getTableHeader().setReorderingAllowed(false);
 
@@ -43,7 +38,7 @@ public class Table_Accidentes extends JTable {
 
                 TableHeader header = new TableHeader(o + "");
                 header.setHorizontalAlignment(JLabel.CENTER);
-                header.setFont(new Font("sansserif", Font.BOLD, 18));
+                header.setFont(new Font("Roboto", Font.BOLD, 18));
                 return header;
             }
 
@@ -52,36 +47,36 @@ public class Table_Accidentes extends JTable {
         setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object o, boolean isSelected, boolean hasFocus, int row, int column) {
-                
-                
-                
+
                 switch (column) {
 
                     case 1:
-                        
-                                                
+
                         PanelActionCell action = new PanelActionCell();
                         setBorder(noFocusBorder);
+
                         if (isSelected) {
                             action.setBackground(new Color(6, 72, 72));
-                          
                         } else {
                             action.setBackground(Color.white);
                         }
+
                         return action;
 
                     case 8:
                         StatusType type;
                         type = (StatusType) o;
-                        CellStatus cell = new CellStatus(type);
+                        CellStatus cell = new CellStatus(type, isSelected);
+
                         setBorder(noFocusBorder);
+
                         return cell;
-                        
+
                     default:
                         Component com = super.getTableCellRendererComponent(table, o, isSelected, hasFocus, row, column);
                         com.setBackground(Color.white);
                         setHorizontalAlignment(JLabel.CENTER);
-                        setFont(new Font("sansserif", Font.PLAIN, 16));
+                        setFont(new Font("Roboto", Font.PLAIN, 16));
 
                         setBorder(noFocusBorder);
                         if (isSelected) {
@@ -91,12 +86,13 @@ public class Table_Accidentes extends JTable {
                             com.setForeground(new Color(53, 54, 53));
                         }
                         return com;
-                        
+
                 }
             }
         });
 
         addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(MouseEvent e) {
 
@@ -104,9 +100,11 @@ public class Table_Accidentes extends JTable {
 
             @Override
             public void mousePressed(MouseEvent e) {
+
                 int filaSeleccionada = rowAtPoint(e.getPoint());
                 int numAccidente = (int) getValueAt(filaSeleccionada, 0);
                 event.selectedRow(numAccidente);
+             
             }
 
         });
@@ -114,9 +112,8 @@ public class Table_Accidentes extends JTable {
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                System.out.println("Tecla Pulsada: "+e.getKeyCode());
+                System.out.println("Tecla Pulsada: " + e.getKeyCode());
             }
-            
 
             @Override
             public void keyPressed(KeyEvent e) {
@@ -124,9 +121,9 @@ public class Table_Accidentes extends JTable {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                 
+
                 if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-               
+
                     // Obtener la fila seleccionada al desplazarse con las flechas arriba/abajo
                     int filaSeleccionada = getSelectedRow();
                     int numAccidente = (int) getValueAt(filaSeleccionada, 0);
@@ -135,6 +132,8 @@ public class Table_Accidentes extends JTable {
                 }
             }
         });
+        
+        
     }
 
     public void addRow(Object[] row) {

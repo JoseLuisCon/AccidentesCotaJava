@@ -32,6 +32,7 @@ public class Menu extends javax.swing.JPanel {
     public void addEventMenuSelected(EventMenuSelected event) {
         listMenu1.addEventMenuSelected(event);
     }
+   
 
     public Menu() {
         initComponents();

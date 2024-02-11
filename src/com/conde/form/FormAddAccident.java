@@ -2,8 +2,8 @@ package com.conde.form;
 
 import com.conde.cell.PanelActionCell;
 import com.conde.cell.TableActionEvent;
-import com.conde.component.Menu;
 import com.conde.datechooser.SelectedDate;
+import com.conde.main.Main;
 import com.conde.model.Accidente;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Persona;
@@ -18,8 +18,16 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -39,14 +47,13 @@ public class FormAddAccident extends javax.swing.JPanel {
     private int rowVehiculoEditado;
     private Boolean EditOnPersona = false;
     private int rowPersonaEditada;
-    private Menu menu;
-    
+    private Main mainFrame;
+    private int idAccidente = 0;
 
-    
-    
-
-    public FormAddAccident() {
+    public FormAddAccident(Main m) {
         initComponents();
+
+        mainFrame = m;
 
         setPreferredSize(new Dimension(1920, 968));
         setDataFields();
@@ -98,7 +105,7 @@ public class FormAddAccident extends javax.swing.JPanel {
 
             @Override
             public void onDelete(JTable table, int row) {
-                
+
                 if (table == table_Vehiculo_Form_Add) {
                     if (table_Vehiculo_Form_Add.isEditing()) {
                         table_Vehiculo_Form_Add.getCellEditor().stopCellEditing();
@@ -110,22 +117,17 @@ public class FormAddAccident extends javax.swing.JPanel {
                     cmbVehiculoPer.removeItemAt(index);
                     //Borramos las personas relacionadas con el vehículo
                     DefaultTableModel modelPer = (DefaultTableModel) table_Persona_Form_Add.getModel();
-                    
-                    for (int cont= modelPer.getRowCount()-1; cont >=0;cont--){
-                            
-                        if (modelPer.getValueAt(cont, 4)==matricula){
+
+                    for (int cont = modelPer.getRowCount() - 1; cont >= 0; cont--) {
+
+                        if (modelPer.getValueAt(cont, 4) == matricula) {
                             modelPer.removeRow(cont);
                         }
-                        
-                    
+
                     }
-                    
-                    
-                    
-                    
+
                     model.removeRow(row);
                     limpiarDatosVehiculo();
-                    
 
                 } else {
                     if (table_Persona_Form_Add.isEditing()) {
@@ -136,8 +138,6 @@ public class FormAddAccident extends javax.swing.JPanel {
 
                     model.removeRow(row);
                     limpiarDatosPersonas();
-                    
-                    
 
                 }
 
@@ -183,8 +183,8 @@ public class FormAddAccident extends javax.swing.JPanel {
             }
 
         });
-        
-       panelDatos.setPreferredSize(new Dimension(getWidth(), 200));
+
+        panelDatos.setPreferredSize(new Dimension(getWidth(), 200));
         panelVehiculos.setPreferredSize(new Dimension(getWidth(), 300));
         panelPersonas.setPreferredSize(new Dimension(getWidth(), 400));
 
@@ -193,9 +193,258 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         panelPer1.setPreferredSize(new Dimension(900, 400));
         panelPer2.setPreferredSize(new Dimension(500, 400));
+
+    }
+
+    public FormAddAccident(Main m, int idAccidente){
+        //Constructor para editar accidentes
+        initComponents();
+
+        mainFrame = m;
+        this.idAccidente = idAccidente;
+
+        setPreferredSize(new Dimension(1920, 968));
+        setDataFields();
+        setListenersDocument();
+        TableActionEvent event = new TableActionEvent() {
+
+            @Override
+            public void onEdit(JTable table, int row) {
+
+                if (table == table_Vehiculo_Form_Add) {
+                    EditOnVehiculo = true;
+                    rowVehiculoEditado = row;
+                    DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+                    txtMatricula.setText((String) model.getValueAt(row, 2));
+                    txtMarca.setText((String) model.getValueAt(row, 3));
+                    txtModelo.setText((String) model.getValueAt(row, 4));
+                    txtGestion.setText((String) model.getValueAt(row, 5));
+                    txtAObservaciones.setText((String) model.getValueAt(row, 6));
+
+                } else {
+
+                    EditOnPersona = true;
+                    rowPersonaEditada = row;
+                    DefaultTableModel model = (DefaultTableModel) table_Persona_Form_Add.getModel();
+                    txtDni.setText((String) model.getValueAt(row, 2));
+                    cmbTipoPersona.setSelectedItem(model.getValueAt(row, 3));
+                    cmbVehiculoPer.setSelectedItem(model.getValueAt(row, 4));
+                    cmbResultadoPers.setSelectedItem(model.getValueAt(row, 5));
+                    if (model.getValueAt(row, 6).equals("")) {
+                        chkbTrasladado.setSelected(false);
+                        txtLugarTraslado.setText("");
+                    } else {
+                        chkbTrasladado.setSelected(true);
+                        txtLugarTraslado.setText((String) model.getValueAt(row, 6));
+                    }
+                    chkbPAlcohol.setSelected((boolean) model.getValueAt(row, 7));
+                    chkbPAlcoholPos.setSelected((boolean) model.getValueAt(row, 8));
+                    chkbPDrogas.setSelected((boolean) model.getValueAt(row, 9));
+                    chkbPDrogasPos.setSelected((boolean) model.getValueAt(row, 10));
+                    txtAObserv_Personas.setText((String) model.getValueAt(row, 11));
+
+                }
+
+            }
+
+            @Override
+            public void onDelete(JTable table, int row) {
+
+                if (table == table_Vehiculo_Form_Add) {
+                    if (table_Vehiculo_Form_Add.isEditing()) {
+                        table_Vehiculo_Form_Add.getCellEditor().stopCellEditing();
+                    }
+
+                    DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+                    String matricula = (String) model.getValueAt(row, 2);
+                    int index = buscarValorEnComboBox(cmbVehiculoPer, (String) model.getValueAt(row, 2));
+                    cmbVehiculoPer.removeItemAt(index);
+                    //Borramos las personas relacionadas con el vehículo
+                    DefaultTableModel modelPer = (DefaultTableModel) table_Persona_Form_Add.getModel();
+
+                    for (int cont = modelPer.getRowCount() - 1; cont >= 0; cont--) {
+
+                        if (modelPer.getValueAt(cont, 4) == matricula) {
+                            modelPer.removeRow(cont);
+                        }
+
+                    }
+
+                    model.removeRow(row);
+                    limpiarDatosVehiculo();
+
+                } else {
+                    if (table_Persona_Form_Add.isEditing()) {
+                        table_Persona_Form_Add.getCellEditor().stopCellEditing();
+                    }
+
+                    DefaultTableModel model = (DefaultTableModel) table_Persona_Form_Add.getModel();
+
+                    model.removeRow(row);
+                    limpiarDatosPersonas();
+
+                }
+
+            }
+        };
+
+        table_Vehiculo_Form_Add.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(new JCheckBox()) {
+
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+
+                PanelActionCell action = new PanelActionCell();
+                action.initEvent(event, table_Vehiculo_Form_Add, row);
+
+                if (isSelected) {
+                    action.setBackground(new Color(148, 210, 95));
+                } else {
+                    action.setBackground(table.getBackground());
+                }
+
+                return action;
+
+            }
+
+        });
+
+        table_Persona_Form_Add.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(new JCheckBox()) {
+
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+
+                PanelActionCell action = new PanelActionCell();
+                action.initEvent(event, table_Persona_Form_Add, row);
+
+                if (isSelected) {
+                    action.setBackground(new Color(148, 210, 95));
+                } else {
+                    action.setBackground(table.getBackground());
+                }
+
+                return action;
+
+            }
+
+        });
+
+        panelDatos.setPreferredSize(new Dimension(getWidth(), 200));
+        panelVehiculos.setPreferredSize(new Dimension(getWidth(), 300));
+        panelPersonas.setPreferredSize(new Dimension(getWidth(), 400));
+
+        panelVeh1.setPreferredSize(new Dimension(900, 300));
+        panelVeh1.setPreferredSize(new Dimension(500, 300));
+
+        panelPer1.setPreferredSize(new Dimension(900, 400));
+        panelPer2.setPreferredSize(new Dimension(500, 400));
+
+        rbPamplona.setEnabled(false);
+        rbTudela.setEnabled(false);
+
+        btnAnyadir.setText("Modificar");
+
+        //Datos Accidents
+        Accidente acc = modelAcc.getAccidentById(this.idAccidente);
+
+        //Seleccionar Fecha
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date fec = sdf.parse(acc.getFecha());
+            Calendar fechaAcc = Calendar.getInstance();
+            fechaAcc.setTime(fec);
+
+            Fecha.setSelectedDate(new SelectedDate(fechaAcc.get(Calendar.DAY_OF_MONTH), fechaAcc.get(Calendar.MONTH), fechaAcc.get(Calendar.YEAR)));
+
+        } catch (ParseException ex) {
+            Logger.getLogger(FormAddAccident.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //hora
+        try {
+            String[] ho = acc.getHora().split(":");
+            int h = Integer.parseInt(ho[0]);
+            int min = Integer.parseInt(ho[1]);
+            LocalTime lt = LocalTime.of(h, min);
+            Hora.setSelectedTime(lt);
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        
+        resetFormulario();
+        
+        cmbCarretera.setSelectedItem(acc.getCarretera());
+        txtKilometro.setText(acc.getKilometro());
+        cmbBoxTipoAccid.setSelectedItem(modelAcc.getTipoAccidenteById(acc.getNum_Diligencias()));
+        txtADescripcion.setText(acc.getDescripcion());
+        txtPatrulla.setText(acc.getPatrulla());
+        txtNumDiligencias.setText(String.valueOf(acc.getNum_Diligencias()));
+
+        if (acc.getZona_Atestados().equals("Pamplona")) {
+            rbPamplona.setSelected(true);
+        } else {
+            rbTudela.setSelected(true);
+        }
+        //Datos Vehículos
+        DefaultTableModel tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+
+        int num_vehiculos = tblModel.getRowCount() + 1;
+        
+        ArrayList<Vehiculo> modelVehiculos = modelAcc.getVehiculosInAccident(this.idAccidente);
         
         
+        for (int cont=0; cont< modelVehiculos.size();cont++){
+            Vehiculo veh = modelVehiculos.get(cont);
         
+            Object[] rowData = {String.valueOf(num_vehiculos), null, veh.getMatricula(), veh.getMarca(), veh.getModelo(), veh.getGestion(), veh.getObservaciones()};
+            tblModel.addRow(rowData);
+            num_vehiculos++;
+        
+        }    
+        
+        llenarComboMatriculaPersona();
+
+        //Datos Personas
+        DefaultTableModel tblModelPer = (DefaultTableModel) table_Persona_Form_Add.getModel();
+        
+        int num_persona = tblModelPer.getRowCount() + 1;
+        
+        ArrayList<Persona> modelPersonas = modelAcc.getPersonasInAccidenteById(this.idAccidente);
+        
+        
+                
+        for (int cont=0; cont< modelPersonas.size();cont++){
+            
+            Persona per = modelPersonas.get(cont);
+            
+            
+            String matricula="";
+            try {
+                matricula = modelAcc.getMatriculaById(per.getId_Vehiculo());
+            } catch (SQLException ex) {
+                Logger.getLogger(FormAddAccident.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            Object[] rowData = {
+            num_persona,
+            null,
+            per.getDocumento(),
+            per.getTipo_persona(),
+            matricula,
+            per.getResultado(),
+            per.getLugar_traslado(),
+            per.getPrueba_alcoholemia(),
+            per.getAlcoholemia_positiva(),
+            per.getPrueba_drogas(),
+            per.getDrogas_positiva(),
+            per.getObservaciones()
+
+        };
+
+            tblModelPer.addRow(rowData);
+            num_persona++;
+        
+        }   
 
     }
 
@@ -234,8 +483,6 @@ public class FormAddAccident extends javax.swing.JPanel {
                 checkCampos();
             }
         });
-        
-        
 
     }
 
@@ -1028,7 +1275,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     }//GEN-LAST:event_rbPamplonaActionPerformed
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-        setNumeroDiligencias("PAMPLONA");
+       setNumeroDiligencias("PAMPLONA");
     }//GEN-LAST:event_formAncestorAdded
 
     private void cmbAddVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAddVehiculoActionPerformed
@@ -1109,13 +1356,12 @@ public class FormAddAccident extends javax.swing.JPanel {
                 return;
 
             }
-            
+
         }
-        if (cmbVehiculoPer.getSelectedIndex()==0 && (cmbTipoPersona.getSelectedItem().equals("CONDUCTOR") || cmbTipoPersona.getSelectedItem().equals("OCUPANTE") || cmbTipoPersona.getSelectedItem().equals("TITULAR") ) ){
-                 JOptionPane.showMessageDialog(null, "Tiene que asignarle un vehículo por el tipo de persona elegido: \n Compruebe los datos");
-                return;
+        if (cmbVehiculoPer.getSelectedIndex() == 0 && (cmbTipoPersona.getSelectedItem().equals("CONDUCTOR") || cmbTipoPersona.getSelectedItem().equals("OCUPANTE") || cmbTipoPersona.getSelectedItem().equals("TITULAR"))) {
+            JOptionPane.showMessageDialog(null, "Tiene que asignarle un vehículo por el tipo de persona elegido: \n Compruebe los datos");
+            return;
         }
-        
 
         // Comprobamos que no se duplica el conductor para un mismo vehículo
         if (cmbVehiculoPer.getSelectedItem() != null) {
@@ -1183,6 +1429,21 @@ public class FormAddAccident extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddCarreteraActionPerformed
 
     private void btnAnyadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnyadirActionPerformed
+
+        if (btnAnyadir.getText().equals("Añadir")) {
+
+            //Añadimos accidente nuevo
+            altaAccidente(false);
+        } else {
+            //Modificamos accidente
+            altaAccidente(true);
+        }
+
+
+    }//GEN-LAST:event_btnAnyadirActionPerformed
+
+    private void altaAccidente(boolean editOn) {
+
         // Datos accidente
         Accidente newAccidente = new Accidente();
 
@@ -1192,80 +1453,105 @@ public class FormAddAccident extends javax.swing.JPanel {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("HH:mm");
         newAccidente.setHora(Hora.getSelectedTime().format(df));
 
+        if (editOn) {
+            newAccidente.setNum_Accidente(idAccidente);
+        }
+
         newAccidente.setCarretera(cmbCarretera.getSelectedItem().toString().toUpperCase());
         newAccidente.setKilometro(txtKilometro.getText());
         newAccidente.setPatrulla(txtPatrulla.getText().toUpperCase());
         newAccidente.setNum_Diligencias(Integer.parseInt(txtNumDiligencias.getText()));
-
         newAccidente.setTipo_Siniestro(modelAcc.getTipoAccidenteByTYPE(cmbBoxTipoAccid.getSelectedItem()));
         newAccidente.setZona_Atestados((rbPamplona.isSelected() ? "Pamplona" : "Tudela"));
         newAccidente.setDescripcion(txtADescripcion.getText());
-
-        int idAccidente=modelAcc.AddNuevoAccidente(newAccidente);
+        int NumAccidente = 0;
+        if (editOn) {
+            modelAcc.modificarAccidenteById(newAccidente);
+        } else {
+            NumAccidente = modelAcc.AddNuevoAccidente(newAccidente);
+        }
 
         //Listado vehículos
         DefaultTableModel modelVehiculos = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
-        
+
         ArrayList<Vehiculo> listaVehiculos = new ArrayList<>();
-        
+
         for (int row = 0; row < modelVehiculos.getRowCount(); row++) {
             Vehiculo veh = new Vehiculo();
-            veh.setNum_Accidente(idAccidente);
+            if (editOn) {
+                veh.setNum_Accidente(this.idAccidente);
+            } else {
+                veh.setNum_Accidente(NumAccidente);
+            }
+
             veh.setMatricula((String) modelVehiculos.getValueAt(row, 2));
             veh.setMarca((String) modelVehiculos.getValueAt(row, 3));
             veh.setModelo((String) modelVehiculos.getValueAt(row, 4));
             veh.setGestion((String) modelVehiculos.getValueAt(row, 5));
             veh.setObservaciones((String) modelVehiculos.getValueAt(row, 6));
-            listaVehiculos.add(veh);            
-        }
-        
-        if (!listaVehiculos.isEmpty()){
-            
-            modelAcc.addListadoVehiculos(listaVehiculos);
-        
+            listaVehiculos.add(veh);
         }
 
-        //Listado personas
-        
-        DefaultTableModel modelPersonas = (DefaultTableModel) table_Persona_Form_Add.getModel();
-        
-        ArrayList<Persona> listaPersonas = new ArrayList<>();
-        
-         for (int row = 0; row < modelPersonas.getRowCount(); row++) {
-            Persona per = new Persona();
-            
-           per.setId_Accidente(idAccidente);
-            
-           per.setDocumento((String) modelPersonas.getValueAt(row, 2));
-           per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row,4),idAccidente));
-           per.setTipo_persona((String) modelPersonas.getValueAt(row, 3));
-           per.setResultado((String) modelPersonas.getValueAt(row,5));
-           String lugarTrasladado= (String) modelPersonas.getValueAt(row, 6);
-           if (lugarTrasladado.isEmpty()){
-            per.setTrasladado(false);
-            per.setLugar_traslado("");
-           }else{
-            per.setTrasladado(true);
-            per.setLugar_traslado(lugarTrasladado);
-           }
-           per.setPrueba_alcoholemia((Boolean) modelPersonas.getValueAt(row, 7));
-           per.setAlcoholemia_positiva((Boolean) modelPersonas.getValueAt(row, 8));
-           per.setPrueba_drogas((Boolean) modelPersonas.getValueAt(row, 9));
-           per.setDrogas_positiva((Boolean) modelPersonas.getValueAt(row, 10));
-           per.setObservaciones((String) modelPersonas.getValueAt(row, 11));
-                       
-            listaPersonas.add(per);            
-        }
-        
-        if (!listaPersonas.isEmpty()){
-            modelAcc.addListadoPersonas(listaPersonas);
-        }
-        
-       
-        resetFormulario();
-        
+        if (!listaVehiculos.isEmpty()) {
+            if (editOn) {
+                modelAcc.addModificaListaVehiculos(listaVehiculos);
+            } else {
+                modelAcc.addListadoVehiculos(listaVehiculos);
+            }
 
-    }//GEN-LAST:event_btnAnyadirActionPerformed
+        }
+
+//        //Listado personas
+//        DefaultTableModel modelPersonas = (DefaultTableModel) table_Persona_Form_Add.getModel();
+//        
+//        ArrayList<Persona> listaPersonas = new ArrayList<>();
+//        
+//        for (int row = 0; row < modelPersonas.getRowCount(); row++) {
+//            Persona per = new Persona();
+//            
+//            per.setId_Accidente(idAccidente);
+//            
+//            per.setDocumento((String) modelPersonas.getValueAt(row, 2));
+//            per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row, 4), idAccidente));
+//            per.setTipo_persona((String) modelPersonas.getValueAt(row, 3));
+//            per.setResultado((String) modelPersonas.getValueAt(row, 5));
+//            String lugarTrasladado = (String) modelPersonas.getValueAt(row, 6);
+//            if (lugarTrasladado.isEmpty()) {
+//                per.setTrasladado(false);
+//                per.setLugar_traslado("");
+//            } else {
+//                per.setTrasladado(true);
+//                per.setLugar_traslado(lugarTrasladado);
+//            }
+//            per.setPrueba_alcoholemia((Boolean) modelPersonas.getValueAt(row, 7));
+//            per.setAlcoholemia_positiva((Boolean) modelPersonas.getValueAt(row, 8));
+//            per.setPrueba_drogas((Boolean) modelPersonas.getValueAt(row, 9));
+//            per.setDrogas_positiva((Boolean) modelPersonas.getValueAt(row, 10));
+//            per.setObservaciones((String) modelPersonas.getValueAt(row, 11));
+//            
+//            listaPersonas.add(per);
+//        }
+//        
+//        if (!listaPersonas.isEmpty()) {
+//            modelAcc.addListadoPersonas(listaPersonas);
+//        }
+        if (editOn) {
+
+            JOptionPane.showMessageDialog(this, "Accidente modificado correctamente");
+            mainFrame.setForm(1, 0);
+
+        } else {
+            int resp = JOptionPane.showConfirmDialog(this, "Accidente añadido a la base de datos\n ¿Quiere añadir otro accidente?", "Alta accidente", JOptionPane.YES_NO_OPTION);
+
+            if (resp == JOptionPane.YES_OPTION) {
+                mainFrame.setForm(2, 0);
+            } else {
+                mainFrame.setForm(1, 0);
+            }
+        }
+
+    }
+
 
     private void btnAddMotivoDiligenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMotivoDiligenciasActionPerformed
         if (FlatLaf.isLafDark()) {
@@ -1290,16 +1576,21 @@ public class FormAddAccident extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAnyadirMousePressed
 
     private void btnAnyadirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAnyadirMouseClicked
-      
+
     }//GEN-LAST:event_btnAnyadirMouseClicked
 
     private void setNumeroDiligencias(String equipo) {
+        
+        //Solo establecemo nuevo número cuando estamos dando un alta nueva, si editamos (idAccidente==0) no hay num. diligencias
+        if (idAccidente == 0) {
+            
+            SelectedDate fecha = Fecha.getSelectedDate();
 
-        SelectedDate fecha = Fecha.getSelectedDate();
+            String fechaFormateadaAccess = fecha.getMonth() + "/" + fecha.getDay() + "/" + fecha.getYear();
+            int Num_Diligencias = modelAcc.getNumDiligencias(equipo, fechaFormateadaAccess);
+            txtNumDiligencias.setText(String.valueOf(Num_Diligencias + 1));
 
-        String fechaFormateadaAccess = fecha.getMonth() + "/" + fecha.getDay() + "/" + fecha.getYear();
-        int Num_Diligencias = modelAcc.getNumDiligencias(equipo, fechaFormateadaAccess);
-        txtNumDiligencias.setText(String.valueOf(Num_Diligencias + 1));
+        }
 
     }
 
@@ -1418,6 +1709,26 @@ public class FormAddAccident extends javax.swing.JPanel {
 
     }
 
+    private void resetFormulario() {
+
+        txtPatrulla.setText("");
+        txtKilometro.setText("");
+        cmbCarretera.setSelectedIndex(0);
+        cmbBoxTipoAccid.setSelectedIndex(0);
+        txtADescripcion.setText("");
+        rbPamplona.setSelected(true);
+
+        DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
+        model.setRowCount(0);
+        DefaultTableModel modelP = (DefaultTableModel) table_Persona_Form_Add.getModel();
+        modelP.setRowCount(0);
+
+        limpiarDatosVehiculo();
+        limpiarDatosPersonas();
+
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.conde.datechooser.DateChooser Fecha;
     private raven.datetime.component.time.TimePicker Hora;
@@ -1496,26 +1807,5 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JTextField txtNumDiligencias;
     private javax.swing.JTextField txtPatrulla;
     // End of variables declaration//GEN-END:variables
-
-    private void resetFormulario() {
-        
-        txtPatrulla.setText("");
-        txtKilometro.setText("");
-        cmbCarretera.setSelectedIndex(0);
-        cmbBoxTipoAccid.setSelectedIndex(0);
-        txtADescripcion.setText("");
-        rbPamplona.setSelected(true);
-        
-        DefaultTableModel  model =  (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
-        model.setRowCount(0);
-        DefaultTableModel  modelP =  (DefaultTableModel) table_Persona_Form_Add.getModel();
-        modelP.setRowCount(0);
-        
-        limpiarDatosVehiculo();
-        limpiarDatosPersonas();
-        
-        
-    }
-
 
 }
