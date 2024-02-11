@@ -196,7 +196,7 @@ public class FormAddAccident extends javax.swing.JPanel {
 
     }
 
-    public FormAddAccident(Main m, int idAccidente){
+    public FormAddAccident(Main m, int idAccidente) {
         //Constructor para editar accidentes
         initComponents();
 
@@ -342,7 +342,9 @@ public class FormAddAccident extends javax.swing.JPanel {
         rbTudela.setEnabled(false);
 
         btnAnyadir.setText("Modificar");
-
+        
+        resetFormulario();
+        
         //Datos Accidents
         Accidente acc = modelAcc.getAccidentById(this.idAccidente);
 
@@ -353,7 +355,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             Calendar fechaAcc = Calendar.getInstance();
             fechaAcc.setTime(fec);
 
-            Fecha.setSelectedDate(new SelectedDate(fechaAcc.get(Calendar.DAY_OF_MONTH), fechaAcc.get(Calendar.MONTH), fechaAcc.get(Calendar.YEAR)));
+            Fecha.setSelectedDate(new SelectedDate(fechaAcc.get(Calendar.DAY_OF_MONTH), fechaAcc.get(Calendar.MONTH)+1, fechaAcc.get(Calendar.YEAR)));
 
         } catch (ParseException ex) {
             Logger.getLogger(FormAddAccident.class.getName()).log(Level.SEVERE, null, ex);
@@ -370,9 +372,9 @@ public class FormAddAccident extends javax.swing.JPanel {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+
         
-        resetFormulario();
-        
+
         cmbCarretera.setSelectedItem(acc.getCarretera());
         txtKilometro.setText(acc.getKilometro());
         cmbBoxTipoAccid.setSelectedItem(modelAcc.getTipoAccidenteById(acc.getNum_Diligencias()));
@@ -389,62 +391,58 @@ public class FormAddAccident extends javax.swing.JPanel {
         DefaultTableModel tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
 
         int num_vehiculos = tblModel.getRowCount() + 1;
-        
+
         ArrayList<Vehiculo> modelVehiculos = modelAcc.getVehiculosInAccident(this.idAccidente);
-        
-        
-        for (int cont=0; cont< modelVehiculos.size();cont++){
+
+        for (int cont = 0; cont < modelVehiculos.size(); cont++) {
             Vehiculo veh = modelVehiculos.get(cont);
-        
+
             Object[] rowData = {String.valueOf(num_vehiculos), null, veh.getMatricula(), veh.getMarca(), veh.getModelo(), veh.getGestion(), veh.getObservaciones()};
             tblModel.addRow(rowData);
             num_vehiculos++;
-        
-        }    
-        
+
+        }
+
         llenarComboMatriculaPersona();
 
         //Datos Personas
         DefaultTableModel tblModelPer = (DefaultTableModel) table_Persona_Form_Add.getModel();
-        
+
         int num_persona = tblModelPer.getRowCount() + 1;
-        
+
         ArrayList<Persona> modelPersonas = modelAcc.getPersonasInAccidenteById(this.idAccidente);
-        
-        
-                
-        for (int cont=0; cont< modelPersonas.size();cont++){
-            
+
+        for (int cont = 0; cont < modelPersonas.size(); cont++) {
+
             Persona per = modelPersonas.get(cont);
-            
-            
-            String matricula="";
+
+            String matricula = "";
             try {
                 matricula = modelAcc.getMatriculaById(per.getId_Vehiculo());
             } catch (SQLException ex) {
                 Logger.getLogger(FormAddAccident.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            Object[] rowData = {
-            num_persona,
-            null,
-            per.getDocumento(),
-            per.getTipo_persona(),
-            matricula,
-            per.getResultado(),
-            per.getLugar_traslado(),
-            per.getPrueba_alcoholemia(),
-            per.getAlcoholemia_positiva(),
-            per.getPrueba_drogas(),
-            per.getDrogas_positiva(),
-            per.getObservaciones()
 
-        };
+            Object[] rowData = {
+                num_persona,
+                null,
+                per.getDocumento(),
+                per.getTipo_persona(),
+                matricula,
+                per.getResultado(),
+                per.getLugar_traslado(),
+                per.getPrueba_alcoholemia(),
+                per.getAlcoholemia_positiva(),
+                per.getPrueba_drogas(),
+                per.getDrogas_positiva(),
+                per.getObservaciones()
+
+            };
 
             tblModelPer.addRow(rowData);
             num_persona++;
-        
-        }   
+
+        }
 
     }
 
@@ -1275,7 +1273,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     }//GEN-LAST:event_rbPamplonaActionPerformed
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-       setNumeroDiligencias("PAMPLONA");
+        setNumeroDiligencias("PAMPLONA");
     }//GEN-LAST:event_formAncestorAdded
 
     private void cmbAddVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAddVehiculoActionPerformed
@@ -1285,9 +1283,10 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         if (EditOnVehiculo && tblModel.getRowCount() > 0) {
 
+            num_vehiculos =  Integer.parseInt(tblModel.getValueAt(rowVehiculoEditado, 0).toString()) ;
             tblModel.removeRow(rowVehiculoEditado);
             EditOnVehiculo = false;
-            num_vehiculos = (int) tblModel.getValueAt(rowVehiculoEditado, 0);
+
         }
 
         //COMPROBACIONES
@@ -1492,10 +1491,12 @@ public class FormAddAccident extends javax.swing.JPanel {
             listaVehiculos.add(veh);
         }
 
-        if (!listaVehiculos.isEmpty()) {
-            if (editOn) {
-                modelAcc.addModificaListaVehiculos(listaVehiculos);
-            } else {
+        if (editOn) {
+           
+                modelAcc.modificaListaVehiculos(listaVehiculos, this.idAccidente);
+          
+        } else {
+            if (!listaVehiculos.isEmpty()) {
                 modelAcc.addListadoVehiculos(listaVehiculos);
             }
 
@@ -1580,10 +1581,10 @@ public class FormAddAccident extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAnyadirMouseClicked
 
     private void setNumeroDiligencias(String equipo) {
-        
+
         //Solo establecemo nuevo número cuando estamos dando un alta nueva, si editamos (idAccidente==0) no hay num. diligencias
         if (idAccidente == 0) {
-            
+
             SelectedDate fecha = Fecha.getSelectedDate();
 
             String fechaFormateadaAccess = fecha.getMonth() + "/" + fecha.getDay() + "/" + fecha.getYear();

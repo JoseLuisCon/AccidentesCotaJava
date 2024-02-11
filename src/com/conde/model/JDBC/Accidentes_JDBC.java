@@ -29,7 +29,7 @@ public class Accidentes_JDBC {
                 acc.setNum_Accidente(rs.getInt("Id"));
                 //Fecha
                 Date fecha = rs.getDate("Fecha");
-                acc.setFecha(new SimpleDateFormat("dd/MM/YY").format(fecha));
+                acc.setFecha(new SimpleDateFormat("dd/MM/YYYY").format(fecha));
                 //Hora
                 Time hora = rs.getTime("Hora");
                 acc.setHora(new SimpleDateFormat("HH:mm").format(hora));
@@ -73,7 +73,7 @@ public class Accidentes_JDBC {
                 acc.setNum_Accidente(rs.getInt("Id"));
                 //Fecha
                 Date fecha = rs.getDate("Fecha");
-                acc.setFecha(new SimpleDateFormat("dd/MM/YY").format(fecha));
+                acc.setFecha(new SimpleDateFormat("dd/MM/YYYY").format(fecha));
                 //Hora
                 Time hora = rs.getTime("Hora");
                 acc.setHora(new SimpleDateFormat("HH:mm").format(hora));
@@ -411,44 +411,44 @@ public class Accidentes_JDBC {
         return IdVehiculo;
 
     }
-    
-     public ArrayList<Vehiculo> getVehiculosInAccident(int idAccidente) {
-            
-         ArrayList<Vehiculo> listVehiculos = new ArrayList<>();
-         
-         String sql= "SELECT * FROM Vehiculos WHERE NUM_ACCI=?";
-         
-         try {
+
+    public ArrayList<Vehiculo> getVehiculosInAccident(int idAccidente) {
+
+        ArrayList<Vehiculo> listVehiculos = new ArrayList<>();
+
+        String sql = "SELECT * FROM Vehiculos WHERE NUM_ACCI=?";
+
+        try {
             conexion = ConexionAccess.conectar();
             ps = conexion.prepareStatement(sql);
             ps.setInt(1, idAccidente);
-            
-            rs=ps.executeQuery();
-            
-            while (rs.next()){
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
                 Vehiculo veh = new Vehiculo();
-                
+
                 veh.setNum_Accidente(idAccidente);
                 veh.setMatricula((String) rs.getObject("MATRICULA"));
                 veh.setMarca((String) rs.getObject("MARCA"));
                 veh.setModelo((String) rs.getObject("MODELO"));
                 veh.setGestion((String) rs.getObject("GESTION"));
                 veh.setObservaciones((String) rs.getObject("OBSERVACIONES"));
-                
+
                 listVehiculos.add(veh);
             }
             rs.close();
             ps.close();
-            conexion=null;
+            conexion = null;
             ConexionAccess.desConnection();
             return listVehiculos;
-             
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-         
-         return listVehiculos;
-         
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return listVehiculos;
+
     }
 
     public int AddNuevoAccidente(Accidente newAccidente) {
@@ -554,52 +554,43 @@ public class Accidentes_JDBC {
 
     }
 
-    public void addModificaListaVehiculos(ArrayList<Vehiculo> listaVehiculos) {
-        
-        String sql = "DELETE FROM Vehiculos WHERE Id=?";
-        
+    public void modificaListaVehiculos(ArrayList<Vehiculo> listaVehiculos, int idAccidente)  {
+
         try {
             conexion = ConexionAccess.conectar();
             conexion.setAutoCommit(false);
-            ps = conexion.prepareStatement(sql);
-            listaVehiculos.forEach((veh)->{
-                try {
-                    ps.setInt(1, veh.getId_Vehiculo());
-                    ps.addBatch();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            
-            });
-            
-            ps.executeBatch();
-            ps.close();
-            conexion=null;
-            ConexionAccess.desConnection();
-   
+
+            //Borramos todos los vehículos y volvemos a crearlos para el número de accidente
+            deleteVehiculosByIdAccidente(idAccidente);
+
             addListadoVehiculos(listaVehiculos);
-        } catch (SQLException e) {
+
+            conexion.commit();
+
+            conexion.setAutoCommit(true);
             
+        } catch (SQLException e) {
+
             try {
                 conexion.rollback();
             } catch (SQLException ex) {
                 Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        
-        
+
     }
 
     public void addListadoVehiculos(ArrayList<Vehiculo> listaVehiculos) {
 
         String sql = "INSERT INTO Vehiculos (Id,NUM_ACCI,MATRICULA,MARCA,MODELO,GESTION,OBSERVACIONES) VALUES (?,?,?,?,?,?,?)";
 
-        conexion = ConexionAccess.conectar();
+       
         try {
             ps = conexion.prepareStatement(sql);
             listaVehiculos.forEach((veh) -> {
                 try {
+                    //TODO CUANDO RECORRO LA LISTA NUEVA, COMPRUEBA SI EL COCHE EXISTE Y MODIFICO LOS DATOS (UPDATE), SI NO, TENGO QUE CREAR UNO (INSERT) M
+                    
                     ps.setNull(1, 0);
                     ps.setInt(2, veh.getNum_Accidente());
                     ps.setString(3, veh.getMatricula());
@@ -616,8 +607,8 @@ public class Accidentes_JDBC {
             });
             ps.executeBatch();
             ps.close();
-            conexion = null;
-            ConexionAccess.desConnection();
+           
+            
 
         } catch (SQLException ex) {
             Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
@@ -703,13 +694,10 @@ public class Accidentes_JDBC {
 
         String sql = "Delete FROM Vehiculos WHERE NUM_ACCI=?";
 
-        conexion = ConexionAccess.conectar();
         ps = conexion.prepareStatement(sql);
         ps.setInt(1, Id_Accdient);
         ps.executeUpdate();
         ps.close();
-        conexion.close();
-        ConexionAccess.desConnection();
 
     }
 
@@ -717,32 +705,32 @@ public class Accidentes_JDBC {
 
         String sql = "Delete FROM Personas WHERE Num_Accidente=?";
 
-        conexion = ConexionAccess.conectar();
         ps = conexion.prepareStatement(sql);
         ps.setInt(1, Id_Accdient);
         ps.executeUpdate();
         ps.close();
-        st.close();
-        conexion.close();
-        ConexionAccess.desConnection();
+      
+
     }
 
     public void deleteAccidenteById(int Id_Accidente) throws SQLException {
-        conexion = ConexionAccess.conectar();
-        conexion.setAutoCommit(false);
+
         //iniciamos transacción de borrado de accidentes
         try {
-
+            conexion = ConexionAccess.conectar();
+            conexion.setAutoCommit(false);
             deleteVehiculosByIdAccidente(Id_Accidente);
             deletePersonasByIdAccidente(Id_Accidente);
 
-            conexion = ConexionAccess.conectar();
             String sql = "Delete FROM Accidentes WHERE Id=?";
             ps = conexion.prepareStatement(sql);
             ps.setInt(1, Id_Accidente);
             ps.executeUpdate();
             ps.close();
-            st.close();
+
+            conexion.commit();
+            conexion.setAutoCommit(true);
+            conexion.close();
 
             ConexionAccess.desConnection();
 
@@ -750,9 +738,7 @@ public class Accidentes_JDBC {
             conexion.rollback();
             System.out.println(e.getMessage());
         }
-        conexion.setAutoCommit(true);
-        conexion.close();
-        ConexionAccess.desConnection();
+
     }
 
     private ArrayList<Accidente> listAccidents = new ArrayList<>();
@@ -760,9 +746,5 @@ public class Accidentes_JDBC {
     private Statement st;
     private PreparedStatement ps;
     private ResultSet rs;
-
-
-
-   
 
 }
