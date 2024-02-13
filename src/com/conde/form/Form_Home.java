@@ -480,7 +480,7 @@ public class Form_Home extends javax.swing.JPanel{
 
         ArrayList<Vehiculo> vehiculosAccidente = new ArrayList<>();
 
-        vehiculosAccidente = datos_model.getVehiculoInAccidentById(index);
+        vehiculosAccidente = datos_model.getVehiculosInAccident(index);
 
         vehiculos.clearRows();
         vehiculos.setToolTipRows(vehiculosAccidente);

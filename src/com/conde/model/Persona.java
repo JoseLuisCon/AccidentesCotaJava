@@ -42,9 +42,9 @@ public class Persona {
         return id_Persona;
     }
 
-//    public void setId_Persona(int id_Persona) {
-//        this.id_Persona = id_Persona;
-//    }
+    public void setId_Persona(int id_Persona) {
+        this.id_Persona = id_Persona;
+    }
 
     public int getId_Accidente() {
         return id_Accidente;

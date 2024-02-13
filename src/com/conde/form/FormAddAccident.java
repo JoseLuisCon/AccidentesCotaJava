@@ -49,6 +49,8 @@ public class FormAddAccident extends javax.swing.JPanel {
     private int rowPersonaEditada;
     private Main mainFrame;
     private int idAccidente = 0;
+    
+    private ArrayList<Vehiculo> listaAccidentesAntesModificacion = new ArrayList<>();
 
     public FormAddAccident(Main m) {
         initComponents();
@@ -390,16 +392,20 @@ public class FormAddAccident extends javax.swing.JPanel {
         //Datos Vehículos
         DefaultTableModel tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
 
-        int num_vehiculos = tblModel.getRowCount() + 1;
+        //GUARDAMOS LA LISTA INICIAL PARA DESPUÉS COMPARARLA SI HAY MODIFICACIONES
+        
 
         ArrayList<Vehiculo> modelVehiculos = modelAcc.getVehiculosInAccident(this.idAccidente);
+        
+        listaAccidentesAntesModificacion = modelVehiculos;
+        
 
         for (int cont = 0; cont < modelVehiculos.size(); cont++) {
             Vehiculo veh = modelVehiculos.get(cont);
 
-            Object[] rowData = {String.valueOf(num_vehiculos), null, veh.getMatricula(), veh.getMarca(), veh.getModelo(), veh.getGestion(), veh.getObservaciones()};
+            Object[] rowData = {veh.getId_Vehiculo(), null, veh.getMatricula(), veh.getMarca(), veh.getModelo(), veh.getGestion(), veh.getObservaciones()};
             tblModel.addRow(rowData);
-            num_vehiculos++;
+
 
         }
 
@@ -408,7 +414,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         //Datos Personas
         DefaultTableModel tblModelPer = (DefaultTableModel) table_Persona_Form_Add.getModel();
 
-        int num_persona = tblModelPer.getRowCount() + 1;
+//        int num_persona = tblModelPer.getRowCount() + 1;
 
         ArrayList<Persona> modelPersonas = modelAcc.getPersonasInAccidenteById(this.idAccidente);
 
@@ -424,7 +430,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             }
 
             Object[] rowData = {
-                num_persona,
+                per.getId_Persona(),
                 null,
                 per.getDocumento(),
                 per.getTipo_persona(),
@@ -440,7 +446,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             };
 
             tblModelPer.addRow(rowData);
-            num_persona++;
+//            num_persona++;
 
         }
 
@@ -1279,11 +1285,11 @@ public class FormAddAccident extends javax.swing.JPanel {
     private void cmbAddVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAddVehiculoActionPerformed
         DefaultTableModel tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
 
-        int num_vehiculos = tblModel.getRowCount() + 1;
+        int id_vehiculo = tblModel.getRowCount() + 1;
 
         if (EditOnVehiculo && tblModel.getRowCount() > 0) {
 
-            num_vehiculos =  Integer.parseInt(tblModel.getValueAt(rowVehiculoEditado, 0).toString()) ;
+            id_vehiculo =  Integer.parseInt(tblModel.getValueAt(rowVehiculoEditado, 0).toString()) ;
             tblModel.removeRow(rowVehiculoEditado);
             EditOnVehiculo = false;
 
@@ -1302,7 +1308,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             return;
         }
 
-        Object[] rowData = {num_vehiculos, null, txtMatricula.getText().toUpperCase(), txtMarca.getText(), txtModelo.getText(), txtGestion.getText(), txtAObservaciones.getText()};
+        Object[] rowData = {id_vehiculo, null, txtMatricula.getText().toUpperCase(), txtMarca.getText(), txtModelo.getText(), txtGestion.getText(), txtAObservaciones.getText()};
         tblModel.addRow(rowData);
 
         llenarComboMatriculaPersona();
@@ -1478,6 +1484,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         for (int row = 0; row < modelVehiculos.getRowCount(); row++) {
             Vehiculo veh = new Vehiculo();
             if (editOn) {
+                veh.setId_Vehiculo((int) modelVehiculos.getValueAt(row, 0));
                 veh.setNum_Accidente(this.idAccidente);
             } else {
                 veh.setNum_Accidente(NumAccidente);
@@ -1493,6 +1500,8 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         if (editOn) {
            
+                
+            
                 modelAcc.modificaListaVehiculos(listaVehiculos, this.idAccidente);
           
         } else {
@@ -1511,7 +1520,6 @@ public class FormAddAccident extends javax.swing.JPanel {
 //            Persona per = new Persona();
 //            
 //            per.setId_Accidente(idAccidente);
-//            
 //            per.setDocumento((String) modelPersonas.getValueAt(row, 2));
 //            per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row, 4), idAccidente));
 //            per.setTipo_persona((String) modelPersonas.getValueAt(row, 3));
@@ -1532,10 +1540,15 @@ public class FormAddAccident extends javax.swing.JPanel {
 //            
 //            listaPersonas.add(per);
 //        }
-//        
-//        if (!listaPersonas.isEmpty()) {
-//            modelAcc.addListadoPersonas(listaPersonas);
+//        if (editOn){
+//            modelAcc.modificaListaPersonas(listaPersonas, idAccidente);
+//        }else{
+//            if (!listaPersonas.isEmpty()) {
+//                modelAcc.addListadoPersonas(listaPersonas);
+//            }
 //        }
+        
+        
         if (editOn) {
 
             JOptionPane.showMessageDialog(this, "Accidente modificado correctamente");

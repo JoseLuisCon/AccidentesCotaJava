@@ -10,13 +10,17 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.sql.SQLException;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
 
 public class Main extends javax.swing.JFrame {
 
@@ -28,33 +32,32 @@ public class Main extends javax.swing.JFrame {
 
     private boolean themeLight = true;
 
-    public void setForm(int NumForm, int accidente)  {
+    public void setForm(int NumForm, int accidente) {
         //Método para seleccionar paneles desde otros componentes o formularios
-        if (NumForm==1){
-                 setTheme();
-                    home = new Form_Home(this);
-                    home.cargarAccidentes("");
-                    setForm(home);
-                    indexPanel = 1;
-        }    
-        else if (NumForm==2){
-            if (accidente==0){
+        if (NumForm == 1) {
+            setTheme();
+            home = new Form_Home(this);
+            home.cargarAccidentes("");
+            setForm(home);
+            indexPanel = 1;
+        } else if (NumForm == 2) {
+            if (accidente == 0) {
                 System.out.println("Accidente: " + accidente);
-            setTheme();
-            frmAddAcci = new FormAddAccident(this);
+                setTheme();
+                frmAddAcci = new FormAddAccident(this);
 
-            setForm(frmAddAcci);
-            indexPanel = 2;
-            
-            }else{
-            System.out.println("Accidente: " + accidente);
-            setTheme();
-            frmAddAcci = new FormAddAccident(this, accidente);
+                setForm(frmAddAcci);
+                indexPanel = 2;
 
-            setForm(frmAddAcci);
-            indexPanel = 2;
-            
-            }       
+            } else {
+                System.out.println("Accidente: " + accidente);
+                setTheme();
+                frmAddAcci = new FormAddAccident(this, accidente);
+
+                setForm(frmAddAcci);
+                indexPanel = 2;
+
+            }
         }
     }
 
@@ -247,7 +250,33 @@ public class Main extends javax.swing.JFrame {
                 FlatLightLaf.registerCustomDefaultsSource("com/conde/style");
                 FlatLightLaf.setup();
 
-                new Main().setVisible(true);
+//                new Main().setVisible(true);
+                JFrame frame = new Main();
+
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                // Obtener el entorno gráfico
+                GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                GraphicsDevice[] gd = ge.getScreenDevices();
+
+                // Obtener la resolución de la pantalla principal
+                DisplayMode displayMode = gd[0].getDisplayMode();
+                int screenWidth = displayMode.getWidth();
+                int screenHeight = displayMode.getHeight();
+
+                // Establecer las proporciones deseadas
+                double proporcionAncho = 0.8; // Porcentaje del ancho de la pantalla
+                double proporcionAlto = 0.6;  // Porcentaje del alto de la pantalla
+
+                // Calcular el tamaño del JFrame
+                int nuevoAncho = (int) (screenWidth * proporcionAncho);
+                int nuevoAlto = (int) (screenHeight * proporcionAlto);
+
+                // Configurar el tamaño y la posición del JFrame
+                frame.setSize(nuevoAncho, nuevoAlto);
+                frame.setLocationRelativeTo(null); // Centrar en la pantalla
+
+                frame.setVisible(true);
 
             }
 
