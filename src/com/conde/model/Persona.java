@@ -141,6 +141,27 @@ public class Persona {
     public void setObservaciones(String Observaciones) {
         this.Observaciones = Observaciones;
     }
+    
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this==obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Persona per = (Persona) obj;
+        return id_Persona == per.id_Persona && id_Accidente==per.id_Accidente && id_Vehiculo==per.id_Vehiculo && documento.equals(per.documento) &&
+                tipo_persona.equals(per.tipo_persona) && resultado.equals(per.resultado) && trasladado == per.trasladado && lugar_traslado.equals(per.lugar_traslado) && 
+                    prueba_alcoholemia == per.prueba_alcoholemia && alcoholemia_positiva == per.alcoholemia_positiva && prueba_drogas == per.prueba_drogas && 
+                    drogas_positiva == per.drogas_positiva && Observaciones.equals(per.Observaciones);
+                
+    }
+
+    @Override
+    public int hashCode() {
+        int resultado = documento.hashCode();
+        resultado = 54 * id_Accidente + id_Persona;
+        return resultado;
+    }
+    
 
    
     

@@ -261,7 +261,7 @@ public class Accidentes_JDBC {
 
     }
 
-    public ArrayList<Persona> getPersonasInAccidenteById(int index) {
+    public ArrayList<Persona> getPersonasInAccidenteByIdAccident(int index) {
         ArrayList<Persona> listPer = new ArrayList<>();
         String sql = "SELECT * FROM PERSONAS WHERE Num_Accidente=" + index;
 
@@ -554,7 +554,6 @@ public class Accidentes_JDBC {
 
     }
 
-    @SuppressWarnings("empty-statement")
     public void modificaListaVehiculos(ArrayList<Vehiculo> listaVehiculos, int idAccidente) {
 
         conexion = ConexionAccess.conectar();
@@ -563,9 +562,9 @@ public class Accidentes_JDBC {
         } catch (SQLException ex) {
             Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         ArrayList<Vehiculo> listaVehiculosBBDD = new ArrayList<>();
-        ArrayList<Vehiculo> listaVehiculosModificados = new ArrayList<>();      
+        ArrayList<Vehiculo> listaVehiculosModificados = new ArrayList<>();
 
         listaVehiculosBBDD = getVehiculosInAccident(idAccidente);
 
@@ -582,19 +581,19 @@ public class Accidentes_JDBC {
                 if (!encontrado) {
                     //eliminamos el vehiculo de la base de datos
                     deleteVehiculoById(listaVehiculosBBDD.get(cont).getId_Vehiculo());
-                    
+
                 }
-                
+
             }
-            
+
             listaVehiculosBBDD = getVehiculosInAccident(idAccidente);
 
-        }else if(listaVehiculos.size() >listaVehiculosBBDD.size()  ){
+        } else if (listaVehiculos.size() > listaVehiculosBBDD.size()) {
             // Si la lista nueva tiene más vehículos que los que había en la base de datos tenemos que añadirlos primero
-             for (int cont = 0; cont < listaVehiculos.size(); cont++) {
+            for (int cont = 0; cont < listaVehiculos.size(); cont++) {
                 boolean encontrado = false;
                 for (int cont2 = 0; cont2 < listaVehiculosBBDD.size(); cont2++) {
-                    if ( listaVehiculos.get(cont).getId_Vehiculo() == listaVehiculosBBDD.get(cont2).getId_Vehiculo()) {
+                    if (listaVehiculos.get(cont).getId_Vehiculo() == listaVehiculosBBDD.get(cont2).getId_Vehiculo()) {
                         encontrado = true;
                     }
                 }
@@ -603,12 +602,11 @@ public class Accidentes_JDBC {
                     addVehiculoById(listaVehiculos.get(cont));
                 }
             }
-             listaVehiculosBBDD = getVehiculosInAccident(idAccidente);
+            listaVehiculosBBDD = getVehiculosInAccident(idAccidente);
         }
-        
+
         //La lista de vehículos de la base de datos y la local ya coinciden en número así que ahora comprobamos si se han hecho cambios en el resto
         //ya que si se han eliminado serán iguales y si se han quitado ya no figuran en la base de datos.
-        
         listaVehiculosModificados = comparaListadoVehiculos(listaVehiculosBBDD, listaVehiculos);
 
         if (!listaVehiculosModificados.isEmpty()) {
@@ -620,11 +618,11 @@ public class Accidentes_JDBC {
             });
 
         }
-        
+
         try {
             if (conexion == null) {
-                conexion=ConexionAccess.conectar();
-               };
+                conexion = ConexionAccess.conectar();
+            };
             conexion.commit();
             conexion.close();
         } catch (SQLException ex) {
@@ -635,6 +633,33 @@ public class Accidentes_JDBC {
             }
             Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private ArrayList<Persona> comparaListadoPersonas(ArrayList<Persona> old, ArrayList<Persona> newLista) {
+        // Convertir ArrayList a conjuntos
+        HashSet<Persona> set1 = new HashSet<>(old);
+
+        HashSet<Persona> set2 = new HashSet<>(newLista);
+
+        // Copiar set1 para retener sus elementos originales
+        HashSet<Persona> set1Copy = new HashSet<>(set1);
+
+        // Eliminar elementos comunes
+        set1.removeAll(set2);
+
+        // Eliminar elementos comunes del conjunto copia  do
+        set2.removeAll(set1Copy);
+
+        // Si ambos conjuntos están vacíos, los ArrayList son iguales
+        if (set1.isEmpty() && set2.isEmpty()) {
+            ArrayList<Persona> setArray = new ArrayList<Persona>();
+            return setArray;
+        } else {
+
+            ArrayList<Persona> setArray = new ArrayList<Persona>(set2);
+            return setArray;
+        }
+
     }
 
     private ArrayList<Vehiculo> comparaListadoVehiculos(ArrayList<Vehiculo> old, ArrayList<Vehiculo> newLista) {
@@ -688,27 +713,117 @@ public class Accidentes_JDBC {
 
     }
 
-    public void modificaListaPersonas(ArrayList<Persona> listaPersonas, int idAccidente) {
+    public void modificarPersona(Persona per) {
+        String sql = "UPDATE Personas SET Num_Vehiculo=?, Documento=?, Tipo_Persona=?,Resultado=?,Trasladado=?,Lugar_traslado=?,Alcoholemia=?,Alcoholemia_Positiva=?,Drogas=?,Drogas_Positiva=?,Observaciones=? WHERE Id=?";
+
         try {
             conexion = ConexionAccess.conectar();
-            conexion.setAutoCommit(false);
+            ps = conexion.prepareStatement(sql);
 
-            //Borramos todos los vehículos y volvemos a crearlos para el número de accidente
-            deletePersonasByIdAccidente(idAccidente);
+            ps.setInt(1, per.getId_Vehiculo());
+            ps.setString(2, per.getDocumento());
+            ps.setString(3, per.getTipo_persona());
+            ps.setString(4, per.getResultado());
+            ps.setBoolean(5, per.getTrasladado());
+            ps.setString(6, per.getLugar_traslado());
+            ps.setBoolean(7, per.getPrueba_alcoholemia());
+            ps.setBoolean(8, per.getAlcoholemia_positiva());
+            ps.setBoolean(9, per.getPrueba_drogas());
+            ps.setBoolean(10, per.getDrogas_positiva());
+            ps.setString(11, per.getObservaciones());
+            ps.setInt(12, per.getId_Persona());
 
-            addListadoPersonas(listaPersonas);
+            ps.executeUpdate();
 
-            conexion.commit();
-
-            conexion.setAutoCommit(true);
+            ps.close();
 
         } catch (SQLException e) {
+            System.err.println(e.getErrorCode()+ " "+e.getMessage());
+            
+        }
 
-            try {
-                conexion.rollback();
-            } catch (SQLException ex) {
-                Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    public void modificaListaPersonas(ArrayList<Persona> listaPersonas, int idAccidente) {
+        conexion = ConexionAccess.conectar();
+        try {
+            conexion.setAutoCommit(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        ArrayList<Persona> listaPersonaBBDD = new ArrayList<>();
+        ArrayList<Persona> listaPersonasModificados = new ArrayList<>();
+
+        listaPersonaBBDD = getPersonasInAccidenteByIdAccident(idAccidente);
+
+        if (listaPersonaBBDD.size() > listaPersonas.size()) {
+            //si es mayor la lista de vehiculos en la base de datos significa que hemos elimado uno
+
+            for (int cont = 0; cont < listaPersonaBBDD.size(); cont++) {
+                boolean encontrado = false;
+                for (int cont2 = 0; cont2 < listaPersonas.size(); cont2++) {
+                    if (listaPersonaBBDD.get(cont).getId_Persona() == listaPersonas.get(cont2).getId_Persona()) {
+                        encontrado = true;
+                    }
+                }
+                if (!encontrado) {
+                    //eliminamos la persona de la base de datos
+                    deletePersonasById(listaPersonaBBDD.get(cont).getId_Persona());
+                }
+
             }
+
+            listaPersonaBBDD = getPersonasInAccidenteByIdAccident(idAccidente);
+
+        } else if (listaPersonas.size() > listaPersonaBBDD.size()) {
+            // Si la lista nueva tiene más vehículos que los que había en la base de datos tenemos que añadirlos primero
+            for (int cont = 0; cont < listaPersonas.size(); cont++) {
+                boolean encontrado = false;
+                for (int cont2 = 0; cont2 < listaPersonaBBDD.size(); cont2++) {
+                    if (listaPersonas.get(cont).getId_Persona() == listaPersonaBBDD.get(cont2).getId_Persona()) {
+                        encontrado = true;
+                    }
+                }
+                if (!encontrado) {
+                    //eliminamos la persona de la base de datos
+
+                    addPersonaById(listaPersonas.get(cont));
+                }
+            }
+            listaPersonaBBDD = getPersonasInAccidenteByIdAccident(idAccidente);
+        }
+
+        //La lista de vehículos de la base de datos y la local ya coinciden en número así que ahora comprobamos si se han hecho cambios en el resto
+        //ya que si se han eliminado serán iguales y si se han quitado ya no figuran en la base de datos.
+        listaPersonasModificados = comparaListadoPersonas(listaPersonaBBDD, listaPersonas);
+
+        if (!listaPersonasModificados.isEmpty()) {
+
+            listaPersonasModificados.forEach((per) -> {
+
+                modificarPersona(per);
+
+            });
+
+        }
+
+        try {
+            if (conexion == null) {
+                conexion = ConexionAccess.conectar();
+            };
+            conexion.commit();
+            conexion.close();
+        } catch (SQLException ex) {
+            try {
+                if(conexion==null){
+                    conexion= ConexionAccess.conectar();
+                }
+                conexion.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -802,30 +917,66 @@ public class Accidentes_JDBC {
         }
 
     }
-    
-    public void addVehiculoById(Vehiculo newVehiculo){
-    
-            String sql = "INSERT INTO Vehiculos (Id,NUM_ACCI,MATRICULA,MARCA,MODELO,GESTION,OBSERVACIONES) VALUES (?,?,?,?,?,?,?)";
+
+    public void addPersonaById(Persona per) {
+        String sql = "INSERT INTO Personas (Id,Num_Accidente,Num_Vehiculo,Documento,Tipo_Persona,Resultado,Trasladado,Lugar_Traslado,Alcoholemia,Alcoholemia_Positiva,Drogas,Drogas_Positiva,Observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        conexion = ConexionAccess.conectar();
+        try {
+            ps = conexion.prepareStatement(sql);
+
+            try {
+                ps.setNull(1, 0);
+                ps.setInt(2, per.getId_Accidente());
+                ps.setInt(3, per.getId_Vehiculo());
+                ps.setString(4, per.getDocumento());
+                ps.setString(5, per.getTipo_persona());
+                ps.setString(6, per.getResultado());
+                ps.setBoolean(7, per.getTrasladado());
+                ps.setString(8, per.getLugar_traslado());
+                ps.setBoolean(9, per.getPrueba_alcoholemia());
+                ps.setBoolean(10, per.getAlcoholemia_positiva());
+                ps.setBoolean(11, per.getPrueba_drogas());
+                ps.setBoolean(12, per.getDrogas_positiva());
+                ps.setString(13, per.getObservaciones());
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            ps.executeUpdate();
+            ps.close();
+            conexion = null;
+            ConexionAccess.desConnection();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void addVehiculoById(Vehiculo newVehiculo) {
+
+        String sql = "INSERT INTO Vehiculos (Id,NUM_ACCI,MATRICULA,MARCA,MODELO,GESTION,OBSERVACIONES) VALUES (?,?,?,?,?,?,?)";
 
         try {
             conexion = ConexionAccess.conectar();
             ps = conexion.prepareStatement(sql);
- 
-                try {
-                    //TODO CUANDO RECORRO LA LISTA NUEVA, COMPRUEBA SI EL COCHE EXISTE Y MODIFICO LOS DATOS (UPDATE), SI NO, TENGO QUE CREAR UNO (INSERT) M
 
-                    ps.setNull(1, 0);
-                    ps.setInt(2, newVehiculo.getNum_Accidente());
-                    ps.setString(3, newVehiculo.getMatricula());
-                    ps.setString(4, newVehiculo.getMarca());
-                    ps.setString(5, newVehiculo.getModelo());
-                    ps.setString(6, newVehiculo.getGestion());
-                    ps.setString(7, newVehiculo.getObservaciones());
-                    
+            try {
+                //TODO CUANDO RECORRO LA LISTA NUEVA, COMPRUEBA SI EL COCHE EXISTE Y MODIFICO LOS DATOS (UPDATE), SI NO, TENGO QUE CREAR UNO (INSERT) M
 
-                } catch (SQLException ex) {
-                    Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                ps.setNull(1, 0);
+                ps.setInt(2, newVehiculo.getNum_Accidente());
+                ps.setString(3, newVehiculo.getMatricula());
+                ps.setString(4, newVehiculo.getMarca());
+                ps.setString(5, newVehiculo.getModelo());
+                ps.setString(6, newVehiculo.getGestion());
+                ps.setString(7, newVehiculo.getObservaciones());
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             int executeUpdate = ps.executeUpdate();
             ps.close();
@@ -834,7 +985,6 @@ public class Accidentes_JDBC {
             Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    
     }
 
     public void AddNuevoTipoDelictivo(String nuevoTipo) {
@@ -868,9 +1018,41 @@ public class Accidentes_JDBC {
 
         String sql = "Delete FROM Vehiculos WHERE Id=?";
         conexion = ConexionAccess.conectar();
+
         try {
             ps = conexion.prepareStatement(sql);
             ps.setInt(1, Id_Vehiculo);
+            ps.executeUpdate();
+            ps.close();
+            //Ahora borramos las personas que estén relacionadas con el vehículo
+            deletePersonaInVehicle(Id_Vehiculo);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void deletePersonaInVehicle(int id_vehiculo) {
+        String sql = "Delete FROM Personas WHERE Num_Vehiculo=?";
+        conexion = ConexionAccess.conectar();
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, id_vehiculo);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Accidentes_JDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void deletePersonasById(int Id_Persona) {
+        String sql = "Delete FROM Personas WHERE Id=?";
+        conexion = ConexionAccess.conectar();
+        try {
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, Id_Persona);
             ps.executeUpdate();
             ps.close();
         } catch (SQLException ex) {
@@ -912,6 +1094,9 @@ public class Accidentes_JDBC {
             ConexionAccess.desConnection();
 
         } catch (SQLException e) {
+              if(conexion==null){
+                    conexion= ConexionAccess.conectar();
+                }
             conexion.rollback();
             System.out.println(e.getMessage());
         }

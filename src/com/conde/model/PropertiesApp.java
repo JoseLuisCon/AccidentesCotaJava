@@ -63,7 +63,7 @@ public class PropertiesApp {
         try (InputStream entrada = new FileInputStream(ARCHIVO_CONFIGURACION)) {
             propiedades.load(entrada);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            System.err.println(ex.getMessage());
         }
         return propiedades;
     }

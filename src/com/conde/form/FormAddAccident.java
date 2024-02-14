@@ -49,8 +49,6 @@ public class FormAddAccident extends javax.swing.JPanel {
     private int rowPersonaEditada;
     private Main mainFrame;
     private int idAccidente = 0;
-    
-    private ArrayList<Vehiculo> listaAccidentesAntesModificacion = new ArrayList<>();
 
     public FormAddAccident(Main m) {
         initComponents();
@@ -344,9 +342,9 @@ public class FormAddAccident extends javax.swing.JPanel {
         rbTudela.setEnabled(false);
 
         btnAnyadir.setText("Modificar");
-        
+
         resetFormulario();
-        
+
         //Datos Accidents
         Accidente acc = modelAcc.getAccidentById(this.idAccidente);
 
@@ -357,7 +355,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             Calendar fechaAcc = Calendar.getInstance();
             fechaAcc.setTime(fec);
 
-            Fecha.setSelectedDate(new SelectedDate(fechaAcc.get(Calendar.DAY_OF_MONTH), fechaAcc.get(Calendar.MONTH)+1, fechaAcc.get(Calendar.YEAR)));
+            Fecha.setSelectedDate(new SelectedDate(fechaAcc.get(Calendar.DAY_OF_MONTH), fechaAcc.get(Calendar.MONTH) + 1, fechaAcc.get(Calendar.YEAR)));
 
         } catch (ParseException ex) {
             Logger.getLogger(FormAddAccident.class.getName()).log(Level.SEVERE, null, ex);
@@ -375,8 +373,6 @@ public class FormAddAccident extends javax.swing.JPanel {
             e.printStackTrace();
         }
 
-        
-
         cmbCarretera.setSelectedItem(acc.getCarretera());
         txtKilometro.setText(acc.getKilometro());
         cmbBoxTipoAccid.setSelectedItem(modelAcc.getTipoAccidenteById(acc.getNum_Diligencias()));
@@ -393,19 +389,13 @@ public class FormAddAccident extends javax.swing.JPanel {
         DefaultTableModel tblModel = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
 
         //GUARDAMOS LA LISTA INICIAL PARA DESPUÉS COMPARARLA SI HAY MODIFICACIONES
-        
-
         ArrayList<Vehiculo> modelVehiculos = modelAcc.getVehiculosInAccident(this.idAccidente);
-        
-        listaAccidentesAntesModificacion = modelVehiculos;
-        
 
-        for (int cont = 0; cont < modelVehiculos.size(); cont++) {
+       for (int cont = 0; cont < modelVehiculos.size(); cont++) {
             Vehiculo veh = modelVehiculos.get(cont);
 
             Object[] rowData = {veh.getId_Vehiculo(), null, veh.getMatricula(), veh.getMarca(), veh.getModelo(), veh.getGestion(), veh.getObservaciones()};
             tblModel.addRow(rowData);
-
 
         }
 
@@ -414,9 +404,8 @@ public class FormAddAccident extends javax.swing.JPanel {
         //Datos Personas
         DefaultTableModel tblModelPer = (DefaultTableModel) table_Persona_Form_Add.getModel();
 
-//        int num_persona = tblModelPer.getRowCount() + 1;
 
-        ArrayList<Persona> modelPersonas = modelAcc.getPersonasInAccidenteById(this.idAccidente);
+        ArrayList<Persona> modelPersonas = modelAcc.getPersonasInAccidenteByIdAccident(this.idAccidente);
 
         for (int cont = 0; cont < modelPersonas.size(); cont++) {
 
@@ -1289,7 +1278,7 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         if (EditOnVehiculo && tblModel.getRowCount() > 0) {
 
-            id_vehiculo =  Integer.parseInt(tblModel.getValueAt(rowVehiculoEditado, 0).toString()) ;
+            id_vehiculo = Integer.parseInt(tblModel.getValueAt(rowVehiculoEditado, 0).toString());
             tblModel.removeRow(rowVehiculoEditado);
             EditOnVehiculo = false;
 
@@ -1335,9 +1324,12 @@ public class FormAddAccident extends javax.swing.JPanel {
 
     private void btnAddPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPersonaActionPerformed
         DefaultTableModel tblModel = (DefaultTableModel) table_Persona_Form_Add.getModel();
+        
+        int id_persona = tblModel.getRowCount() + 1;
 
         if (EditOnPersona && tblModel.getRowCount() > 0) {
 
+            id_persona = Integer.parseInt(tblModel.getValueAt(rowPersonaEditada, 0).toString());
             tblModel.removeRow(rowPersonaEditada);
             EditOnPersona = false;
 
@@ -1377,10 +1369,10 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         }
 
-        int num_persona = tblModel.getRowCount() + 1;
+        
 
         Object[] rowData = {
-            num_persona,
+            id_persona,
             null,
             txtDni.getText().toUpperCase(),
             cmbTipoPersona.getSelectedItem(),
@@ -1499,11 +1491,9 @@ public class FormAddAccident extends javax.swing.JPanel {
         }
 
         if (editOn) {
-           
-                
-            
-                modelAcc.modificaListaVehiculos(listaVehiculos, this.idAccidente);
-          
+
+            modelAcc.modificaListaVehiculos(listaVehiculos, this.idAccidente);
+
         } else {
             if (!listaVehiculos.isEmpty()) {
                 modelAcc.addListadoVehiculos(listaVehiculos);
@@ -1511,42 +1501,48 @@ public class FormAddAccident extends javax.swing.JPanel {
 
         }
 
-//        //Listado personas
-//        DefaultTableModel modelPersonas = (DefaultTableModel) table_Persona_Form_Add.getModel();
-//        
-//        ArrayList<Persona> listaPersonas = new ArrayList<>();
-//        
-//        for (int row = 0; row < modelPersonas.getRowCount(); row++) {
-//            Persona per = new Persona();
-//            
-//            per.setId_Accidente(idAccidente);
-//            per.setDocumento((String) modelPersonas.getValueAt(row, 2));
-//            per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row, 4), idAccidente));
-//            per.setTipo_persona((String) modelPersonas.getValueAt(row, 3));
-//            per.setResultado((String) modelPersonas.getValueAt(row, 5));
-//            String lugarTrasladado = (String) modelPersonas.getValueAt(row, 6);
-//            if (lugarTrasladado.isEmpty()) {
-//                per.setTrasladado(false);
-//                per.setLugar_traslado("");
-//            } else {
-//                per.setTrasladado(true);
-//                per.setLugar_traslado(lugarTrasladado);
-//            }
-//            per.setPrueba_alcoholemia((Boolean) modelPersonas.getValueAt(row, 7));
-//            per.setAlcoholemia_positiva((Boolean) modelPersonas.getValueAt(row, 8));
-//            per.setPrueba_drogas((Boolean) modelPersonas.getValueAt(row, 9));
-//            per.setDrogas_positiva((Boolean) modelPersonas.getValueAt(row, 10));
-//            per.setObservaciones((String) modelPersonas.getValueAt(row, 11));
-//            
-//            listaPersonas.add(per);
-//        }
-//        if (editOn){
-//            modelAcc.modificaListaPersonas(listaPersonas, idAccidente);
-//        }else{
-//            if (!listaPersonas.isEmpty()) {
-//                modelAcc.addListadoPersonas(listaPersonas);
-//            }
-//        }
+        //Listado personas
+        DefaultTableModel modelPersonas = (DefaultTableModel) table_Persona_Form_Add.getModel();
+        
+        ArrayList<Persona> listaPersonas = new ArrayList<>();
+        
+        for (int row = 0; row < modelPersonas.getRowCount(); row++) {
+            Persona per = new Persona();
+            
+            if (editOn) {
+                per.setId_Persona((int) modelPersonas.getValueAt(row, 0));
+                per.setId_Accidente(this.idAccidente);
+            } else {
+                per.setId_Accidente(NumAccidente);
+            }
+
+            per.setDocumento((String) modelPersonas.getValueAt(row, 2));
+            per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row, 4), idAccidente));
+            per.setTipo_persona((String) modelPersonas.getValueAt(row, 3));
+            per.setResultado((String) modelPersonas.getValueAt(row, 5));
+            String lugarTrasladado = (String) modelPersonas.getValueAt(row, 6);
+            if (lugarTrasladado.isEmpty()) {
+                per.setTrasladado(false);
+                per.setLugar_traslado("");
+            } else {
+                per.setTrasladado(true);
+                per.setLugar_traslado(lugarTrasladado);
+            }
+            per.setPrueba_alcoholemia((Boolean) modelPersonas.getValueAt(row, 7));
+            per.setAlcoholemia_positiva((Boolean) modelPersonas.getValueAt(row, 8));
+            per.setPrueba_drogas((Boolean) modelPersonas.getValueAt(row, 9));
+            per.setDrogas_positiva((Boolean) modelPersonas.getValueAt(row, 10));
+            per.setObservaciones((String) modelPersonas.getValueAt(row, 11));
+            
+            listaPersonas.add(per);
+        }
+        if (editOn){
+            modelAcc.modificaListaPersonas(listaPersonas, idAccidente);
+        }else{
+            if (!listaPersonas.isEmpty()) {
+                modelAcc.addListadoPersonas(listaPersonas);
+            }
+        }
         
         
         if (editOn) {

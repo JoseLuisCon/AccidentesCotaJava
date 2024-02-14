@@ -110,11 +110,12 @@ public class Accidente {
     }
 
     public void setStattus(StatusType stattus) {
-        
-        
-        
+
         this.stattus = stattus;
     }
+
+    
+    
 
     public Accidente(Icon icon, int Num_Accidente, String Fecha, String Hora, String Carretera, String Kilometro, int Num_Diligencias, String Patrulla, String Zona_Atestados, String Descripcion, int Tipo_Siniestro, StatusType status) {
         this.icon = icon;

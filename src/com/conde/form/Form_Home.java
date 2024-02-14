@@ -48,8 +48,7 @@ public class Form_Home extends javax.swing.JPanel{
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(JTable t, int row) {
-                System.out.println("Editando fila: " + row);
-                
+                                
                int respEdit = JOptionPane.showConfirmDialog(null, "¿Quiere modificar los datos del accidente?", "Atención", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
                
                if (respEdit == JOptionPane.OK_OPTION){
@@ -74,7 +73,7 @@ public class Form_Home extends javax.swing.JPanel{
                         int id_Accidente = (int) table.getValueAt(row, 0);
                         datos_model.deleteAccidenteById(id_Accidente);
                     } catch (SQLException e) {
-                        System.out.println("Error en el borrado del accidente en la base de datos");
+                        System.err.println("Error en el borrado del accidente en la base de datos");
                     }
 
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -96,7 +95,6 @@ public class Form_Home extends javax.swing.JPanel{
             for (Accidente Accidente : listAccidents) {
                 if (Accidente.getNum_Accidente() == index) {
                     accidenteOK = Accidente;
-                    System.out.println("Index " + index);
                     break;
                 }
             }
@@ -493,7 +491,7 @@ public class Form_Home extends javax.swing.JPanel{
     private void cargaPersonasAccidente(int index) throws SQLException {
         ArrayList<Persona> personasAccidente = new ArrayList<>();
 
-        personasAccidente = datos_model.getPersonasInAccidenteById(index);
+        personasAccidente = datos_model.getPersonasInAccidenteByIdAccident(index);
 
         personas.clearRows();
         personas.setToolTipRows(personasAccidente);
