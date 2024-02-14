@@ -105,7 +105,7 @@ public class FormAddAccident extends javax.swing.JPanel {
 
             @Override
             public void onDelete(JTable table, int row) {
-
+                EditOnVehiculo = false;
                 if (table == table_Vehiculo_Form_Add) {
                     if (table_Vehiculo_Form_Add.isEditing()) {
                         table_Vehiculo_Form_Add.getCellEditor().stopCellEditing();
@@ -130,6 +130,7 @@ public class FormAddAccident extends javax.swing.JPanel {
                     limpiarDatosVehiculo();
 
                 } else {
+                    EditOnPersona = false;
                     if (table_Persona_Form_Add.isEditing()) {
                         table_Persona_Form_Add.getCellEditor().stopCellEditing();
                     }
@@ -1512,12 +1513,14 @@ public class FormAddAccident extends javax.swing.JPanel {
             if (editOn) {
                 per.setId_Persona((int) modelPersonas.getValueAt(row, 0));
                 per.setId_Accidente(this.idAccidente);
+                per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row, 4), this.idAccidente));
             } else {
                 per.setId_Accidente(NumAccidente);
+                per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row, 4), NumAccidente));
             }
 
             per.setDocumento((String) modelPersonas.getValueAt(row, 2));
-            per.setId_Vehiculo(modelAcc.getVehiculoByMatriculaAndNumAccidente(modelPersonas.getValueAt(row, 4), idAccidente));
+            
             per.setTipo_persona((String) modelPersonas.getValueAt(row, 3));
             per.setResultado((String) modelPersonas.getValueAt(row, 5));
             String lugarTrasladado = (String) modelPersonas.getValueAt(row, 6);

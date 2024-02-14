@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -349,6 +350,29 @@ public class Accidentes_JDBC {
         }
 
         return null;
+    }
+    
+    public void getRangoAnyos(List<String> years) {
+        
+        String sql = "SELECT DISTINCT Year(Fecha) AS Anio FROM Accidentes ORDER BY Anio ASC";
+        try {
+            conexion = ConexionAccess.conectar();
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+            
+            years.add("");
+            while (rs.next()) {
+                years.add(rs.getString("Anio"));
+            }
+            rs.close();
+            st.close();
+            conexion.close();
+            ConexionAccess.desConnection();
+
+        } catch (Exception e) {
+            System.out.println("Error en la carga del tipo de personas." + e.getMessage());
+        }
+
     }
 
     public ArrayList<String> getTiposPersonas() {
@@ -832,6 +856,7 @@ public class Accidentes_JDBC {
         String sql = "INSERT INTO Vehiculos (Id,NUM_ACCI,MATRICULA,MARCA,MODELO,GESTION,OBSERVACIONES) VALUES (?,?,?,?,?,?,?)";
 
         try {
+            conexion = ConexionAccess.conectar();
             ps = conexion.prepareStatement(sql);
             listaVehiculos.forEach((veh) -> {
                 try {
@@ -864,8 +889,9 @@ public class Accidentes_JDBC {
 
         String sql = "INSERT INTO Personas (Id,Num_Accidente,Num_Vehiculo,Documento,Tipo_Persona,Resultado,Trasladado,Lugar_Traslado,Alcoholemia,Alcoholemia_Positiva,Drogas,Drogas_Positiva,Observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-        conexion = ConexionAccess.conectar();
+       
         try {
+             conexion = ConexionAccess.conectar();
             ps = conexion.prepareStatement(sql);
             listaPersonas.forEach((per) -> {
                 try {
@@ -921,8 +947,9 @@ public class Accidentes_JDBC {
     public void addPersonaById(Persona per) {
         String sql = "INSERT INTO Personas (Id,Num_Accidente,Num_Vehiculo,Documento,Tipo_Persona,Resultado,Trasladado,Lugar_Traslado,Alcoholemia,Alcoholemia_Positiva,Drogas,Drogas_Positiva,Observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-        conexion = ConexionAccess.conectar();
+        
         try {
+            conexion = ConexionAccess.conectar();
             ps = conexion.prepareStatement(sql);
 
             try {
@@ -1108,5 +1135,9 @@ public class Accidentes_JDBC {
     private Statement st;
     private PreparedStatement ps;
     private ResultSet rs;
+
+
+
+    
 
 }

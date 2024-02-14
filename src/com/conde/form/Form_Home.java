@@ -10,16 +10,21 @@ import com.conde.model.Accidente;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.lang.Object;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,13 +32,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-public class Form_Home extends javax.swing.JPanel{
+public class Form_Home extends javax.swing.JPanel {
 
     private ArrayList<Accidente> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
     private String cadenaBusqueda = "";
 
-    
     public Form_Home(Main m) {
 
         initComponents();
@@ -42,21 +46,19 @@ public class Form_Home extends javax.swing.JPanel{
 //        p.setBackground(Color.WHITE);
         s.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
         s.getViewport().setBackground(Color.WHITE);
-        
-        
-        
+
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(JTable t, int row) {
-                                
-               int respEdit = JOptionPane.showConfirmDialog(null, "¿Quiere modificar los datos del accidente?", "Atención", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
-               
-               if (respEdit == JOptionPane.OK_OPTION){
-                   DefaultTableModel model = (DefaultTableModel) table.getModel();
-                   int indexAccident= (int) model.getValueAt(row, 0);
-                   m.setForm(2,indexAccident);
-     
-              }
+
+                int respEdit = JOptionPane.showConfirmDialog(null, "¿Quiere modificar los datos del accidente?", "Atención", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
+                if (respEdit == JOptionPane.OK_OPTION) {
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    int indexAccident = (int) model.getValueAt(row, 0);
+                    m.setForm(2, indexAccident);
+
+                }
 
             }
 
@@ -98,7 +100,7 @@ public class Form_Home extends javax.swing.JPanel{
                     break;
                 }
             }
-       
+
             // Cargamos datos del accidente seleccionado en el card1
             ImageIcon image = new ImageIcon("src/com/conde/resources/icons/accidente.png");
             Icon icon = new ImageIcon(image.getImage());
@@ -115,7 +117,8 @@ public class Form_Home extends javax.swing.JPanel{
             }
 
         });
-            
+
+        cargarRangoAnyosAccidentes();
         initSearchTextField();
 
     }
@@ -137,6 +140,28 @@ public class Form_Home extends javax.swing.JPanel{
 
     }
 
+    private void cargarRangoAnyosAccidentes() {
+
+        // Lista para almacenar los años
+        List<String> years = new ArrayList<>();
+
+        datos_model.getRangoAnyos(years);
+
+        // Convertir la lista de años a un array
+//            String[] yearsArray = (String[]) years.toArray();
+        // Crear un JComboBox y agregar los años
+        cmbFiltroAnyo.setModel(new DefaultComboBoxModel<>((String[]) years.toArray(new String[0])));
+
+        DateTimeFormatter fecha = DateTimeFormatter.ofPattern("yyyy");
+        LocalDateTime hoy = LocalDateTime.now();
+        String fechaHoy = fecha.format(hoy);
+
+        cmbFiltroAnyo.setSelectedItem(fechaHoy);
+        
+        filtrarAccidentesAnyo();
+
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -151,14 +176,16 @@ public class Form_Home extends javax.swing.JPanel{
         jLabel1 = new javax.swing.JLabel();
         s = new com.conde.swing.ScrollPaneWin11();
         table = new com.conde.swing.Table_Accidentes();
+        cmbFiltroAnyo = new javax.swing.JComboBox<>();
         header = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtSearchFiled = new com.conde.component.textfieldSearch.TextFieldSearchOption();
 
         setBackground(new java.awt.Color(255, 255, 255));
+        setMaximumSize(new java.awt.Dimension(1424, 968));
         setOpaque(false);
-        setPreferredSize(new java.awt.Dimension(1750, 840));
+        setPreferredSize(new java.awt.Dimension(1424, 968));
         addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 formAncestorAdded(evt);
@@ -215,6 +242,8 @@ public class Form_Home extends javax.swing.JPanel{
         panel.add(personas, gridBagConstraints);
 
         panelBorder1.setBackground(new java.awt.Color(255, 255, 255));
+        panelBorder1.setMaximumSize(new java.awt.Dimension(1417, 640));
+        panelBorder1.setMinimumSize(new java.awt.Dimension(1417, 640));
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(127, 127, 127));
@@ -236,8 +265,7 @@ public class Form_Home extends javax.swing.JPanel{
                 return canEdit [columnIndex];
             }
         });
-        table.setMaximumSize(null);
-        table.setName(""); // NOI18N
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         table.setShowHorizontalLines(false);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -256,26 +284,44 @@ public class Form_Home extends javax.swing.JPanel{
             table.getColumnModel().getColumn(0).setMaxWidth(0);
         }
 
+        cmbFiltroAnyo.setMaximumRowCount(5);
+        cmbFiltroAnyo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2024" }));
+        cmbFiltroAnyo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbFiltroAnyoItemStateChanged(evt);
+            }
+        });
+        cmbFiltroAnyo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbFiltroAnyoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
         panelBorder1.setLayout(panelBorder1Layout);
         panelBorder1Layout.setHorizontalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel1)
-                .addGap(1069, 1198, Short.MAX_VALUE))
-            .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelBorder1Layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel1)
+                        .addGap(398, 398, 398)
+                        .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelBorder1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 1399, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jLabel1)
+                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -299,7 +345,7 @@ public class Form_Home extends javax.swing.JPanel{
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(headerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 1024, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -320,14 +366,14 @@ public class Form_Home extends javax.swing.JPanel{
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 1425, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, 1419, Short.MAX_VALUE)))
+                    .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 1425, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(224, 224, 224))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,16 +381,16 @@ public class Form_Home extends javax.swing.JPanel{
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 616, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel1, "card2");
     }// </editor-fold>//GEN-END:initComponents
 
     private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
-//        cargarAccidentes();
+
 
     }//GEN-LAST:event_formAncestorAdded
 
@@ -353,7 +399,7 @@ public class Form_Home extends javax.swing.JPanel{
     }//GEN-LAST:event_tableKeyPressed
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
-//        cargarAccidentes();
+
     }//GEN-LAST:event_formFocusGained
 
     private void txtSearchFiledKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchFiledKeyReleased
@@ -392,7 +438,7 @@ public class Form_Home extends javax.swing.JPanel{
                 cadenaBusqueda = text;
 
                 if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Zona_Atestados like '%" + cadenaBusqueda + "%'", "");
+                    cargarAccidentes("where Zona_Atestados like '%" + cadenaBusqueda + "%' AND Year(Fecha)="+cmbFiltroAnyo.getSelectedItem(), "");
                 } else if (cadenaBusqueda.length() == 0) {
                     cargarAccidentes("");
                 }
@@ -402,7 +448,7 @@ public class Form_Home extends javax.swing.JPanel{
                 cadenaBusqueda = text;
 
                 if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Carretera like '%" + cadenaBusqueda + "%'", "");
+                    cargarAccidentes("where Carretera like '%" + cadenaBusqueda + "%' AND Year(Fecha)="+cmbFiltroAnyo.getSelectedItem(), "");
                 } else if (cadenaBusqueda.length() == 0) {
                     cargarAccidentes("");
                 }
@@ -414,7 +460,7 @@ public class Form_Home extends javax.swing.JPanel{
 
                     if (cadenaBusqueda.length() > 0) {
                         Integer numDiligencias = Integer.valueOf(cadenaBusqueda);
-                        cargarAccidentes("where Num_Diligencias =" + numDiligencias, "");
+                        cargarAccidentes("where Num_Diligencias =" + numDiligencias + " AND Year(Fecha)="+cmbFiltroAnyo.getSelectedItem(),"");
                     } else if (cadenaBusqueda.length() == 0) {
                         cargarAccidentes("");
                     }
@@ -423,26 +469,46 @@ public class Form_Home extends javax.swing.JPanel{
                     JOptionPane.showMessageDialog(this, "Debe introducir un número de diligencias");
 
                     txtSearchFiled.requestFocus();
-
                 }
-
             } else if (option == 4) {
                 // Busdqueda por patrulla
                 cadenaBusqueda = text;
                 if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Patrulla like '%" + cadenaBusqueda + "%'", "");
+                    cargarAccidentes("where Patrulla like '%" + cadenaBusqueda + "%' AND Year(Fecha)="+cmbFiltroAnyo.getSelectedItem(), "");
                 } else if (cadenaBusqueda.length() == 0) {
                     cargarAccidentes("");
                 }
-
             }
-
-        }        // TODO add your handling code here:
+        }
     }//GEN-LAST:event_txtSearchFiledKeyReleased
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
-       
+
     }//GEN-LAST:event_tableMousePressed
+
+    private void cmbFiltroAnyoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFiltroAnyoActionPerformed
+
+        filtrarAccidentesAnyo();
+
+    }//GEN-LAST:event_cmbFiltroAnyoActionPerformed
+
+    private void cmbFiltroAnyoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbFiltroAnyoItemStateChanged
+        filtrarAccidentesAnyo();
+
+    }//GEN-LAST:event_cmbFiltroAnyoItemStateChanged
+
+    private void filtrarAccidentesAnyo() {
+
+        if (!cmbFiltroAnyo.getSelectedItem().equals("") ) {
+
+            cargarAccidentes("WHERE Year(FECHA) =" + cmbFiltroAnyo.getSelectedItem());
+
+        } else {
+
+            cargarAccidentes("");
+        }
+
+    }
 
     private boolean verificarFecha(String texto) {
         String textoFecha = texto;
@@ -463,8 +529,15 @@ public class Form_Home extends javax.swing.JPanel{
         listAccidents.clear();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
+        String SqlQuery="";
+        
+//        if (cmbFiltroAnyo.getSelectedItem().equals("")){
+//            SqlQuery = "SELECT * FROM Accidentes " +  + " ORDER BY Num_Diligencias DESC";
+//        }else {
+            SqlQuery = "SELECT * FROM Accidentes " + where + " ORDER BY Num_Diligencias DESC";
+//         }
 
-        String SqlQuery = "SELECT * FROM Accidentes " + where;
+        
         listAccidents = datos_model.getListAccidents(SqlQuery);
 
         //Lo mostramos en la tabla
@@ -502,6 +575,7 @@ public class Form_Home extends javax.swing.JPanel{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cmbFiltroAnyo;
     private com.conde.component.Card_Accident data_Aux_Accidente;
     private javax.swing.JPanel header;
     private javax.swing.JLabel jLabel1;
@@ -517,5 +591,4 @@ public class Form_Home extends javax.swing.JPanel{
     private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
 
-  
 }
