@@ -1,5 +1,19 @@
 package com.conde.form;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.conde.cell.TableActionCellEditor;
 import com.conde.cell.TableActionEvent;
 import com.conde.component.textfieldSearch.SearchOptinEvent;
@@ -10,7 +24,8 @@ import com.conde.model.Accidente;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
+import java.awt.Font;
+import java.awt.HeadlessException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.lang.Object;
@@ -30,13 +45,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 public class Form_Home extends javax.swing.JPanel {
 
     private ArrayList<Accidente> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
     private String cadenaBusqueda = "";
+ 
 
     public Form_Home(Main m) {
 
@@ -177,6 +196,9 @@ public class Form_Home extends javax.swing.JPanel {
         s = new com.conde.swing.ScrollPaneWin11();
         table = new com.conde.swing.Table_Accidentes();
         cmbFiltroAnyo = new javax.swing.JComboBox<>();
+        panelExports = new javax.swing.JPanel();
+        btnExportPdf = new javax.swing.JButton();
+        btnExportExcel = new javax.swing.JButton();
         header = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -297,17 +319,57 @@ public class Form_Home extends javax.swing.JPanel {
             }
         });
 
+        panelExports.setOpaque(false);
+
+        btnExportPdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/pdf (1).png"))); // NOI18N
+        btnExportPdf.setContentAreaFilled(false);
+
+        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/excel.png"))); // NOI18N
+        btnExportExcel.setContentAreaFilled(false);
+        btnExportExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportExcelActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelExportsLayout = new javax.swing.GroupLayout(panelExports);
+        panelExports.setLayout(panelExportsLayout);
+        panelExportsLayout.setHorizontalGroup(
+            panelExportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelExportsLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnExportPdf)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnExportExcel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        panelExportsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnExportExcel, btnExportPdf});
+
+        panelExportsLayout.setVerticalGroup(
+            panelExportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelExportsLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelExportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnExportExcel)
+                    .addComponent(btnExportPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        panelExportsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnExportExcel, btnExportPdf});
+
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
         panelBorder1.setLayout(panelBorder1Layout);
         panelBorder1Layout.setHorizontalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelBorder1Layout.createSequentialGroup()
+                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelBorder1Layout.createSequentialGroup()
                         .addGap(28, 28, 28)
                         .addComponent(jLabel1)
                         .addGap(398, 398, 398)
-                        .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panelExports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelBorder1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 1399, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -316,13 +378,15 @@ public class Form_Home extends javax.swing.JPanel {
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelExports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         header.setOpaque(false);
@@ -371,7 +435,7 @@ public class Form_Home extends javax.swing.JPanel {
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, 1419, Short.MAX_VALUE)))
+                            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 1425, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(224, 224, 224))
         );
@@ -382,7 +446,7 @@ public class Form_Home extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 616, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -438,7 +502,7 @@ public class Form_Home extends javax.swing.JPanel {
                 cadenaBusqueda = text;
 
                 if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Zona_Atestados like '%" + cadenaBusqueda + "%' AND Year(Fecha)="+cmbFiltroAnyo.getSelectedItem(), "");
+                    cargarAccidentes("where Zona_Atestados like '%" + cadenaBusqueda + "%'", "");
                 } else if (cadenaBusqueda.length() == 0) {
                     cargarAccidentes("");
                 }
@@ -448,7 +512,7 @@ public class Form_Home extends javax.swing.JPanel {
                 cadenaBusqueda = text;
 
                 if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Carretera like '%" + cadenaBusqueda + "%' AND Year(Fecha)="+cmbFiltroAnyo.getSelectedItem(), "");
+                    cargarAccidentes("where Carretera like '%" + cadenaBusqueda + "%'", "");
                 } else if (cadenaBusqueda.length() == 0) {
                     cargarAccidentes("");
                 }
@@ -460,7 +524,7 @@ public class Form_Home extends javax.swing.JPanel {
 
                     if (cadenaBusqueda.length() > 0) {
                         Integer numDiligencias = Integer.valueOf(cadenaBusqueda);
-                        cargarAccidentes("where Num_Diligencias =" + numDiligencias + " AND Year(Fecha)="+cmbFiltroAnyo.getSelectedItem(),"");
+                        cargarAccidentes("where Num_Diligencias =" + numDiligencias ,"");
                     } else if (cadenaBusqueda.length() == 0) {
                         cargarAccidentes("");
                     }
@@ -474,7 +538,7 @@ public class Form_Home extends javax.swing.JPanel {
                 // Busdqueda por patrulla
                 cadenaBusqueda = text;
                 if (cadenaBusqueda.length() >= 3) {
-                    cargarAccidentes("where Patrulla like '%" + cadenaBusqueda + "%' AND Year(Fecha)="+cmbFiltroAnyo.getSelectedItem(), "");
+                    cargarAccidentes("where Patrulla like '%" + cadenaBusqueda + "%'", "");
                 } else if (cadenaBusqueda.length() == 0) {
                     cargarAccidentes("");
                 }
@@ -497,6 +561,96 @@ public class Form_Home extends javax.swing.JPanel {
 
     }//GEN-LAST:event_cmbFiltroAnyoItemStateChanged
 
+    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
+        try {
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos excell", "xlsx");
+            File directorio = new File(System.getProperty("user.dir"));
+            JFileChooser jFileChooser = new JFileChooser(directorio);
+            jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            jFileChooser.setFileFilter(filter);
+                   jFileChooser.showSaveDialog(this);
+            File saveFile = jFileChooser.getSelectedFile();
+                if (saveFile!=null){
+                    saveFile = new File(saveFile.toString()+".xlsx");
+                    Workbook wb = new XSSFWorkbook();
+                    Sheet sheet = wb.createSheet("Diligencias");
+                    
+                    Row rowCol = sheet.createRow(0);
+                    
+    
+                    // Creamos estilo para titulos de las columnas
+                    CellStyle estilo = wb.createCellStyle();
+                    estilo.setAlignment(HorizontalAlignment.CENTER);
+                    CellStyle estilo2 = wb.createCellStyle();
+                    estilo2.setAlignment(HorizontalAlignment.CENTER);
+  
+                    
+                    // Creamos una fuente
+                        org.apache.poi.ss.usermodel.Font fuente=wb.createFont();
+                        fuente.setFontName("Roboto");
+                        fuente.setFontHeightInPoints((short)12);
+                        fuente.setBold(true);
+                        estilo.setFont(fuente);
+                        
+                        org.apache.poi.ss.usermodel.Font fuente2=wb.createFont();
+                        fuente2.setBold(false);
+                        
+                        estilo2.setFont(fuente2);
+                    // Ponemos nombres de columnas
+                    for (int i=2; i < table.getColumnCount(); i++){
+                       
+                        sheet.setColumnWidth(i-2, 18*256);
+                         
+                        Cell cell = rowCol.createCell(i-2);
+                        
+                        cell.setCellStyle(estilo);
+                        cell.setCellValue(table.getColumnName(i));
+                    }
+                    
+
+                    // Rellenamos las filas
+                   for (int r=0; r < table.getRowCount();r++){
+                       Row row = sheet.createRow(r+1);
+                       
+                       for (int c=2; c < table.getColumnCount(); c++ ){
+                               Cell cell = row.createCell(c-2);
+                                if (table.getValueAt(r, c) != null){
+                                    
+                                    
+                                    cell.setCellStyle(estilo2);
+                                    cell.setCellValue(table.getValueAt(r, c).toString());
+                                }
+
+                       }
+                   }
+                   
+                    FileOutputStream out = new FileOutputStream(new File(saveFile.toString()));
+                    wb.write(out);
+                    wb.close();
+                    out.close();
+                    openFile(saveFile.toString());
+                }else{
+                    JOptionPane.showMessageDialog(null, "Error al generar archivo excel");
+                }
+            
+            
+        } catch (FileNotFoundException e) {
+            
+            System.out.println(e);
+            
+        } catch (HeadlessException | IOException io){
+            System.out.println(io);
+        }
+        
+    }//GEN-LAST:event_btnExportExcelActionPerformed
+    public void openFile(String file){
+        try {
+            File path = new File(file);
+            Desktop.getDesktop().open(path);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
     private void filtrarAccidentesAnyo() {
 
         if (!cmbFiltroAnyo.getSelectedItem().equals("") ) {
@@ -531,11 +685,18 @@ public class Form_Home extends javax.swing.JPanel {
         model.setRowCount(0);
         String SqlQuery="";
         
-//        if (cmbFiltroAnyo.getSelectedItem().equals("")){
-//            SqlQuery = "SELECT * FROM Accidentes " +  + " ORDER BY Num_Diligencias DESC";
-//        }else {
+        if (cmbFiltroAnyo.getSelectedItem().equals("") && txtSearchFiled.getText().equals("")){
+            SqlQuery = "SELECT * FROM Accidentes ORDER BY Num_Diligencias DESC";
+            
+        }else if (!cmbFiltroAnyo.getSelectedItem().equals("") && txtSearchFiled.getText().equals("")){
+            SqlQuery = "SELECT * FROM Accidentes WHERE Year(Fecha)=" + cmbFiltroAnyo.getSelectedItem() + " ORDER BY Num_Diligencias DESC";
+            
+        }else if (cmbFiltroAnyo.getSelectedItem().equals("") && !txtSearchFiled.getText().equals("")){
             SqlQuery = "SELECT * FROM Accidentes " + where + " ORDER BY Num_Diligencias DESC";
-//         }
+            
+         }else if (!cmbFiltroAnyo.getSelectedItem().equals("") && !txtSearchFiled.getText().equals("")){
+            SqlQuery = "SELECT * FROM Accidentes " + where + " AND Year(Fecha)=" + cmbFiltroAnyo.getSelectedItem() + " ORDER BY Num_Diligencias DESC";
+         }
 
         
         listAccidents = datos_model.getListAccidents(SqlQuery);
@@ -575,6 +736,8 @@ public class Form_Home extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExportExcel;
+    private javax.swing.JButton btnExportPdf;
     private javax.swing.JComboBox<String> cmbFiltroAnyo;
     private com.conde.component.Card_Accident data_Aux_Accidente;
     private javax.swing.JPanel header;
@@ -584,6 +747,7 @@ public class Form_Home extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLayeredPane panel;
     private com.conde.swing.PanelBorder panelBorder1;
+    private javax.swing.JPanel panelExports;
     private com.conde.component.Card_Persona personas;
     private com.conde.swing.ScrollPaneWin11 s;
     private com.conde.swing.Table_Accidentes table;

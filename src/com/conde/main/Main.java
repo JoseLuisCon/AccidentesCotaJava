@@ -25,7 +25,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class Main extends javax.swing.JFrame {
 
     private Form_Home home;
-    private Form_2 form2;
+   
     private FormAddAccident frmAddAcci;
 
     private int indexPanel = 0;
@@ -75,6 +75,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         menu.addEventMenuSelected((int index) -> {
+           
             switch (index) {
                 case 1:
                     setTheme();
@@ -92,12 +93,7 @@ public class Main extends javax.swing.JFrame {
                     setForm(frmAddAcci);
                     indexPanel = 2;
                     break;
-                case 3:
-                    setTheme();
-                    form2 = new Form_2();
-                    setForm(form2);
-                    indexPanel = 3;
-                    break;
+             
                 case 5:
                     ConexionAccess.desConnection();
                      {
