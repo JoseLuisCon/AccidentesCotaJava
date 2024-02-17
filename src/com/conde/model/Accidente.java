@@ -91,6 +91,14 @@ public class Accidente {
     public void setTipo_Siniestro(int Tipo_Siniestro) {
         this.Tipo_Siniestro = Tipo_Siniestro;
     }
+    
+        public int getNum_Denuncias() {
+        return Num_Denuncias;
+    }
+
+    public void setNum_Denuncias(int Num_Denuncias) {
+        this.Num_Denuncias = Num_Denuncias;
+    }
 
     public StatusType getStattus() {
         
@@ -156,5 +164,8 @@ public class Accidente {
     private String Descripcion;
     private int Tipo_Siniestro;
     private StatusType stattus;
+    private int Num_Denuncias;
+
+
 
 }

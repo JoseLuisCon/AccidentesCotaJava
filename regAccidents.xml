@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>D:\CondeDoc\Documents\NetBeansProjects\Personal\dist\Personal.jar</jar>
+  <outfile>D:\CondeDoc\Documents\NetBeansProjects\Personal\RegAccidentes.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl></downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>D:\CondeDoc\Documents\NetBeansProjects\Personal\src\com\conde\resources\icons\crash.ico</icon>
+  <jre>
+    <path>%PWD%/JRE1.8.0_231/bin ;%JAVA_HOME%;%PATH%</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>false</requires64Bit>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
+  </jre>
+  <messages>
+    <startupErr>Ha ocurrido un error al iniciar la aplicación.</startupErr>
+    <jreNotFoundErr>Esta aplicación requiere Java instalado en el equipo.</jreNotFoundErr>
+    <jreVersionErr>Esta aplicación requiere Java instalado en el equipo.</jreVersionErr>
+    <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.</launcherErr>
+    <instanceAlreadyExistsMsg>An application instance is already running.</instanceAlreadyExistsMsg>
+  </messages>
+</launch4jConfig>

@@ -207,6 +207,10 @@ public class FormAddAccident extends javax.swing.JPanel {
         setPreferredSize(new Dimension(1920, 968));
         setDataFields();
         setListenersDocument();
+        
+        lblLugarTraslado.setVisible(false);
+        txtLugarTraslado.setVisible(false);
+        
         TableActionEvent event = new TableActionEvent() {
 
             @Override
@@ -380,6 +384,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         txtADescripcion.setText(acc.getDescripcion());
         txtPatrulla.setText(acc.getPatrulla());
         txtNumDiligencias.setText(String.valueOf(acc.getNum_Diligencias()));
+        spnNumDenuncias.setValue(acc.getNum_Denuncias());
 
         if (acc.getZona_Atestados().equals("Pamplona")) {
             rbPamplona.setSelected(true);
@@ -522,6 +527,8 @@ public class FormAddAccident extends javax.swing.JPanel {
         cmbCarretera = new javax.swing.JComboBox<>();
         btnAddCarretera = new javax.swing.JButton();
         btnAddMotivoDiligencias = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        spnNumDenuncias = new javax.swing.JSpinner();
         jPanel8 = new javax.swing.JPanel();
         btnAnyadir = new javax.swing.JButton();
         panelVehiculos = new javax.swing.JPanel();
@@ -681,28 +688,34 @@ public class FormAddAccident extends javax.swing.JPanel {
             }
         });
 
+        jLabel11.setText("Denuncias formuladas");
+
+        spnNumDenuncias.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel6)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)
+                            .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)))
                         .addGap(18, 18, 18)
-                        .addComponent(btnSelectFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtHora)
-                    .addComponent(txtPatrulla, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtHora)
+                            .addComponent(txtPatrulla, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(spnNumDenuncias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(btnSelectFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
@@ -788,7 +801,11 @@ public class FormAddAccident extends javax.swing.JPanel {
                                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel9)
                                     .addComponent(txtPatrulla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel6))))))
+                                    .addComponent(jLabel6))
+                                .addGap(21, 21, 21)
+                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel11)
+                                    .addComponent(spnNumDenuncias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
@@ -834,7 +851,7 @@ public class FormAddAccident extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
         );
@@ -1462,6 +1479,7 @@ public class FormAddAccident extends javax.swing.JPanel {
         newAccidente.setTipo_Siniestro(modelAcc.getTipoAccidenteByTYPE(cmbBoxTipoAccid.getSelectedItem()));
         newAccidente.setZona_Atestados((rbPamplona.isSelected() ? "Pamplona" : "Tudela"));
         newAccidente.setDescripcion(txtADescripcion.getText());
+        newAccidente.setNum_Denuncias(Integer.parseInt(spnNumDenuncias.getValue().toString()));
         int NumAccidente = 0;
         if (editOn) {
             modelAcc.modificarAccidenteById(newAccidente);
@@ -1730,7 +1748,8 @@ public class FormAddAccident extends javax.swing.JPanel {
         cmbBoxTipoAccid.setSelectedIndex(0);
         txtADescripcion.setText("");
         rbPamplona.setSelected(true);
-
+        spnNumDenuncias.setValue(0);
+        
         DefaultTableModel model = (DefaultTableModel) table_Vehiculo_Form_Add.getModel();
         model.setRowCount(0);
         DefaultTableModel modelP = (DefaultTableModel) table_Persona_Form_Add.getModel();
@@ -1766,6 +1785,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> cmbVehiculoPer;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
@@ -1803,6 +1823,7 @@ public class FormAddAccident extends javax.swing.JPanel {
     private javax.swing.JRadioButton rbTudela;
     private com.conde.swing.ScrollPaneWin11 spWin;
     private com.conde.swing.ScrollPaneWin11 spWinPer;
+    private javax.swing.JSpinner spnNumDenuncias;
     private com.conde.swing.Table_Persona_Form_Add table_Persona_Form_Add;
     private com.conde.swing.Table_Vehiculo_Form_Add table_Vehiculo_Form_Add;
     private javax.swing.JTextArea txtADescripcion;

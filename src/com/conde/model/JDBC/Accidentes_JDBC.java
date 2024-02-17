@@ -42,7 +42,7 @@ public class Accidentes_JDBC {
                 acc.setTipo_Siniestro(rs.getInt("Tipo_Accidente"));
                 acc.setZona_Atestados(rs.getString("Zona_Atestados"));
                 acc.setDescripcion(rs.getString("Descripcion"));
-
+                acc.setNum_Denuncias(rs.getInt("Num_Denuncias"));
                 listAccidents.add(acc);
 
             }
@@ -86,6 +86,7 @@ public class Accidentes_JDBC {
                 acc.setTipo_Siniestro(rs.getInt("Tipo_Accidente"));
                 acc.setZona_Atestados(rs.getString("Zona_Atestados"));
                 acc.setDescripcion(rs.getString("Descripcion"));
+                acc.setNum_Denuncias(rs.getInt("Num_Denuncias"));
                 rs.close();
                 st.close();
                 conexion.close();
@@ -192,42 +193,6 @@ public class Accidentes_JDBC {
 
     }
 
-//    public ArrayList<Vehiculo> getVehiculoInAccidentById(int index) {
-//        ArrayList<Vehiculo> listVeh = new ArrayList<>();
-//        String sql = "SELECT * FROM Vehiculos WHERE NUM_ACCI=" + index;
-//
-//        try {
-//            conexion = ConexionAccess.conectar();
-//            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-//            rs = st.executeQuery(sql);
-//
-//            while (rs.next()) {
-//                Vehiculo veh = new Vehiculo(
-//                        rs.getInt("Id"),
-//                        rs.getInt("NUM_ACCI"),
-//                        rs.getString("MATRICULA"),
-//                        rs.getString("MARCA"),
-//                        rs.getString("MODELO"),
-//                        rs.getString("GESTION"),
-//                        rs.getString("OBSERVACIONES")
-//                );
-//
-//                listVeh.add(veh);
-//
-//            }
-//            rs.close();
-//            st.close();
-//            conexion.close();
-//            ConexionAccess.desConnection();
-//            return listVeh;
-//
-//        } catch (Exception e) {
-//            System.out.println("Error en la carga de vehículos." + e.getMessage());
-//        }
-//
-//        return null;
-//
-//    }
     public int getNumDiligencias(String equipo, String fecha) {
 
         try {
@@ -476,7 +441,7 @@ public class Accidentes_JDBC {
     }
 
     public int AddNuevoAccidente(Accidente newAccidente) {
-        String sql = "INSERT INTO Accidentes (Id,Fecha,Hora,Carretera,Kilometro,Patrulla,Num_Diligencias, Tipo_Accidente, Zona_Atestados, Descripcion) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Accidentes (Id,Fecha,Hora,Carretera,Kilometro,Patrulla,Num_Diligencias, Tipo_Accidente, Zona_Atestados, Descripcion, Num_Denuncias) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
         Integer numAccidente = 0;
 
@@ -502,7 +467,7 @@ public class Accidentes_JDBC {
             ps.setInt(8, newAccidente.getTipo_Siniestro());
             ps.setString(9, newAccidente.getZona_Atestados());
             ps.setString(10, newAccidente.getDescripcion());
-
+            ps.setInt(11, newAccidente.getNum_Denuncias());
             numAccidente = ps.executeUpdate();
 
             ps.close();

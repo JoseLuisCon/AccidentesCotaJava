@@ -6,9 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,13 +15,19 @@ import com.conde.cell.TableActionCellEditor;
 import com.conde.cell.TableActionEvent;
 import com.conde.component.textfieldSearch.SearchOptinEvent;
 import com.conde.component.textfieldSearch.SearchOption;
+import com.conde.datechooserbtw.DateBetween;
+import com.conde.datechooserbtw.DateChooser;
+import com.conde.datechooserbtw.DateSelectable;
+import com.conde.datechooserbtw.listener.DateChooserAction;
+import com.conde.datechooserbtw.listener.DateChooserAdapter;
+import com.conde.event.EventRowSelected;
 import com.conde.main.Main;
 import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Accidente;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
+import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -48,6 +51,7 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 public class Form_Home extends javax.swing.JPanel {
@@ -55,7 +59,6 @@ public class Form_Home extends javax.swing.JPanel {
     private ArrayList<Accidente> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
     private String cadenaBusqueda = "";
- 
 
     public Form_Home(Main m) {
 
@@ -110,35 +113,40 @@ public class Form_Home extends javax.swing.JPanel {
 
         table.getColumnModel().getColumn(1).setCellEditor(new TableActionCellEditor(event));
 
-        table.addEventRowSelected((int index) -> {
-            Accidente accidenteOK = new Accidente();
-            //Rellenar datos card1
-            for (Accidente Accidente : listAccidents) {
-                if (Accidente.getNum_Accidente() == index) {
-                    accidenteOK = Accidente;
-                    break;
+        table.addEventRowSelected(new EventRowSelected() {
+            @Override
+            public void selectedRow(int index) {
+                Accidente accidenteOK = new Accidente();
+                //Rellenar datos card1
+                for (Accidente Accidente : listAccidents) {
+                    if (Accidente.getNum_Accidente() == index) {
+                        accidenteOK = Accidente;
+                        break;
+                    }
+                }
+
+                // Cargamos datos del accidente seleccionado en el card1
+                ImageIcon image = new ImageIcon("src/com/conde/resources/icons/accidente.png");
+                Icon icon = new ImageIcon(image.getImage());
+                accidenteOK.setIcon(icon);
+                String tipoAccidenteString = datos_model.getTipoAccidenteById(accidenteOK.getTipo_Siniestro());
+                data_Aux_Accidente.setData(accidenteOK, tipoAccidenteString, String.valueOf(accidenteOK.getNum_Denuncias()));
+
+                cargaVehiculosAccidente(index);
+
+                try {
+                    cargaPersonasAccidente(index);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Form_Home.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-            // Cargamos datos del accidente seleccionado en el card1
-            ImageIcon image = new ImageIcon("src/com/conde/resources/icons/accidente.png");
-            Icon icon = new ImageIcon(image.getImage());
-            accidenteOK.setIcon(icon);
-            String tipoAccidenteString = datos_model.getTipoAccidenteById(accidenteOK.getTipo_Siniestro());
-            data_Aux_Accidente.setData(accidenteOK, tipoAccidenteString);
-
-            cargaVehiculosAccidente(index);
-
-            try {
-                cargaPersonasAccidente(index);
-            } catch (SQLException ex) {
-                Logger.getLogger(Form_Home.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
         });
 
         cargarRangoAnyosAccidentes();
+
         initSearchTextField();
+
+        initRangoFechas();
 
     }
 
@@ -176,8 +184,36 @@ public class Form_Home extends javax.swing.JPanel {
         String fechaHoy = fecha.format(hoy);
 
         cmbFiltroAnyo.setSelectedItem(fechaHoy);
-        
+
         filtrarAccidentesAnyo();
+
+    }
+
+    private void initRangoFechas() {
+        selectorRangoFechas.setDateSelectable(new DateSelectable() {
+            @Override
+            public boolean isDateSelectable(Date date) {
+                return date.before(new Date());
+            }
+        });
+
+        selectorRangoFechas.addActionDateChooserListener(new DateChooserAdapter() {
+            @Override
+            public void dateBetweenChanged(DateBetween date, DateChooserAction action) {
+                Calendar fecFrom = Calendar.getInstance();
+                fecFrom.setTime(date.getFromDate());
+                Calendar fecTo = Calendar.getInstance();
+                fecTo.setTime(date.getToDate());
+
+                cargarAccidentes("WHERE Fecha BETWEEN " + "#" + (fecFrom.get(Calendar.MONTH) + 1) + "/" + fecFrom.get(Calendar.DAY_OF_MONTH) + "/" + fecFrom.get(Calendar.YEAR) + "# AND #" + (fecTo.get(Calendar.MONTH) + 1) + "/" + fecTo.get(Calendar.DAY_OF_MONTH) + "/" + fecTo.get(Calendar.YEAR) + "#", "");
+
+            }
+
+        });
+
+        selectorRangoFechas.setDateSelectionMode(DateChooser.DateSelectionMode.BETWEEN_DATE_SELECTED);
+        selectorRangoFechas.setLabelCurrentDayVisible(false);
+        selectorRangoFechas.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
 
     }
 
@@ -186,6 +222,7 @@ public class Form_Home extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        selectorRangoFechas = new com.conde.datechooserbtw.DateChooser();
         jPanel1 = new javax.swing.JPanel();
         panel = new javax.swing.JLayeredPane();
         data_Aux_Accidente = new com.conde.component.Card_Accident();
@@ -199,10 +236,15 @@ public class Form_Home extends javax.swing.JPanel {
         panelExports = new javax.swing.JPanel();
         btnExportPdf = new javax.swing.JButton();
         btnExportExcel = new javax.swing.JButton();
+        txtSelectorRangoFechas = new javax.swing.JTextField();
         header = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         txtSearchFiled = new com.conde.component.textfieldSearch.TextFieldSearchOption();
+
+        selectorRangoFechas.setBetweenCharacter(" a ");
+        selectorRangoFechas.setDateSelectionMode(com.conde.datechooserbtw.DateChooser.DateSelectionMode.BETWEEN_DATE_SELECTED);
+        selectorRangoFechas.setTextField(txtSelectorRangoFechas);
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1424, 968));
@@ -276,11 +318,11 @@ public class Form_Home extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Id", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Núm. Diligencias", "Patrulla", "Zona Atestados"
+                "Id", "Acciones", "Fecha", "Hora", "Carretera", "Kilometro", "Núm. Diligencias", "Patrulla", "Zona Atestados", "NumDenuncias"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, false, false, false, false, false
+                false, true, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -304,6 +346,9 @@ public class Form_Home extends javax.swing.JPanel {
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
             table.getColumnModel().getColumn(0).setMaxWidth(0);
+            table.getColumnModel().getColumn(9).setMinWidth(0);
+            table.getColumnModel().getColumn(9).setPreferredWidth(0);
+            table.getColumnModel().getColumn(9).setMaxWidth(0);
         }
 
         cmbFiltroAnyo.setMaximumRowCount(5);
@@ -357,6 +402,24 @@ public class Form_Home extends javax.swing.JPanel {
 
         panelExportsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnExportExcel, btnExportPdf});
 
+        txtSelectorRangoFechas.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                txtSelectorRangoFechasCaretUpdate(evt);
+            }
+        });
+        txtSelectorRangoFechas.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                txtSelectorRangoFechasInputMethodTextChanged(evt);
+            }
+        });
+        txtSelectorRangoFechas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSelectorRangoFechasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
         panelBorder1.setLayout(panelBorder1Layout);
         panelBorder1Layout.setHorizontalGroup(
@@ -366,8 +429,10 @@ public class Form_Home extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelBorder1Layout.createSequentialGroup()
                         .addGap(28, 28, 28)
                         .addComponent(jLabel1)
-                        .addGap(398, 398, 398)
+                        .addGap(40, 40, 40)
                         .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38)
+                        .addComponent(txtSelectorRangoFechas, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(panelExports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelBorder1Layout.createSequentialGroup()
@@ -382,7 +447,8 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
-                        .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSelectorRangoFechas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(panelExports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -391,12 +457,22 @@ public class Form_Home extends javax.swing.JPanel {
 
         header.setOpaque(false);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/search.png"))); // NOI18N
-
         jLabel3.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("LISTADO DE ACCIDENTES");
 
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/search.png"))); // NOI18N
+
+        txtSearchFiled.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                txtSearchFiledMouseReleased(evt);
+            }
+        });
+        txtSearchFiled.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchFiledActionPerformed(evt);
+            }
+        });
         txtSearchFiled.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtSearchFiledKeyReleased(evt);
@@ -410,19 +486,22 @@ public class Form_Home extends javax.swing.JPanel {
             .addGroup(headerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(headerLayout.createSequentialGroup()
+                .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtSearchFiled, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(headerLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -443,11 +522,11 @@ public class Form_Home extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
 
         add(jPanel1, "card2");
@@ -466,12 +545,338 @@ public class Form_Home extends javax.swing.JPanel {
 
     }//GEN-LAST:event_formFocusGained
 
+    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
+
+    }//GEN-LAST:event_tableMousePressed
+
+    private void cmbFiltroAnyoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFiltroAnyoActionPerformed
+
+        filtrarAccidentesAnyo();
+
+    }//GEN-LAST:event_cmbFiltroAnyoActionPerformed
+
+    private void cmbFiltroAnyoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbFiltroAnyoItemStateChanged
+        filtrarAccidentesAnyo();
+
+    }//GEN-LAST:event_cmbFiltroAnyoItemStateChanged
+
+    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
+
+        try {
+
+            if (table.getRowCount() == 0) {
+                return;
+            }
+
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos excell", "xlsx");
+            File directorio = new File(System.getProperty("user.dir"));
+            JFileChooser jFileChooser = new JFileChooser(directorio);
+            jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            jFileChooser.setFileFilter(filter);
+            jFileChooser.showSaveDialog(this);
+            File saveFile = jFileChooser.getSelectedFile();
+            if (saveFile != null) {
+                saveFile = new File(saveFile.toString() + ".xlsx");
+                Workbook wb = new XSSFWorkbook();
+                Sheet sheet = wb.createSheet("Diligencias");
+
+                Row rowCol = sheet.createRow(0);
+
+                // Creamos estilo para titulos de las columnas
+                CellStyle estilo = wb.createCellStyle();
+                estilo.setAlignment(HorizontalAlignment.CENTER);
+                CellStyle estilo2 = wb.createCellStyle();
+                estilo2.setAlignment(HorizontalAlignment.CENTER);
+
+                // Creamos una fuente
+                org.apache.poi.ss.usermodel.Font fuente = wb.createFont();
+                fuente.setFontName("Roboto");
+                fuente.setFontHeightInPoints((short) 12);
+                fuente.setBold(true);
+                estilo.setFont(fuente);
+
+                org.apache.poi.ss.usermodel.Font fuente2 = wb.createFont();
+                fuente2.setBold(false);
+
+                estilo2.setFont(fuente2);
+
+                //HOJA Diligencias
+                // Ponemos nombres de columnas
+                for (int i = 2; i < table.getColumnCount(); i++) {
+
+                    sheet.setColumnWidth(i - 2, 18 * 256);
+
+                    Cell cell = rowCol.createCell(i - 2);
+
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue(table.getColumnName(i));
+
+                }
+
+                // Rellenamos las filas
+                for (int r = 0; r < table.getRowCount(); r++) {
+                    Row row = sheet.createRow(r + 1);
+                    for (int c = 2; c < table.getColumnCount(); c++) {
+                        Cell cell = row.createCell(c - 2);
+                        if (table.getValueAt(r, c) != null) {
+                            cell.setCellStyle(estilo2);
+                            cell.setCellValue(table.getValueAt(r, c).toString());
+                        }
+
+                    }
+                }
+
+                //HOJA DETALLES ACCIDENTES
+                Sheet sheetDetalles = wb.createSheet("DetallesAccidente");
+                rowCol = sheetDetalles.createRow(0);
+                // FILA 1- Ponemos nombres de columnas
+
+                // Creamos arrayList con los Id de los accidentes
+                ArrayList<Integer> listIdAccidentes = new ArrayList<>();
+                DefaultTableModel tableMod = (DefaultTableModel) table.getModel();
+
+                for (int cont = 0; cont < table.getRowCount(); cont++) {
+                    listIdAccidentes.add(Integer.parseInt(tableMod.getValueAt(cont, 0).toString()));
+                }
+
+                // Recorremos los accidentes extranyendo datos y volcando a la hoja excell
+                int numLinea = 0;
+
+                for (Integer IdAccidente : listIdAccidentes) {
+
+                    Accidente acc = datos_model.getAccidentById(IdAccidente);
+                    String Tipo_Siniestro = datos_model.getTipoAccidenteById(acc.getTipo_Siniestro());
+                    rowCol = sheetDetalles.createRow(numLinea);
+                    for (int i = 0; i < table.getColumnCount() - 2; i++) {
+
+                        if (i < 5) {
+                            sheetDetalles.setColumnWidth(i, 15 * 256);
+
+                        } else if (i >= 5 || i < 8) {
+
+                            sheetDetalles.setColumnWidth(i, 24 * 256);
+                        }
+
+                        Cell cell = rowCol.createCell(i);
+
+                        cell.setCellStyle(estilo);
+                        cell.setCellValue(table.getColumnName(i + 2));
+                    }
+
+                    Cell cell = rowCol.createCell(8);
+                    sheetDetalles.setColumnWidth(8, 60 * 256);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("Tipo Accidente");
+
+                    cell = rowCol.createCell(9);
+                    sheetDetalles.setColumnWidth(9, 60 * 256);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("Descripción Accidente");
+
+                    numLinea++;
+                    rowCol = sheetDetalles.createRow(numLinea);
+
+                    cell = rowCol.createCell(0);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(acc.getFecha());
+
+                    cell = rowCol.createCell(1);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(acc.getHora());
+
+                    cell = rowCol.createCell(2);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(acc.getCarretera());
+
+                    cell = rowCol.createCell(3);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(acc.getKilometro());
+
+                    cell = rowCol.createCell(4);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(acc.getNum_Diligencias());
+
+                    cell = rowCol.createCell(5);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(acc.getPatrulla());
+
+                    cell = rowCol.createCell(6);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(acc.getZona_Atestados());
+
+                    cell = rowCol.createCell(7);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(String.valueOf(acc.getNum_Denuncias()));
+
+                    cell = rowCol.createCell(8);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(Tipo_Siniestro);
+
+                    cell = rowCol.createCell(9);
+                    cell.setCellStyle(estilo2);
+                    cell.setCellValue(acc.getDescripcion());
+
+                    numLinea++;
+                    // VEHICULOS DEL ACCIDENTE
+                    rowCol = sheetDetalles.createRow(numLinea);
+                    cell = rowCol.createCell(5);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("MATRÍCULA");
+
+                    cell = rowCol.createCell(6);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("MARCA");
+
+                    cell = rowCol.createCell(7);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("MODELO");
+
+                    cell = rowCol.createCell(8);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("GESTIÓN");
+
+                    cell = rowCol.createCell(9);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("OBSERVACIONES");
+
+                    ArrayList<Vehiculo> listaVehiculosAccidente = new ArrayList<>();
+
+                    listaVehiculosAccidente = datos_model.getVehiculosInAccident(IdAccidente);
+
+                    for (int cont = 0; cont < listaVehiculosAccidente.size(); cont++) {
+                        numLinea++;
+                        rowCol = sheetDetalles.createRow(numLinea);
+                        cell = rowCol.createCell(5);
+                        cell.setCellStyle(estilo2);
+                        cell.setCellValue(listaVehiculosAccidente.get(cont).getMatricula());
+
+                        cell = rowCol.createCell(6);
+                        cell.setCellStyle(estilo2);
+                        cell.setCellValue(listaVehiculosAccidente.get(cont).getMarca());
+
+                        cell = rowCol.createCell(7);
+                        cell.setCellStyle(estilo2);
+                        cell.setCellValue(listaVehiculosAccidente.get(cont).getModelo());
+
+                        cell = rowCol.createCell(8);
+                        cell.setCellStyle(estilo2);
+                        cell.setCellValue(listaVehiculosAccidente.get(cont).getGestion());
+
+                        cell = rowCol.createCell(9);
+                        cell.setCellStyle(estilo2);
+                        cell.setCellValue(listaVehiculosAccidente.get(cont).getObservaciones());
+
+                    }
+
+                    numLinea++;
+
+                    // VEHICULOS DEL ACCIDENTE
+                    rowCol = sheetDetalles.createRow(numLinea);
+                    cell = rowCol.createCell(5);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("NIF/NIE/PASS");
+
+                    cell = rowCol.createCell(6);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("TIPO PERSONA");
+
+                    cell = rowCol.createCell(7);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("RESULTADO");
+
+                    cell = rowCol.createCell(8);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("PRUEBAS REALIZADAS");
+
+                    cell = rowCol.createCell(9);
+                    cell.setCellStyle(estilo);
+                    cell.setCellValue("OBSERVACIONES");
+
+                    ArrayList<Persona> listaPersonasAccidente = new ArrayList<>();
+
+                    listaPersonasAccidente = datos_model.getPersonasInAccidenteByIdAccident(IdAccidente);
+
+                    for (int cont = 0; cont < listaPersonasAccidente.size(); cont++) {
+
+                        numLinea++;
+                        rowCol = sheetDetalles.createRow(numLinea);
+                        cell = rowCol.createCell(5);
+                        cell.setCellStyle(estilo2);
+                        cell.setCellValue(listaPersonasAccidente.get(cont).getDocumento());
+
+                        cell = rowCol.createCell(6);
+                        cell.setCellStyle(estilo2);
+                        try {
+                            String matricula = datos_model.getMatriculaById(listaPersonasAccidente.get(cont).getId_Vehiculo());
+                            if (matricula.isEmpty()) {
+                                cell.setCellValue(listaPersonasAccidente.get(cont).getTipo_persona());
+                            } else {
+                                cell.setCellValue(matricula + " - " + listaPersonasAccidente.get(cont).getTipo_persona());
+                            }
+
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Form_Home.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        cell = rowCol.createCell(7);
+                        cell.setCellStyle(estilo2);
+                        cell.setCellValue(listaPersonasAccidente.get(cont).getResultado());
+
+                        cell = rowCol.createCell(8);
+                        cell.setCellStyle(estilo2);
+                        String pruebaAlcoholemia = (listaPersonasAccidente.get(cont).getPrueba_alcoholemia()) ? "SI" : "NO";
+                        String alcoholemiaPositiva = (listaPersonasAccidente.get(cont).getAlcoholemia_positiva()) ? "Positiva" : "Negativa";
+                        String pruebaDrogas = (listaPersonasAccidente.get(cont).getPrueba_drogas()) ? "SI" : "NO";
+                        String drogasPositiva = (listaPersonasAccidente.get(cont).getDrogas_positiva()) ? "Positiva" : "Negativa";
+                        String pruebas = "Alcohol: " + pruebaAlcoholemia + " Resultado: " + alcoholemiaPositiva + " - ";
+                        pruebas += "Drogas: " + pruebaDrogas + "Resultado: " + drogasPositiva;
+                        cell.setCellValue(pruebas);
+
+                        cell = rowCol.createCell(9);
+                        cell.setCellStyle(estilo2);
+                        cell.setCellValue(listaPersonasAccidente.get(cont).getObservaciones());
+
+                    }
+
+                    numLinea++;
+
+                    rowCol = sheetDetalles.createRow(numLinea);
+                    CellStyle subrayado = wb.createCellStyle();
+                    subrayado.setFillPattern(FillPatternType.THICK_HORZ_BANDS);
+
+                    for (int cel = 0; cel < 10; cel++) {
+                        cell = rowCol.createCell(cel);
+                        cell.setCellStyle(subrayado);
+                    }
+
+                    numLinea++;
+                }
+
+                FileOutputStream out = new FileOutputStream(new File(saveFile.toString()));
+                wb.write(out);
+                wb.close();
+                out.close();
+                openFile(saveFile.toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al generar archivo excel");
+            }
+
+        } catch (FileNotFoundException e) {
+
+            System.out.println(e);
+
+        } catch (HeadlessException | IOException io) {
+            System.out.println(io);
+        }
+
+    }//GEN-LAST:event_btnExportExcelActionPerformed
+
     private void txtSearchFiledKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchFiledKeyReleased
         if (txtSearchFiled.isSelected()) {
             int option = txtSearchFiled.getSelectedIndex();
             String text = txtSearchFiled.getText().trim();
             if (option == 0) {
-                //Busqueda por fecha
+//                Busqueda por fecha
                 cadenaBusqueda = text;
 
                 if (cadenaBusqueda.length() == 10) {
@@ -489,7 +894,7 @@ public class Form_Home extends javax.swing.JPanel {
 
                     } else {
                         JOptionPane.showMessageDialog(this, "La fecha no es correcta, formato dd/mm/yyyy");
-//                        txtSearchFiled.setText("");
+                        //                        txtSearchFiled.setText("");
                         txtSearchFiled.requestFocus();
                     }
 
@@ -524,7 +929,7 @@ public class Form_Home extends javax.swing.JPanel {
 
                     if (cadenaBusqueda.length() > 0) {
                         Integer numDiligencias = Integer.valueOf(cadenaBusqueda);
-                        cargarAccidentes("where Num_Diligencias =" + numDiligencias ,"");
+                        cargarAccidentes("where Num_Diligencias =" + numDiligencias, "");
                     } else if (cadenaBusqueda.length() == 0) {
                         cargarAccidentes("");
                     }
@@ -542,108 +947,34 @@ public class Form_Home extends javax.swing.JPanel {
                 } else if (cadenaBusqueda.length() == 0) {
                     cargarAccidentes("");
                 }
+            } else {
+
+//                selectorFecha.setTextRefernce(null);
             }
+
         }
     }//GEN-LAST:event_txtSearchFiledKeyReleased
 
-    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
+    private void txtSearchFiledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchFiledActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchFiledActionPerformed
 
-    }//GEN-LAST:event_tableMousePressed
+    private void txtSearchFiledMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchFiledMouseReleased
 
-    private void cmbFiltroAnyoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFiltroAnyoActionPerformed
+    }//GEN-LAST:event_txtSearchFiledMouseReleased
 
-        filtrarAccidentesAnyo();
+    private void txtSelectorRangoFechasInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtSelectorRangoFechasInputMethodTextChanged
 
-    }//GEN-LAST:event_cmbFiltroAnyoActionPerformed
+    }//GEN-LAST:event_txtSelectorRangoFechasInputMethodTextChanged
 
-    private void cmbFiltroAnyoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbFiltroAnyoItemStateChanged
-        filtrarAccidentesAnyo();
+    private void txtSelectorRangoFechasCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtSelectorRangoFechasCaretUpdate
 
-    }//GEN-LAST:event_cmbFiltroAnyoItemStateChanged
+    }//GEN-LAST:event_txtSelectorRangoFechasCaretUpdate
 
-    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        try {
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos excell", "xlsx");
-            File directorio = new File(System.getProperty("user.dir"));
-            JFileChooser jFileChooser = new JFileChooser(directorio);
-            jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            jFileChooser.setFileFilter(filter);
-                   jFileChooser.showSaveDialog(this);
-            File saveFile = jFileChooser.getSelectedFile();
-                if (saveFile!=null){
-                    saveFile = new File(saveFile.toString()+".xlsx");
-                    Workbook wb = new XSSFWorkbook();
-                    Sheet sheet = wb.createSheet("Diligencias");
-                    
-                    Row rowCol = sheet.createRow(0);
-                    
-    
-                    // Creamos estilo para titulos de las columnas
-                    CellStyle estilo = wb.createCellStyle();
-                    estilo.setAlignment(HorizontalAlignment.CENTER);
-                    CellStyle estilo2 = wb.createCellStyle();
-                    estilo2.setAlignment(HorizontalAlignment.CENTER);
-  
-                    
-                    // Creamos una fuente
-                        org.apache.poi.ss.usermodel.Font fuente=wb.createFont();
-                        fuente.setFontName("Roboto");
-                        fuente.setFontHeightInPoints((short)12);
-                        fuente.setBold(true);
-                        estilo.setFont(fuente);
-                        
-                        org.apache.poi.ss.usermodel.Font fuente2=wb.createFont();
-                        fuente2.setBold(false);
-                        
-                        estilo2.setFont(fuente2);
-                    // Ponemos nombres de columnas
-                    for (int i=2; i < table.getColumnCount(); i++){
-                       
-                        sheet.setColumnWidth(i-2, 18*256);
-                         
-                        Cell cell = rowCol.createCell(i-2);
-                        
-                        cell.setCellStyle(estilo);
-                        cell.setCellValue(table.getColumnName(i));
-                    }
-                    
-
-                    // Rellenamos las filas
-                   for (int r=0; r < table.getRowCount();r++){
-                       Row row = sheet.createRow(r+1);
-                       
-                       for (int c=2; c < table.getColumnCount(); c++ ){
-                               Cell cell = row.createCell(c-2);
-                                if (table.getValueAt(r, c) != null){
-                                    
-                                    
-                                    cell.setCellStyle(estilo2);
-                                    cell.setCellValue(table.getValueAt(r, c).toString());
-                                }
-
-                       }
-                   }
-                   
-                    FileOutputStream out = new FileOutputStream(new File(saveFile.toString()));
-                    wb.write(out);
-                    wb.close();
-                    out.close();
-                    openFile(saveFile.toString());
-                }else{
-                    JOptionPane.showMessageDialog(null, "Error al generar archivo excel");
-                }
-            
-            
-        } catch (FileNotFoundException e) {
-            
-            System.out.println(e);
-            
-        } catch (HeadlessException | IOException io){
-            System.out.println(io);
-        }
-        
-    }//GEN-LAST:event_btnExportExcelActionPerformed
-    public void openFile(String file){
+    private void txtSelectorRangoFechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSelectorRangoFechasActionPerformed
+        System.out.println("Performed " + evt.getActionCommand().toString());
+    }//GEN-LAST:event_txtSelectorRangoFechasActionPerformed
+    public void openFile(String file) {
         try {
             File path = new File(file);
             Desktop.getDesktop().open(path);
@@ -651,9 +982,10 @@ public class Form_Home extends javax.swing.JPanel {
             System.out.println(e);
         }
     }
+
     private void filtrarAccidentesAnyo() {
 
-        if (!cmbFiltroAnyo.getSelectedItem().equals("") ) {
+        if (!cmbFiltroAnyo.getSelectedItem().equals("")) {
 
             cargarAccidentes("WHERE Year(FECHA) =" + cmbFiltroAnyo.getSelectedItem());
 
@@ -683,27 +1015,30 @@ public class Form_Home extends javax.swing.JPanel {
         listAccidents.clear();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        String SqlQuery="";
-        
-        if (cmbFiltroAnyo.getSelectedItem().equals("") && txtSearchFiled.getText().equals("")){
-            SqlQuery = "SELECT * FROM Accidentes ORDER BY Num_Diligencias DESC";
-            
-        }else if (!cmbFiltroAnyo.getSelectedItem().equals("") && txtSearchFiled.getText().equals("")){
-            SqlQuery = "SELECT * FROM Accidentes WHERE Year(Fecha)=" + cmbFiltroAnyo.getSelectedItem() + " ORDER BY Num_Diligencias DESC";
-            
-        }else if (cmbFiltroAnyo.getSelectedItem().equals("") && !txtSearchFiled.getText().equals("")){
-            SqlQuery = "SELECT * FROM Accidentes " + where + " ORDER BY Num_Diligencias DESC";
-            
-         }else if (!cmbFiltroAnyo.getSelectedItem().equals("") && !txtSearchFiled.getText().equals("")){
-            SqlQuery = "SELECT * FROM Accidentes " + where + " AND Year(Fecha)=" + cmbFiltroAnyo.getSelectedItem() + " ORDER BY Num_Diligencias DESC";
-         }
+        String SqlQuery = "";
 
-        
+        if (where.contains("BETWEEN")) {
+            SqlQuery = "SELECT * FROM Accidentes " + where + " ORDER BY Num_Diligencias DESC";
+        } else {
+            if (cmbFiltroAnyo.getSelectedItem().equals("") && txtSearchFiled.getText().equals("")) {
+                SqlQuery = "SELECT * FROM Accidentes ORDER BY Num_Diligencias DESC";
+
+            } else if (!cmbFiltroAnyo.getSelectedItem().equals("") && txtSearchFiled.getText().equals("")) {
+                SqlQuery = "SELECT * FROM Accidentes WHERE Year(Fecha)=" + cmbFiltroAnyo.getSelectedItem() + " ORDER BY Num_Diligencias DESC";
+
+            } else if (cmbFiltroAnyo.getSelectedItem().equals("") && !txtSearchFiled.getText().equals("")) {
+                SqlQuery = "SELECT * FROM Accidentes " + where + " ORDER BY Num_Diligencias DESC";
+
+            } else if (!cmbFiltroAnyo.getSelectedItem().equals("") && !txtSearchFiled.getText().equals("")) {
+                SqlQuery = "SELECT * FROM Accidentes " + where + " AND Year(Fecha)=" + cmbFiltroAnyo.getSelectedItem() + " ORDER BY Num_Diligencias DESC";
+            }
+        }
+
         listAccidents = datos_model.getListAccidents(SqlQuery);
 
         //Lo mostramos en la tabla
         for (Accidente accidente : listAccidents) {
-            table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus()});
+            table.addRow(new Object[]{accidente.getNum_Accidente(), null, accidente.getFecha(), accidente.getHora(), accidente.getCarretera(), accidente.getKilometro(), accidente.getNum_Diligencias(), accidente.getPatrulla(), accidente.getStattus(), accidente.getNum_Denuncias()});
         }
 
     }
@@ -750,8 +1085,10 @@ public class Form_Home extends javax.swing.JPanel {
     private javax.swing.JPanel panelExports;
     private com.conde.component.Card_Persona personas;
     private com.conde.swing.ScrollPaneWin11 s;
+    private com.conde.datechooserbtw.DateChooser selectorRangoFechas;
     private com.conde.swing.Table_Accidentes table;
     private com.conde.component.textfieldSearch.TextFieldSearchOption txtSearchFiled;
+    private javax.swing.JTextField txtSelectorRangoFechas;
     private com.conde.component.Card_Vehiculos vehiculos;
     // End of variables declaration//GEN-END:variables
 

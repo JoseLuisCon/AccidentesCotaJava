@@ -41,12 +41,13 @@ public class Card_Accident extends javax.swing.JPanel {
         
     }
 
-    public void setData(Accidente data, String tipo_Accidente) {
+    public void setData(Accidente data, String tipo_Accidente, String numDenuncias) {
 
         lblIcon.setIcon(data.getIcon());
      
         lblTipoAccidente.setText("<html>Tipo siniestro: "+tipo_Accidente+"</html>");
         lblDescripcion.setText("<html>Descripción: "+data.getDescripcion()+"</html>");
+        lblDenuncias.setText("Denuncias formuladas: "+numDenuncias);
        
     }
     
@@ -55,7 +56,7 @@ public class Card_Accident extends javax.swing.JPanel {
      
         lblTipoAccidente.setText("<html>Tipo siniestro: </html>");
         lblDescripcion.setText("<html>Descripción: </html>");
-    
+        lblDenuncias.setText("Denuncias formuladas: 0");
     }
 
     @SuppressWarnings("unchecked")
@@ -65,6 +66,7 @@ public class Card_Accident extends javax.swing.JPanel {
         lblIcon = new javax.swing.JLabel();
         lblTipoAccidente = new javax.swing.JLabel();
         lblDescripcion = new javax.swing.JLabel();
+        lblDenuncias = new javax.swing.JLabel();
 
         setOpaque(false);
         setLayout(null);
@@ -81,14 +83,20 @@ public class Card_Accident extends javax.swing.JPanel {
         lblTipoAccidente.setText("Tipo accidente");
         lblTipoAccidente.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(lblTipoAccidente);
-        lblTipoAccidente.setBounds(20, 60, 330, 50);
+        lblTipoAccidente.setBounds(20, 60, 330, 60);
 
         lblDescripcion.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lblDescripcion.setForeground(new java.awt.Color(255, 255, 255));
         lblDescripcion.setText("Descripción:");
         lblDescripcion.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(lblDescripcion);
-        lblDescripcion.setBounds(20, 110, 320, 130);
+        lblDescripcion.setBounds(20, 130, 320, 90);
+
+        lblDenuncias.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        lblDenuncias.setForeground(new java.awt.Color(255, 255, 255));
+        lblDenuncias.setText("Denuncias formuladas: ");
+        add(lblDenuncias);
+        lblDenuncias.setBounds(20, 230, 310, 16);
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
@@ -106,6 +114,7 @@ public class Card_Accident extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel lblDenuncias;
     private javax.swing.JLabel lblDescripcion;
     private javax.swing.JLabel lblIcon;
     private javax.swing.JLabel lblTipoAccidente;
