@@ -26,7 +26,6 @@ import com.conde.model.JDBC.Accidentes_JDBC;
 import com.conde.model.Accidente;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
@@ -59,11 +58,14 @@ public class Form_Home extends javax.swing.JPanel {
     private ArrayList<Accidente> listAccidents = new ArrayList<>();
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
     private String cadenaBusqueda = "";
+    private boolean selectorRangoFechasVisible=false;
 
     public Form_Home(Main m) {
 
         initComponents();
-
+        
+        
+        
         JPanel p = new JPanel();
 //        p.setBackground(Color.WHITE);
         s.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
@@ -190,6 +192,7 @@ public class Form_Home extends javax.swing.JPanel {
     }
 
     private void initRangoFechas() {
+        
         selectorRangoFechas.setDateSelectable(new DateSelectable() {
             @Override
             public boolean isDateSelectable(Date date) {
@@ -214,7 +217,8 @@ public class Form_Home extends javax.swing.JPanel {
         selectorRangoFechas.setDateSelectionMode(DateChooser.DateSelectionMode.BETWEEN_DATE_SELECTED);
         selectorRangoFechas.setLabelCurrentDayVisible(false);
         selectorRangoFechas.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
-
+        
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -233,17 +237,15 @@ public class Form_Home extends javax.swing.JPanel {
         s = new com.conde.swing.ScrollPaneWin11();
         table = new com.conde.swing.Table_Accidentes();
         cmbFiltroAnyo = new javax.swing.JComboBox<>();
-        panelExports = new javax.swing.JPanel();
-        btnExportPdf = new javax.swing.JButton();
-        btnExportExcel = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        btnSelectorRangoFechas = new javax.swing.JButton();
         txtSelectorRangoFechas = new javax.swing.JTextField();
+        btnExportExcel = new javax.swing.JButton();
+        btnExportPdf = new javax.swing.JButton();
         header = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtSearchFiled = new com.conde.component.textfieldSearch.TextFieldSearchOption();
 
-        selectorRangoFechas.setBetweenCharacter(" a ");
-        selectorRangoFechas.setDateSelectionMode(com.conde.datechooserbtw.DateChooser.DateSelectionMode.BETWEEN_DATE_SELECTED);
         selectorRangoFechas.setTextField(txtSelectorRangoFechas);
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -264,6 +266,11 @@ public class Form_Home extends javax.swing.JPanel {
                 formFocusGained(evt);
             }
         });
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
         setLayout(new java.awt.CardLayout());
 
         jPanel1.setMaximumSize(new java.awt.Dimension(1424, 968));
@@ -271,6 +278,15 @@ public class Form_Home extends javax.swing.JPanel {
         jPanel1.setName(""); // NOI18N
         jPanel1.setOpaque(false);
         jPanel1.setPreferredSize(new java.awt.Dimension(1424, 968));
+        jPanel1.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jPanel1AncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
 
         java.awt.GridBagLayout panelLayout = new java.awt.GridBagLayout();
         panelLayout.columnWidths = new int[] {400, 500, 500};
@@ -313,6 +329,9 @@ public class Form_Home extends javax.swing.JPanel {
         jLabel1.setForeground(new java.awt.Color(127, 127, 127));
         jLabel1.setText("Listado de accidentes");
 
+        s.setBorder(null);
+        s.setOpaque(false);
+
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -329,6 +348,7 @@ public class Form_Home extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        table.setOpaque(false);
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         table.setShowHorizontalLines(false);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -364,47 +384,36 @@ public class Form_Home extends javax.swing.JPanel {
             }
         });
 
-        panelExports.setOpaque(false);
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
 
-        btnExportPdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/pdf (1).png"))); // NOI18N
-        btnExportPdf.setContentAreaFilled(false);
-
-        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/excel.png"))); // NOI18N
-        btnExportExcel.setContentAreaFilled(false);
-        btnExportExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportExcelActionPerformed(evt);
+        btnSelectorRangoFechas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/rango-de-disparo.png"))); // NOI18N
+        btnSelectorRangoFechas.setToolTipText("Selección rango de fechas");
+        btnSelectorRangoFechas.setContentAreaFilled(false);
+        btnSelectorRangoFechas.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                btnSelectorRangoFechasComponentShown(evt);
             }
         });
+        btnSelectorRangoFechas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectorRangoFechasActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnSelectorRangoFechas);
 
-        javax.swing.GroupLayout panelExportsLayout = new javax.swing.GroupLayout(panelExports);
-        panelExports.setLayout(panelExportsLayout);
-        panelExportsLayout.setHorizontalGroup(
-            panelExportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelExportsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnExportPdf)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnExportExcel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        panelExportsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnExportExcel, btnExportPdf});
-
-        panelExportsLayout.setVerticalGroup(
-            panelExportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelExportsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelExportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnExportExcel)
-                    .addComponent(btnExportPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
-
-        panelExportsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnExportExcel, btnExportPdf});
-
+        txtSelectorRangoFechas.setBackground(new java.awt.Color(255, 255, 255));
+        txtSelectorRangoFechas.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtSelectorRangoFechas.setToolTipText("");
+        txtSelectorRangoFechas.setOpaque(true);
         txtSelectorRangoFechas.addCaretListener(new javax.swing.event.CaretListener() {
             public void caretUpdate(javax.swing.event.CaretEvent evt) {
                 txtSelectorRangoFechasCaretUpdate(evt);
+            }
+        });
+        txtSelectorRangoFechas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtSelectorRangoFechasMouseClicked(evt);
             }
         });
         txtSelectorRangoFechas.addInputMethodListener(new java.awt.event.InputMethodListener() {
@@ -419,47 +428,60 @@ public class Form_Home extends javax.swing.JPanel {
                 txtSelectorRangoFechasActionPerformed(evt);
             }
         });
+        jPanel2.add(txtSelectorRangoFechas);
+
+        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/excel.png"))); // NOI18N
+        btnExportExcel.setContentAreaFilled(false);
+        btnExportExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportExcelActionPerformed(evt);
+            }
+        });
+
+        btnExportPdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/pdf (1).png"))); // NOI18N
+        btnExportPdf.setContentAreaFilled(false);
 
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
         panelBorder1.setLayout(panelBorder1Layout);
         panelBorder1Layout.setHorizontalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelBorder1Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel1)
-                        .addGap(40, 40, 40)
-                        .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
-                        .addComponent(txtSelectorRangoFechas, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panelExports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelBorder1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 1399, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(60, 60, 60)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnExportPdf)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnExportExcel)
+                .addGap(31, 31, 31))
+            .addGroup(panelBorder1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 1394, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        panelBorder1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnExportExcel, btnExportPdf});
+
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtSelectorRangoFechas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(panelExports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnExportExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnExportPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmbFiltroAnyo)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(s, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addComponent(s, javax.swing.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        header.setOpaque(false);
+        panelBorder1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnExportExcel, btnExportPdf});
 
-        jLabel3.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("LISTADO DE ACCIDENTES");
+        header.setOpaque(false);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/search.png"))); // NOI18N
 
@@ -484,12 +506,10 @@ public class Form_Home extends javax.swing.JPanel {
         headerLayout.setHorizontalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(headerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtSearchFiled, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14))
         );
         headerLayout.setVerticalGroup(
@@ -499,8 +519,7 @@ public class Form_Home extends javax.swing.JPanel {
                     .addComponent(txtSearchFiled, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(headerLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(0, 0, 0))
         );
 
@@ -512,21 +531,23 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 1425, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(224, 224, 224))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, 1403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
+                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addGap(35, 35, 35))
         );
 
         add(jPanel1, "card2");
@@ -974,6 +995,28 @@ public class Form_Home extends javax.swing.JPanel {
     private void txtSelectorRangoFechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSelectorRangoFechasActionPerformed
         System.out.println("Performed " + evt.getActionCommand().toString());
     }//GEN-LAST:event_txtSelectorRangoFechasActionPerformed
+
+    private void txtSelectorRangoFechasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSelectorRangoFechasMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSelectorRangoFechasMouseClicked
+
+    private void btnSelectorRangoFechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectorRangoFechasActionPerformed
+        selectorRangoFechasVisible=!selectorRangoFechasVisible;
+        txtSelectorRangoFechas.setVisible(selectorRangoFechasVisible);
+    }//GEN-LAST:event_btnSelectorRangoFechasActionPerformed
+
+    private void btnSelectorRangoFechasComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_btnSelectorRangoFechasComponentShown
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSelectorRangoFechasComponentShown
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        
+    }//GEN-LAST:event_formComponentShown
+
+    private void jPanel1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jPanel1AncestorAdded
+        txtSelectorRangoFechas.setVisible(selectorRangoFechasVisible);
+        
+    }//GEN-LAST:event_jPanel1AncestorAdded
     public void openFile(String file) {
         try {
             File path = new File(file);
@@ -1073,16 +1116,16 @@ public class Form_Home extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExportExcel;
     private javax.swing.JButton btnExportPdf;
+    private javax.swing.JButton btnSelectorRangoFechas;
     private javax.swing.JComboBox<String> cmbFiltroAnyo;
     private com.conde.component.Card_Accident data_Aux_Accidente;
     private javax.swing.JPanel header;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLayeredPane panel;
     private com.conde.swing.PanelBorder panelBorder1;
-    private javax.swing.JPanel panelExports;
     private com.conde.component.Card_Persona personas;
     private com.conde.swing.ScrollPaneWin11 s;
     private com.conde.datechooserbtw.DateChooser selectorRangoFechas;
