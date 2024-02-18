@@ -27,6 +27,7 @@ import com.conde.model.Accidente;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -59,10 +60,12 @@ public class Form_Home extends javax.swing.JPanel {
     private Accidentes_JDBC datos_model = new Accidentes_JDBC();
     private String cadenaBusqueda = "";
     private boolean selectorRangoFechasVisible=false;
+ 
 
     public Form_Home(Main m) {
 
         initComponents();
+        
         
         
         
@@ -217,6 +220,15 @@ public class Form_Home extends javax.swing.JPanel {
         selectorRangoFechas.setDateSelectionMode(DateChooser.DateSelectionMode.BETWEEN_DATE_SELECTED);
         selectorRangoFechas.setLabelCurrentDayVisible(false);
         selectorRangoFechas.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+        DateBetween date= new DateBetween();
+        Calendar calendar=Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), 0, 1);
+        Date dateFrom= calendar.getTime();
+        date.setFromDate(dateFrom);
+        date.setToDate(new Date());
+        
+        txtSelectorRangoFechas.setVisible(false);
+        selectorRangoFechas.setSelectedDateBetween(date);
         
         
     }
@@ -237,7 +249,7 @@ public class Form_Home extends javax.swing.JPanel {
         s = new com.conde.swing.ScrollPaneWin11();
         table = new com.conde.swing.Table_Accidentes();
         cmbFiltroAnyo = new javax.swing.JComboBox<>();
-        jPanel2 = new javax.swing.JPanel();
+        PanelSelectorFechas = new javax.swing.JPanel();
         btnSelectorRangoFechas = new javax.swing.JButton();
         txtSelectorRangoFechas = new javax.swing.JTextField();
         btnExportExcel = new javax.swing.JButton();
@@ -384,8 +396,9 @@ public class Form_Home extends javax.swing.JPanel {
             }
         });
 
-        jPanel2.setOpaque(false);
-        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
+        PanelSelectorFechas.setBackground(new java.awt.Color(153, 153, 255));
+        PanelSelectorFechas.setOpaque(false);
+        PanelSelectorFechas.setLayout(new javax.swing.BoxLayout(PanelSelectorFechas, javax.swing.BoxLayout.X_AXIS));
 
         btnSelectorRangoFechas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/rango-de-disparo.png"))); // NOI18N
         btnSelectorRangoFechas.setToolTipText("Selección rango de fechas");
@@ -400,7 +413,7 @@ public class Form_Home extends javax.swing.JPanel {
                 btnSelectorRangoFechasActionPerformed(evt);
             }
         });
-        jPanel2.add(btnSelectorRangoFechas);
+        PanelSelectorFechas.add(btnSelectorRangoFechas);
 
         txtSelectorRangoFechas.setBackground(new java.awt.Color(255, 255, 255));
         txtSelectorRangoFechas.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -428,7 +441,7 @@ public class Form_Home extends javax.swing.JPanel {
                 txtSelectorRangoFechasActionPerformed(evt);
             }
         });
-        jPanel2.add(txtSelectorRangoFechas);
+        PanelSelectorFechas.add(txtSelectorRangoFechas);
 
         btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/conde/resources/icons/excel.png"))); // NOI18N
         btnExportExcel.setContentAreaFilled(false);
@@ -449,8 +462,8 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGap(60, 60, 60)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addComponent(PanelSelectorFechas, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
                 .addComponent(cmbFiltroAnyo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnExportPdf)
@@ -471,7 +484,7 @@ public class Form_Home extends javax.swing.JPanel {
                 .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(btnExportExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnExportPdf, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(PanelSelectorFechas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cmbFiltroAnyo)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -563,7 +576,7 @@ public class Form_Home extends javax.swing.JPanel {
     }//GEN-LAST:event_tableKeyPressed
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
-
+        
     }//GEN-LAST:event_formFocusGained
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
@@ -968,10 +981,7 @@ public class Form_Home extends javax.swing.JPanel {
                 } else if (cadenaBusqueda.length() == 0) {
                     cargarAccidentes("");
                 }
-            } else {
-
-//                selectorFecha.setTextRefernce(null);
-            }
+            } 
 
         }
     }//GEN-LAST:event_txtSearchFiledKeyReleased
@@ -1002,7 +1012,10 @@ public class Form_Home extends javax.swing.JPanel {
 
     private void btnSelectorRangoFechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectorRangoFechasActionPerformed
         selectorRangoFechasVisible=!selectorRangoFechasVisible;
+        if (selectorRangoFechasVisible){txtSelectorRangoFechas.setBounds(35,0,215,35);}
         txtSelectorRangoFechas.setVisible(selectorRangoFechasVisible);
+        
+        
     }//GEN-LAST:event_btnSelectorRangoFechasActionPerformed
 
     private void btnSelectorRangoFechasComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_btnSelectorRangoFechasComponentShown
@@ -1010,11 +1023,11 @@ public class Form_Home extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSelectorRangoFechasComponentShown
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
-        
+       
     }//GEN-LAST:event_formComponentShown
 
     private void jPanel1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jPanel1AncestorAdded
-        txtSelectorRangoFechas.setVisible(selectorRangoFechasVisible);
+        
         
     }//GEN-LAST:event_jPanel1AncestorAdded
     public void openFile(String file) {
@@ -1114,6 +1127,7 @@ public class Form_Home extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel PanelSelectorFechas;
     private javax.swing.JButton btnExportExcel;
     private javax.swing.JButton btnExportPdf;
     private javax.swing.JButton btnSelectorRangoFechas;
@@ -1123,7 +1137,6 @@ public class Form_Home extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JLayeredPane panel;
     private com.conde.swing.PanelBorder panelBorder1;
     private com.conde.component.Card_Persona personas;

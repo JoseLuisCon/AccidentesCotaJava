@@ -496,8 +496,8 @@
                       <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jPanel2" min="-2" pref="290" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                      <Component id="PanelSelectorFechas" min="-2" pref="345" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                       <Component id="cmbFiltroAnyo" min="-2" pref="172" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnExportPdf" linkSize="1" min="-2" max="-2" attributes="0"/>
@@ -518,7 +518,7 @@
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="btnExportExcel" linkSize="2" max="32767" attributes="0"/>
                           <Component id="btnExportPdf" linkSize="2" min="-2" pref="25" max="-2" attributes="0"/>
-                          <Component id="jPanel2" alignment="1" max="32767" attributes="0"/>
+                          <Component id="PanelSelectorFechas" alignment="1" max="32767" attributes="0"/>
                           <Component id="cmbFiltroAnyo" alignment="1" max="32767" attributes="0"/>
                           <Component id="jLabel1" alignment="1" max="32767" attributes="0"/>
                       </Group>
@@ -652,12 +652,17 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Container class="javax.swing.JPanel" name="jPanel2">
+            <Container class="javax.swing.JPanel" name="PanelSelectorFechas">
               <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="99" red="99" type="rgb"/>
+                </Property>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
+                <Property name="axis" type="int" value="0"/>
+              </Layout>
               <SubComponents>
                 <Component class="javax.swing.JButton" name="btnSelectorRangoFechas">
                   <Properties>

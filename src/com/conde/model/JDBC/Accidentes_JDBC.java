@@ -1,5 +1,7 @@
 package com.conde.model.JDBC;
 
+import com.conde.chart.ModelChart;
+import com.conde.datechooserbtw.DateBetween;
 import com.conde.model.ConexionAccess;
 import com.conde.model.Accidente;
 import com.conde.model.Persona;
@@ -7,10 +9,14 @@ import com.conde.model.Vehiculo;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -316,15 +322,15 @@ public class Accidentes_JDBC {
 
         return null;
     }
-    
+
     public void getRangoAnyos(List<String> years) {
-        
+
         String sql = "SELECT DISTINCT Year(Fecha) AS Anio FROM Accidentes ORDER BY Anio ASC";
         try {
             conexion = ConexionAccess.conectar();
             st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(sql);
-            
+
             years.add("");
             while (rs.next()) {
                 years.add(rs.getString("Anio"));
@@ -338,6 +344,53 @@ public class Accidentes_JDBC {
             System.out.println("Error en la carga del tipo de personas." + e.getMessage());
         }
 
+    }
+    
+    public ModelChart getDataGraphByMonth(Integer mes) {
+        
+        double ileso=0;
+        double hleve=0;
+        double hgrave=0;
+        double fallecido=0;
+                
+        String sql = "SELECT COUNT(*) AS NUM FROM Accidentes ACC INNER JOIN Personas Per ON ACC.Id = Per.Num_Accidente WHERE Per.Resultado=? AND Month(Fecha) =?";
+       
+        String[] tipoPersonas={"Fallecido","Herido Grave","Herido Leve", "Ileso"};
+        
+         String[] nombresMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+       try{
+        conexion = ConexionAccess.conectar();
+        ps=conexion.prepareStatement(sql);
+        ps.setString(1, tipoPersonas[0]);
+        ps.setInt(2, mes);
+        
+        rs=ps.executeQuery();
+        rs.next();
+        fallecido=(double) rs.getInt("NUM");
+       
+        ps.setString(1, tipoPersonas[1]);
+        rs=ps.executeQuery();
+        rs.next();
+        hgrave=(double) rs.getInt("NUM");
+       
+        ps.setString(1, tipoPersonas[2]);
+        rs=ps.executeQuery();
+        rs.next();
+        hleve=(double) rs.getInt("NUM");
+        
+        ps.setString(1, tipoPersonas[3]);
+        rs=ps.executeQuery();
+        rs.next();
+        ileso=(double) rs.getInt("NUM");
+        
+        return new ModelChart(nombresMeses[mes-1], new double[]{fallecido,hgrave,hleve,ileso});
+       
+       }catch (SQLException e){
+       
+       System.out.println("Error en la carga del tipo de personas." + e.getMessage());
+       } 
+        return null;
     }
 
     public ArrayList<String> getTiposPersonas() {
@@ -361,7 +414,41 @@ public class Accidentes_JDBC {
             ConexionAccess.desConnection();
             return tipoPersonas;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            System.out.println("Error en la carga del tipo de personas." + e.getMessage());
+        }
+
+        return null;
+
+    }
+
+    public ArrayList<Integer> getNameMonth(DateBetween dateSelected) {
+        
+        ArrayList<Integer> meses = new ArrayList<>();
+        Calendar fecFrom = Calendar.getInstance();
+        fecFrom.setTime(dateSelected.getFromDate());
+        Calendar fecTo = Calendar.getInstance();
+        fecTo.setTime(dateSelected.getToDate());
+
+        String sql = "Select DISTINCT MONTH(Fecha) as MESES FROM Accidentes WHERE Fecha BETWEEN #" + (fecFrom.get(Calendar.MONTH) + 1) + "/" + fecFrom.get(Calendar.DAY_OF_MONTH) + "/" + fecFrom.get(Calendar.YEAR) + "# AND #" + (fecTo.get(Calendar.MONTH) + 1) + "/" + fecTo.get(Calendar.DAY_OF_MONTH) + "/" + fecTo.get(Calendar.YEAR) + "#";
+        try {
+            conexion = ConexionAccess.conectar();
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+  
+            while (rs.next()) {
+                
+                
+                meses.add(rs.getInt("MESES"));
+
+            }
+            rs.close();
+            st.close();
+            conexion.close();
+            ConexionAccess.desConnection();
+            return meses;
+
+        } catch (SQLException e) {
             System.out.println("Error en la carga del tipo de personas." + e.getMessage());
         }
 
@@ -727,8 +814,8 @@ public class Accidentes_JDBC {
             ps.close();
 
         } catch (SQLException e) {
-            System.err.println(e.getErrorCode()+ " "+e.getMessage());
-            
+            System.err.println(e.getErrorCode() + " " + e.getMessage());
+
         }
 
     }
@@ -805,8 +892,8 @@ public class Accidentes_JDBC {
             conexion.close();
         } catch (SQLException ex) {
             try {
-                if(conexion==null){
-                    conexion= ConexionAccess.conectar();
+                if (conexion == null) {
+                    conexion = ConexionAccess.conectar();
                 }
                 conexion.rollback();
             } catch (SQLException ex1) {
@@ -854,9 +941,8 @@ public class Accidentes_JDBC {
 
         String sql = "INSERT INTO Personas (Id,Num_Accidente,Num_Vehiculo,Documento,Tipo_Persona,Resultado,Trasladado,Lugar_Traslado,Alcoholemia,Alcoholemia_Positiva,Drogas,Drogas_Positiva,Observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-       
         try {
-             conexion = ConexionAccess.conectar();
+            conexion = ConexionAccess.conectar();
             ps = conexion.prepareStatement(sql);
             listaPersonas.forEach((per) -> {
                 try {
@@ -912,7 +998,6 @@ public class Accidentes_JDBC {
     public void addPersonaById(Persona per) {
         String sql = "INSERT INTO Personas (Id,Num_Accidente,Num_Vehiculo,Documento,Tipo_Persona,Resultado,Trasladado,Lugar_Traslado,Alcoholemia,Alcoholemia_Positiva,Drogas,Drogas_Positiva,Observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-        
         try {
             conexion = ConexionAccess.conectar();
             ps = conexion.prepareStatement(sql);
@@ -1086,9 +1171,9 @@ public class Accidentes_JDBC {
             ConexionAccess.desConnection();
 
         } catch (SQLException e) {
-              if(conexion==null){
-                    conexion= ConexionAccess.conectar();
-                }
+            if (conexion == null) {
+                conexion = ConexionAccess.conectar();
+            }
             conexion.rollback();
             System.out.println(e.getMessage());
         }
@@ -1100,8 +1185,6 @@ public class Accidentes_JDBC {
     private Statement st;
     private PreparedStatement ps;
     private ResultSet rs;
-
-
 
     
 

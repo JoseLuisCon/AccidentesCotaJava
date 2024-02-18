@@ -1,6 +1,6 @@
 package com.conde.main;
 
-import com.conde.form.Form_2;
+import com.conde.form.FormEstadistica;
 import com.conde.form.Form_Home;
 
 import com.conde.model.ConexionAccess;
@@ -27,6 +27,8 @@ public class Main extends javax.swing.JFrame {
     private Form_Home home;
    
     private FormAddAccident frmAddAcci;
+    
+    private FormEstadistica frmEstaditica;
 
     private int indexPanel = 0;
 
@@ -93,8 +95,18 @@ public class Main extends javax.swing.JFrame {
                     setForm(frmAddAcci);
                     indexPanel = 2;
                     break;
+                    
+                case 3:
+
+                    setTheme();
+                    frmEstaditica = new FormEstadistica(this);
+
+                    setForm(frmEstaditica);
+                    indexPanel = 3;
+                    break;
              
-                case 5:
+             
+                case 6:
                     ConexionAccess.desConnection();
                      {
                         try {
