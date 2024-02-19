@@ -4,6 +4,7 @@ import com.conde.chart.ModelChart;
 import com.conde.datechooserbtw.DateBetween;
 import com.conde.model.ConexionAccess;
 import com.conde.model.Accidente;
+import com.conde.model.CountAccidentsByTipe;
 import com.conde.model.Persona;
 import com.conde.model.Vehiculo;
 import java.sql.*;
@@ -454,6 +455,42 @@ public class Accidentes_JDBC {
 
         return null;
 
+    }
+    
+    public ArrayList<CountAccidentsByTipe> getListTipoAccdiente(DateBetween selectedDateBetween) {
+        
+        ArrayList<Integer> meses = new ArrayList<>();
+        Calendar fecFrom = Calendar.getInstance();
+        fecFrom.setTime(selectedDateBetween.getFromDate());
+        Calendar fecTo = Calendar.getInstance();
+        fecTo.setTime(selectedDateBetween.getToDate());
+        
+        ArrayList<CountAccidentsByTipe> items = new ArrayList<>();
+
+        String sql = "Select COUNT(*) AS NUMACC, Tipo_Accidente FROM Accidentes WHERE Fecha BETWEEN #" + (fecFrom.get(Calendar.MONTH) + 1) + "/" + fecFrom.get(Calendar.DAY_OF_MONTH) + "/" + fecFrom.get(Calendar.YEAR) + "# AND #" + (fecTo.get(Calendar.MONTH) + 1) + "/" + fecTo.get(Calendar.DAY_OF_MONTH) + "/" + fecTo.get(Calendar.YEAR) + "# GROUP BY Tipo_Accidente";
+        
+         try {
+            conexion = ConexionAccess.conectar();
+            st = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery(sql);
+  
+            while (rs.next()) {
+                CountAccidentsByTipe it= new CountAccidentsByTipe(rs.getInt("Tipo_Accidente"),rs.getInt("NUMACC"));
+                items.add(it);
+
+            }
+            rs.close();
+            st.close();
+            conexion.close();
+            ConexionAccess.desConnection();
+            return items;
+
+        } catch (SQLException e) {
+            System.out.println("Error en la carga del tipo de personas." + e.getMessage());
+        }
+
+        return null;
+       
     }
 
     public int getVehiculoByMatriculaAndNumAccidente(Object matricula, int num_accidente) {
@@ -1185,6 +1222,8 @@ public class Accidentes_JDBC {
     private Statement st;
     private PreparedStatement ps;
     private ResultSet rs;
+
+  
 
     
 

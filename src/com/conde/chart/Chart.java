@@ -91,8 +91,6 @@ public class Chart extends javax.swing.JPanel {
         blankPlotChart = new com.conde.chart.blankchart.BlankPlotChart();
         panelLegend = new javax.swing.JPanel();
 
-        setBackground(new java.awt.Color(255, 255, 255));
-
         panelLegend.setOpaque(false);
         panelLegend.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
