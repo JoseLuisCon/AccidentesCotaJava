@@ -1012,8 +1012,11 @@ public class Form_Home extends javax.swing.JPanel {
 
     private void btnSelectorRangoFechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectorRangoFechasActionPerformed
         selectorRangoFechasVisible=!selectorRangoFechasVisible;
-        if (selectorRangoFechasVisible){txtSelectorRangoFechas.setBounds(35,0,215,35);}
+        if (selectorRangoFechasVisible){txtSelectorRangoFechas.setBounds(35,0,215,30);}
+        
         txtSelectorRangoFechas.setVisible(selectorRangoFechasVisible);
+        
+        if (!selectorRangoFechasVisible) cargarAccidentes("", "");
         
         
     }//GEN-LAST:event_btnSelectorRangoFechasActionPerformed
